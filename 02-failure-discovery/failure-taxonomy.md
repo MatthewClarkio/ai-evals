@@ -4,8 +4,8 @@ Paste the markdown from the Module 2 Lab Guide (Activity 2) over this file, or u
 
 ## Top 3 Prioritized Failures
 
-| Rank | Failure | Trust Tag | Frequency | Severity |
-|---|---|---|---|---|
+| Rank | Failure | Trust Tag | Frequency | Severity | Priority |
+|---|---|---|---|---|---|
 
 ## #1 Risk · Business Impact
 

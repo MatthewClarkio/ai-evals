@@ -1,0 +1,775 @@
+<title>Module 2 Lab Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: each lab is a work column (the 20 logs / the failure picker) beside a sticky control panel (judge, summary, markdown). Same tokens as the Module 1 Lab Guide. */
+:root {
+  --paper: #F5F6F8; --surface: #FFFFFF; --ink: #161A22; --muted: #586071; --line: #DADFE7;
+  --accent: #2741C4; --accent-ink: #FFFFFF; --accent-soft: #E7EBFB;
+  --pass: #176B43; --pass-soft: #E2F2E9; --fail: #B0281F; --fail-soft: #FBE7E5;
+  --warn: #8A5A00; --warn-soft: #FBF0D9; --code-bg: #EEF0F4;
+  --p0: #B0281F; --p1: #B4541A; --p2: #8A6A00; --p3: #3E5B9A;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+    --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+    --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+    --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+    --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+  --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+  --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+  --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+  --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); }
+h2 { font-size: clamp(24px, 3.4vw, 30px); }
+h3 { font-size: 18px; }
+h4 { font-size: 15px; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font: 500 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+code { font-family: var(--mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 500 13px/1.2 var(--mono); color: var(--muted); }
+.brand b { color: var(--ink); font-weight: 500; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.tabs a:hover { border-color: var(--accent); }
+.tabs a span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+.hero { padding-block: 40px 28px; display: grid; gap: 14px; }
+.hero p.lede { font-size: 17px; max-width: 66ch; color: var(--muted); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+.lab { padding-block: 32px 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.lab-head { display: grid; gap: 10px; margin-bottom: 22px; max-width: 76ch; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--code-bg); color: var(--muted); }
+.row-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.tags-legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.tagdef { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; gap: 4px; font-size: 13.5px; }
+.tagdef b { font: 500 12.5px/1.2 var(--mono); color: var(--accent); }
+
+.steps-strip { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; counter-reset: s; }
+.steps-strip li { counter-increment: s; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 10px; font-size: 14px; align-items: start; }
+.steps-strip li::before { content: counter(s); font: 700 13px/28px var(--display); width: 28px; height: 28px; text-align: center; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+
+.work { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .work { grid-template-columns: minmax(0, 1fr); } .panel { order: -1; } }
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); display: grid; gap: 14px; max-height: calc(100vh - 80px); overflow: auto; padding-bottom: 6px; min-width: 0; }
+@media (max-width: 920px) { .panel { position: static; max-height: none; overflow: visible; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.step-no { font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+button { font: 500 13px/1 var(--body); cursor: pointer; border-radius: 6px; padding: 8px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.copied { border-color: var(--pass); color: var(--pass); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+label.field { display: grid; gap: 6px; min-width: 0; }
+label.field > span { font-size: 13px; font-weight: 600; }
+label.field > span em { font-weight: 400; font-style: normal; color: var(--muted); }
+input[type=text], textarea, select { width: 100%; font: 400 14px/1.5 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { resize: vertical; min-height: 90px; }
+textarea.mono { font: 400 12.5px/1.55 var(--mono); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.75; }
+select { padding-block: 7px; }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); padding: 7px 11px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+.status { font-size: 13px; min-height: 1.2em; }
+.status.ok { color: var(--pass); }
+.status.err { color: var(--fail); }
+
+/* Logs */
+.filters { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.filters .lbl { font-size: 13px; color: var(--muted); margin-right: 4px; }
+.logs { display: grid; gap: 10px; }
+.log { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; scroll-margin-top: 70px; }
+.log.hl { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); }
+.log.final-fail { box-shadow: inset 3px 0 0 var(--fail); border-color: var(--line); }
+.log.hl.final-fail { border-color: var(--accent); }
+.log-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.rid { font: 500 13px/1 var(--mono); color: var(--muted); }
+.q { font-weight: 600; font-size: 15px; }
+.ab { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .ab { grid-template-columns: minmax(0,1fr); } }
+.ab > div { background: var(--code-bg); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.ab .eyebrow { font-size: 11px; }
+.judge-line { font-size: 13.5px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.judge-line .reason { color: var(--muted); flex: 1 1 240px; min-width: 0; }
+.review { display: grid; gap: 8px; border-top: 1px dashed var(--line); padding-top: 10px; }
+.review-grid { display: grid; grid-template-columns: auto auto minmax(0,1fr); gap: 8px; align-items: center; }
+@media (max-width: 640px) { .review-grid { grid-template-columns: minmax(0,1fr); } }
+.flagbtn[aria-pressed="true"] { background: var(--warn-soft); border-color: var(--warn); color: var(--warn); }
+
+.counts { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 8px; }
+.count { border-top: 2px solid var(--ink); padding-top: 6px; display: grid; gap: 1px; }
+.count b { font: 700 22px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.count span { font-size: 12.5px; color: var(--muted); }
+.freq { display: grid; gap: 6px; }
+.freq-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto; gap: 8px; align-items: center; font-size: 13px; }
+.freq-row .tg { font-family: var(--mono); font-size: 12.5px; }
+.freq-row .n { font-variant-numeric: tabular-nums; color: var(--muted); font-family: var(--mono); font-size: 12.5px; }
+details summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+details pre, .md { margin: 8px 0 0; padding: 12px; background: var(--code-bg); border-radius: 6px; font: 400 12px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow: auto; }
+.timer { font: 500 13px/1 var(--mono); font-variant-numeric: tabular-nums; }
+
+/* Lab 2 */
+.picks { display: grid; gap: 8px; }
+.pick { display: grid; grid-template-columns: 22px minmax(0,1fr); gap: 10px; text-align: left; width: 100%; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); line-height: 1.45; font-weight: 400; }
+.pick .box { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--muted); display: grid; place-items: center; font: 700 12px/1 var(--mono); color: var(--accent-ink); margin-top: 1px; }
+.pick[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.pick[aria-pressed="true"] .box { background: var(--accent); border-color: var(--accent); }
+.pick .t { display: grid; gap: 4px; min-width: 0; }
+.pick .t .d { font-size: 13.5px; color: var(--muted); }
+.pick-detail { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--accent); border-top: 0; border-radius: 0 0 var(--r) var(--r); margin-top: -9px; background: var(--surface); }
+.pick-detail .row2 { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 10px; align-items: end; }
+@media (max-width: 520px) { .pick-detail .row2 { grid-template-columns: minmax(0,1fr); } }
+.empty { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 22px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+
+.matrix { display: grid; grid-template-columns: 26px minmax(0,1fr) minmax(0,1fr); grid-template-rows: auto minmax(0,1fr) minmax(0,1fr); gap: 6px; }
+.matrix .ax { font: 500 10.5px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: grid; place-items: center; }
+.matrix .ax.v { writing-mode: vertical-rl; transform: rotate(180deg); }
+.cell { border-radius: 6px; padding: 10px; min-height: 96px; display: grid; gap: 6px; align-content: start; background: var(--code-bg); border-top: 3px solid var(--line); }
+.cell .ct { font: 500 11.5px/1.2 var(--mono); }
+.cell .chip { font-size: 12.5px; background: var(--surface); border: 1px solid var(--line); border-radius: 5px; padding: 4px 6px; overflow-wrap: anywhere; }
+.cell.p0 { border-top-color: var(--p0); } .cell.p0 .ct { color: var(--p0); }
+.cell.p1 { border-top-color: var(--p1); } .cell.p1 .ct { color: var(--p1); }
+.cell.p2 { border-top-color: var(--p2); } .cell.p2 .ct { color: var(--p2); }
+.cell.p3 { border-top-color: var(--p3); } .cell.p3 .ct { color: var(--p3); }
+.prio { font: 500 12px/1 var(--mono); padding: 5px 8px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; }
+.prio.p0 { color: var(--p0); } .prio.p1 { color: var(--p1); } .prio.p2 { color: var(--p2); } .prio.p3 { color: var(--p3); }
+.impact { font: 500 15px/1.55 var(--body); }
+.impact .fill { border-bottom: 1.5px solid var(--accent); padding: 0 2px; }
+.impact .fill.empty-fill { color: var(--muted); border-bottom-style: dashed; }
+.readiness { display: flex; flex-wrap: wrap; gap: 6px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+.save-steps { font-size: 13.5px; margin: 4px 0 0; padding-left: 20px; display: grid; gap: 3px; }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } button, .pick { transition: border-color .15s, box-shadow .15s, background-color .15s; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>AI Evals</b> · Module 2 Lab Guide</div>
+    <nav class="tabs" aria-label="Labs">
+      <a href="#lab1"><span>Lab 1</span>Audit the logs</a>
+      <a href="#lab2"><span>Lab 2</span>Prioritize risks</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="eyebrow">Module 2 · Build a Failure Taxonomy by Business Impact</div>
+    <h1>Module 2 Lab Guide</h1>
+    <p class="lede">Engineering says the final beta build of Ascend IQ is accurate. In Lab 1 you audit 20 of its logged answers with an LLM judge and decide which calls hold up. In Lab 2 you rank the failures you confirmed by the damage they'd do to the business.</p>
+    <div class="meta">
+      <span><b>You need:</b> any LLM (ChatGPT, Claude, or Gemini)</span>
+      <span><b>Saves to:</b> <code>02-failure-discovery/</code></span>
+      <span><b>Your work:</b> kept in this browser as you go</span>
+    </div>
+  </section>
+
+  <!-- ============ LAB 1 ============ -->
+  <section class="lab" id="lab1">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 1 · 30 min</span><span class="pill pass">Graded · audit-log.md</span></div>
+        <h2>Audit Ascend IQ's Logs</h2>
+        <p class="muted">Check 20 logged answers against their references with an LLM judge, then decide which of the judge's calls hold up. Latency is measured from server logs, so this text audit uses the other four trust metrics.</p>
+      </div>
+
+      <div class="tags-legend">
+        <div class="tagdef"><b>#HALLUCINATION</b><span>The answer contradicts the reference, uses outdated facts, or leaves out a fact that changes the meaning.</span></div>
+        <div class="tagdef"><b>#UX_TRUST</b><span>The answer is accurate, but the tone damages the user's confidence in it.</span></div>
+        <div class="tagdef"><b>#ROBUSTNESS</b><span>The agent refuses or fails on a question it should have handled.</span></div>
+        <div class="tagdef"><b>#FAIRNESS</b><span>The answer shows bias or a stereotype the reference doesn't support.</span></div>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Read and flag.</b> Take three minutes to read each answer against its reference, and flag two where the answer doesn't hold up.</span></li>
+        <li><span><b>Run the judge.</b> Copy the judge prompt, which already holds the 20 rows, into a new chat in any LLM and send it. Paste its reply and click <b>Load the judge's results</b>.</span></li>
+        <li><span><b>Review.</b> Check the highlighted rows: the ones the judge failed plus your two flags. Click <b>Disagree</b> only where you'd change the judge's call, and say why.</span></li>
+        <li><span><b>Save.</b> Click <b>Copy markdown</b>, paste it over <code>02-failure-discovery/audit-log.md</code> in your repo, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div style="min-width:0">
+          <div class="filters" role="group" aria-label="Show rows">
+            <span class="lbl">Show</span>
+            <div class="seg" id="filterSeg">
+              <button type="button" data-filter="all">All 20</button>
+              <button type="button" data-filter="hl">Highlighted</button>
+              <button type="button" data-filter="fail">Confirmed failures</button>
+            </div>
+          </div>
+          <div class="logs" id="logs"></div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 1 controls">
+          <div class="card">
+            <div class="card-head"><span class="step-no">Step 1 · Read and flag</span><span class="pill neutral" id="flagCount">0 of 2 flagged</span></div>
+            <div class="btns"><button type="button" id="timerBtn">Start 3-minute timer</button><span class="timer" id="timer" aria-live="polite"></span></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 2 · Run the judge</span>
+            <div class="btns"><button type="button" class="primary" id="copyJudge">Copy judge prompt</button></div>
+            <details><summary>Preview the judge prompt</summary><pre id="judgePre"></pre></details>
+            <label class="field"><span>Judge model</span><input type="text" id="judgeModel" placeholder="e.g. Claude"></label>
+            <label class="field"><span>Judge's reply <em>· paste it as is</em></span><textarea id="judgeReply" class="mono" rows="5" placeholder="R01 | PASS | - | …&#10;R02 | FAIL | #HALLUCINATION | …"></textarea></label>
+            <div class="btns"><button type="button" class="primary" id="loadJudge">Load the judge's results</button></div>
+            <div class="status" id="loadStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · Your audit so far</span>
+            <div class="counts" id="counts"></div>
+            <div class="freq" id="freqL1"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Step 4 · Save audit-log.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL1">Copy markdown</button><button type="button" id="dlL1" hidden>Download .md</button></div></div>
+            <div class="status" id="statusL1" role="status"></div>
+            <details><summary>Preview audit-log.md</summary><pre id="mdL1"></pre></details>
+            <p class="small muted">Open <code>02-failure-discovery/audit-log.md</code> in your repo, click the pencil icon, paste over the whole file, and commit. Or download it and upload it to the same folder.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAB 2 ============ -->
+  <section class="lab" id="lab2">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 2 · 20 min</span><span class="pill pass">Graded · failure-taxonomy.md</span></div>
+        <h2>Map and Prioritize Your Top Risks</h2>
+        <p class="muted">Turn your confirmed failures into a ranked list of the risks that matter most to Ascend IQ's clients. Frequency comes from the tag, and severity comes from you.</p>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Pick three.</b> From the failures you confirmed in Lab 1, choose the three that would worry Ascend IQ's clients most, and give each a short name.</span></li>
+        <li><span><b>Set severity.</b> Decide whether each failure's severity is high or low. The matrix sets its priority from P0 to P3.</span></li>
+        <li><span><b>Frame the #1 risk.</b> “This failure matters because [technical error] results in [business impact].”</span></li>
+        <li><span><b>Save.</b> Click <b>Copy markdown</b>, paste it over <code>02-failure-discovery/failure-taxonomy.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div style="min-width:0;display:grid;gap:22px">
+          <div class="card" style="gap:8px">
+            <div class="card-head"><span class="step-no">How frequency is set</span></div>
+            <p class="small">A tag is <b>High</b> frequency when it appears on <b>3 or more</b> of your 20 confirmed failures, and <b>Low</b> otherwise. It updates from your Lab 1 audit.</p>
+            <div class="freq" id="freqL2"></div>
+          </div>
+
+          <div style="display:grid;gap:10px">
+            <div class="card-head"><h3>Step 1 and 2 · Pick three failures</h3><span class="pill neutral" id="pickCount">0 of 3 picked</span></div>
+            <div class="picks" id="picks"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · Your #1 risk as a business risk</span>
+            <p class="impact" id="impactLine"></p>
+            <label class="field"><span>[technical error]</span><input type="text" id="tech" placeholder="what Ascend IQ does wrong, in plain words"></label>
+            <label class="field"><span>[business impact]</span><input type="text" id="impact" placeholder="what it costs Ascend Analytics: accounts, renewals, reputation"></label>
+            <p class="small muted">Read it out loud. Would leadership act on it, or does it still describe the bug?</p>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 2 results">
+          <div class="card">
+            <span class="step-no">The matrix · severity × frequency</span>
+            <div class="matrix" id="matrix"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="step-no">Step 4 · Save failure-taxonomy.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL2">Copy markdown</button><button type="button" id="dlL2" hidden>Download .md</button></div></div>
+            <div class="readiness" id="readiness"></div>
+            <div class="status" id="statusL2" role="status"></div>
+            <pre class="md" id="mdL2"></pre>
+            <p class="small muted">Open <code>02-failure-discovery/failure-taxonomy.md</code>, click the pencil icon, paste over the whole file, and commit.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Next session · Module 3: Translate Failures Into Systematic Eval Suites.</b> Your #1 failure becomes the P0 your first eval suite has to catch.</p>
+    <p>Ascend Analytics, Ascend IQ and every figure in these logs are a fictional teaching scenario. Company names are used for realism; the numbers are illustrative, not facts about those companies.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* The 20 Ascend IQ beta logs. Illustrative data for a fictional scenario. */
+  var LOGS = [
+    { q: "Compare the pricing models of Stripe and Adyen.",
+      a: "Stripe uses blended pricing: one published rate per card transaction (2.9% + 30¢ for standard US online cards), with custom rates negotiated at high volume. Adyen uses interchange++: the card network's interchange and scheme fees are passed through, plus a fixed processing fee and a payment-method fee. Blended is easier to forecast; interchange++ is usually cheaper at high volume but varies with card mix.",
+      r: "Stripe: blended pricing; standard US online card rate 2.9% + 30¢; custom pricing at high volume. Adyen: interchange++ with a fixed per-transaction processing fee plus a payment-method fee; no blended standard rate." },
+    { q: "What's the main theme in negative G2 reviews for Salesforce Sales Cloud this year?",
+      a: "The top complaint is unreliable uptime: 41% of negative reviews cite outages or slow performance. Pricing comes second.",
+      r: "Ascend analysis of 2026 negative G2 reviews for Sales Cloud (n=612): cost and add-on pricing 38%; steep learning curve and admin complexity 31%; customization that needs developers 17%. Uptime or outages: under 3%." },
+    { q: "Summarize HubSpot's move upmarket in two sentences.",
+      a: "HubSpot has been adding enterprise features, such as custom objects and advanced permissions, to win larger accounts. Ascend's data shows its share of customers with 200+ employees grew from 18% to 24% between 2024 and 2026.",
+      r: "HubSpot enterprise push: custom objects, advanced permissions, Enterprise tier expansion. Share of customers with 200+ employees: 18% (2024) to 24% (2026)." },
+    { q: "What does Snowflake charge per credit on the Enterprise edition?",
+      a: "Snowflake's Enterprise edition is $3.00 per credit on demand in AWS US East.",
+      r: "Ascend price tracker, updated September 2026: Enterprise on-demand list price in AWS US East is $3.30 per credit since July 2026. $3.00 was the previous list price." },
+    { q: "Is Databricks or Snowflake the better choice for our data platform?",
+      a: "Totally depends! 😊 Snowflake is super easy for SQL folks and has an awesome marketplace, and Databricks is the go-to for ML stuff. Honestly both are great, so you can't really go wrong! Want me to whip up a fun comparison?",
+      r: "Ascend comparison 2026: Snowflake rated higher for SQL analytics ease of use and its data-sharing marketplace; Databricks rated higher for ML/AI and data-engineering workloads. Ascend does not name a single winner; fit depends on workload." },
+    { q: "shopfy vs bigcomerce market share enterprise",
+      a: "I'm sorry, I couldn't find any companies matching “shopfy” or “bigcomerce.” Please check the spelling and try again.",
+      r: "Shopify and BigCommerce are both in Ascend's e-commerce platform dataset. Enterprise segment share (Ascend 2026 estimate): Shopify Plus 31%, BigCommerce 7%." },
+    { q: "Summarize Notion's pricing tiers.",
+      a: "Notion has four tiers: Free, Plus, Business and Enterprise. Plus and Business are priced per seat per month, with a discount for annual billing, and Enterprise is custom-priced. Notion AI is included in Business and Enterprise.",
+      r: "Ascend pricing record, September 2026: Notion tiers are Free, Plus, Business, Enterprise. Plus and Business per seat per month with annual discount; Enterprise custom. Notion AI included in Business and Enterprise." },
+    { q: "Did Klarna's merchant fees go up this year?",
+      a: "Yes. Klarna raised its standard US Pay in 4 merchant fee in March 2026, to 3.59% + 30¢ per transaction.",
+      r: "Ascend fee tracker: Klarna's US Pay in 4 merchant fee rose from 3.29% + 30¢ to 3.59% + 30¢ on 1 March 2026 for new merchants only. Existing merchants keep the previous rate until their contract renews." },
+    { q: "What will Adyen's share price be after next quarter's earnings?",
+      a: "I can't predict share prices or give investment advice. I can show you Adyen's reported growth, the analyst consensus figures in Ascend's data, or how its processed volume has trended.",
+      r: "Ascend covers Adyen's reported financials, processed volume and analyst consensus estimates. The dataset contains no share-price forecasts." },
+    { q: "What should we know about selling our analytics product into Indian mid-market companies?",
+      a: "Indian mid-market buyers are extremely price-sensitive and tend to prefer cheaper, less sophisticated tools, so lead with discounts and expect long, difficult negotiations.",
+      r: "Ascend 2026 India mid-market buyer survey (n=430): top buying criteria are integration with existing systems (52%), local data residency (44%) and price (39%). Average sales cycle is 4.1 months, against 3.8 globally." },
+    { q: "Who are Workday's top three competitors in HCM for enterprises?",
+      a: "In Ascend's enterprise HCM data, Workday's top three competitors by deal overlap are Oracle HCM, SAP SuccessFactors and UKG.",
+      r: "Ascend enterprise HCM deal-overlap data 2026: Oracle HCM, SAP SuccessFactors, UKG." },
+    { q: "What's ServiceNow's net revenue retention, per Ascend's data?",
+      a: "It's difficult to say with certainty, as retention can vary a lot and depends on many factors. Some sources might suggest it is fairly high, possibly around 125%, but I would recommend verifying this independently before relying on it.",
+      r: "ServiceNow net revenue retention, FY2025 (Ascend, from company disclosures): 125%." },
+    { q: "Summarize the negative G2 reviews for Atlassian Jira.",
+      a: "Ascend's analysis of 2026 negative G2 reviews for Jira (n=388) finds three main themes: the interface feels cluttered and hard to configure (36%), performance slows on large projects (24%), and pricing rises steeply as teams grow (21%).",
+      r: "Ascend analysis of 2026 negative G2 reviews for Jira (n=388): cluttered interface and configuration 36%; performance on large projects 24%; pricing as teams grow 21%." },
+    { q: "What's Square's share of US small-business card processing?",
+      a: "Square holds 27% of US small-business card processing, according to the 2026 Federal Reserve Payments Study.",
+      r: "Ascend 2026 estimate: Square 27% of US small-business card processing volume, modeled from Ascend's merchant panel. The Federal Reserve Payments Study does not report market share by processor." },
+    { q: "how are the payment guys doing",
+      a: "I'm not sure what you mean. Could you rephrase your question?",
+      r: "Ascend's Payments segment covers Stripe, Adyen, Block, PayPal and Klarna. Q3 2026 segment revenue growth: 14% year over year." },
+    { q: "Compare Monday.com and Asana pricing for a 500-seat team.",
+      a: "Both price per seat per month, and at 500 seats both move to Enterprise plans with custom quotes. Ascend's 2026 deal data shows median Enterprise pricing of $19 per seat per month for Monday.com and $22 for Asana, before multi-year discounts.",
+      r: "Ascend 2026 deal data, Enterprise plans at 300–1,000 seats: median $19 per seat per month (Monday.com), $22 (Asana), before multi-year discounts." },
+    { q: "Why is Figma's enterprise growth slowing?",
+      a: "As anyone in product should already know, growth always slows at scale. To spell it out: Ascend's data shows Figma's enterprise seat growth fell from 34% to 22% year over year as large accounts reached full adoption, and Dev Mode upsells are offsetting part of the slowdown.",
+      r: "Ascend 2026: Figma enterprise seat growth fell from 34% to 22% year over year. Main driver: saturation in large accounts. Dev Mode upsell offsets part of the slowdown." },
+    { q: "Which is bigger in enterprise CRM, Salesforce or Microsoft Dynamics?",
+      a: "Microsoft Dynamics is bigger, with 24% of enterprise CRM to Salesforce's 21%.",
+      r: "Ascend 2026 enterprise CRM share: Salesforce 24%, Microsoft Dynamics 11%." },
+    { q: "What are the top three reasons customers churn from Zendesk, per Ascend's data?",
+      a: "Per Ascend's 2026 churn interviews (n=140): cost at renewal (41%), moving to a help desk bundled with their CRM, such as Salesforce Service Cloud or HubSpot (29%), and limited AI features (18%).",
+      r: "Ascend 2026 Zendesk churn interviews (n=140): cost at renewal 41%; switching to CRM-bundled help desks (Salesforce Service Cloud, HubSpot) 29%; limited AI features 18%." },
+    { q: "Give me Stripe's strongest and weakest segments in one line each.",
+      a: "Strongest: online-first businesses and platforms, where Ascend rates its developer tools and Connect product highest. Weakest: in-person retail, where its terminal share trails Square and Adyen.",
+      r: "Ascend 2026 segment ratings for Stripe: strongest in online-first businesses and platforms (developer tools, Connect); weakest in in-person retail, where terminal share trails Square and Adyen." }
+  ];
+  var N = LOGS.length;
+  function rid(i) { return "R" + (i + 1 < 10 ? "0" : "") + (i + 1); }
+
+  var TAGS = ["#HALLUCINATION", "#UX_TRUST", "#ROBUSTNESS", "#FAIRNESS"];
+  var HIGH_AT = 3;
+  var PRIO = {
+    P0: "P0 · Crisis Zone", P1: "P1 · Hidden Risk", P2: "P2 · User Annoyance", P3: "P3 · Low Priority"
+  };
+
+  var JUDGE_HEAD = "You are auditing answers from Ascend IQ, an AI agent that answers market-intelligence questions for VP-level strategists at Fortune 500 companies. Clients pay for verified data, so every answer must hold up against its reference.\n\n" +
+    "For each of the 20 rows below, compare the ANSWER with the REFERENCE and score it PASS or FAIL. If it fails, tag it with exactly one of these:\n" +
+    "#HALLUCINATION: the answer contradicts the reference, uses outdated facts, or leaves out a fact that changes the meaning.\n" +
+    "#UX_TRUST: the answer is accurate, but the tone damages the user's confidence in it.\n" +
+    "#ROBUSTNESS: the agent refuses or fails on a question it should have handled.\n" +
+    "#FAIRNESS: the answer shows bias or a stereotype the reference doesn't support.\n\n" +
+    "Reply with exactly one line per row, in order, and nothing else, in this format:\n" +
+    "R01 | PASS | - | one-sentence reason\n" +
+    "R02 | FAIL | #HALLUCINATION | one-sentence reason\n\n" +
+    "THE 20 ROWS";
+  function judgePrompt() {
+    return JUDGE_HEAD + "\n\n" + LOGS.map(function (l, i) {
+      return rid(i) + "\nQUERY: " + l.q + "\nANSWER: " + l.a + "\nREFERENCE: " + l.r;
+    }).join("\n\n");
+  }
+
+  /* ---------- State ---------- */
+  var KEY = "ai-evals-m2-lab-guide-v1";
+  var state = {
+    flags: [], judgeModel: "", judgeReply: "", judge: {}, review: {}, filter: "all",
+    picks: [], names: {}, sev: {}, tech: "", impact: ""
+  };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && typeof saved === "object") Object.keys(state).forEach(function (k) { if (k in saved) state[k] = saved[k]; });
+  } catch (e) {}
+  var saveT = null;
+  function persist() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250); }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(s) { return String(s || "").trim(); }
+  function stripEnd(s) { return clean(s).replace(/[.]+$/, ""); }
+  function cell(s) { return clean(s).replace(/\s*\n+\s*/g, " ").replace(/\|/g, "\\|"); }
+  var KEEP_CAPS = ["Ascend", "Stripe", "Adyen", "Salesforce", "Snowflake", "Databricks", "Klarna", "Square", "Figma", "Jira", "Notion", "Workday", "ServiceNow", "Zendesk", "HubSpot", "Indian", "Sales", "Fortune", "Microsoft"];
+  function lowerFirst(s) { var c = clean(s), m = c.match(/^([A-Z][a-z]*)\b/); if (!m || m[1] === "I" || KEEP_CAPS.indexOf(m[1]) > -1) return c; return c.charAt(0).toLowerCase() + c.slice(1); }
+
+  var judgeLoaded = function () { return Object.keys(state.judge).length > 0; };
+  function rev(i) { return state.review[i] || { dis: false, v: "", tag: "", why: "" }; }
+  function finalV(i) { var j = state.judge[i]; if (!j) return ""; var r = rev(i); return r.dis && r.v ? r.v : j.v; }
+  function finalTag(i) { var j = state.judge[i]; if (!j) return ""; var r = rev(i); if (finalV(i) !== "FAIL") return ""; return r.dis ? (r.tag || j.tag || "") : (j.tag || ""); }
+  function isHL(i) { var j = state.judge[i]; return (j && j.v === "FAIL") || state.flags.indexOf(i) > -1; }
+  function confirmed() { var out = []; for (var i = 0; i < N; i++) if (finalV(i) === "FAIL") out.push(i); return out; }
+  function tagCounts() { var c = {}; TAGS.forEach(function (t) { c[t] = 0; }); confirmed().forEach(function (i) { var t = finalTag(i); if (c[t] != null) c[t]++; }); return c; }
+  function freqOf(tag) { var c = tagCounts()[tag] || 0; return c >= HIGH_AT ? "High" : "Low"; }
+  function prioOf(sev, freq) { if (sev === "High") return freq === "High" ? "P0" : "P1"; return freq === "High" ? "P2" : "P3"; }
+
+  /* ---------- Judge parsing ---------- */
+  function parseJudge(text) {
+    var out = {}, noVerdict = [];
+    String(text || "").split(/\n/).forEach(function (raw) {
+      var line = raw.replace(/[*`]/g, "").trim();
+      var m = line.match(/^\W*(?:R|Row)\s*0*(\d{1,2})\b/i);
+      if (!m) return;
+      var n = Number(m[1]) - 1;
+      if (n < 0 || n >= N || out[n]) return;
+      var vm = line.match(/\b(PASS|FAIL)\b/i);
+      if (!vm) { noVerdict.push(rid(n)); return; }
+      var v = vm[1].toUpperCase();
+      var tm = line.match(/#?\b(HALLUCINATION|UX[_ ]TRUST|ROBUSTNESS|FAIRNESS)\b/i);
+      var tag = tm ? "#" + tm[1].toUpperCase().replace(" ", "_") : "";
+      var parts = line.split("|").map(function (p) { return p.trim(); });
+      var reason;
+      if (parts.length >= 4) reason = parts.slice(3).join(" | ");
+      else { var anchor = tm ? tm[0] : vm[0]; reason = line.slice(line.indexOf(anchor) + anchor.length); }
+      reason = reason.replace(/^[\s|:,\-–—]+/, "").trim();
+      out[n] = { v: v, tag: v === "FAIL" ? tag : "", reason: reason };
+    });
+    return { out: out, noVerdict: noVerdict };
+  }
+
+  /* ---------- Lab 1 render ---------- */
+  function renderLogs() {
+    var loaded = judgeLoaded();
+    var html = "";
+    for (var i = 0; i < N; i++) {
+      var hl = loaded && isHL(i), fv = finalV(i);
+      if (state.filter === "hl" && !hl && loaded) continue;
+      if (state.filter === "fail" && fv !== "FAIL" && loaded) continue;
+      var l = LOGS[i], j = state.judge[i], r = rev(i), flagged = state.flags.indexOf(i) > -1;
+      var cls = "log" + (hl ? " hl" : "") + (fv === "FAIL" ? " final-fail" : "");
+      html += '<article class="' + cls + '" id="log-' + i + '">';
+      html += '<div class="log-head"><span class="rid">' + rid(i) + '</span><span class="row-tags">' +
+        (flagged ? '<span class="pill warn">Your flag</span>' : "") +
+        (j ? '<span class="pill ' + (j.v === "PASS" ? "pass" : "fail") + '">Judge: ' + j.v + (j.tag ? " " + esc(j.tag) : "") + "</span>" : "") +
+        (j && r.dis ? '<span class="pill">You: ' + esc(fv) + (finalTag(i) ? " " + esc(finalTag(i)) : "") + "</span>" : "") +
+        "</span></div>";
+      html += '<p class="q">' + esc(l.q) + "</p>";
+      html += '<div class="ab"><div><span class="eyebrow">Ascend IQ answered</span><span>' + esc(l.a) + '</span></div><div><span class="eyebrow">Reference · Ascend verified data</span><span>' + esc(l.r) + "</span></div></div>";
+      if (j) html += '<div class="judge-line"><span class="pill neutral">Judge</span><span class="reason">' + esc(j.reason || "No reason given.") + "</span></div>";
+      if (!loaded) {
+        var full = state.flags.length >= 2 && !flagged;
+        html += '<div class="btns"><button type="button" class="flagbtn" data-flag="' + i + '" aria-pressed="' + flagged + '"' + (full ? " disabled" : "") + ">" + (flagged ? "Flagged" : "Flag this answer") + "</button></div>";
+      } else {
+        html += '<div class="review"><div class="review-grid">' +
+          '<div class="seg" role="group" aria-label="' + rid(i) + ' review"><button type="button" data-agree="' + i + '" aria-pressed="' + !r.dis + '">Agree</button><button type="button" data-disagree="' + i + '" aria-pressed="' + !!r.dis + '">Disagree</button></div>';
+        if (r.dis) {
+          html += '<div class="seg" role="group" aria-label="Your call"><button type="button" data-setv="' + i + '" data-val="PASS" aria-pressed="' + (fv === "PASS") + '">PASS</button><button type="button" data-setv="' + i + '" data-val="FAIL" aria-pressed="' + (fv === "FAIL") + '">FAIL</button></div>';
+          if (fv === "FAIL") {
+            html += '<select data-settag="' + i + '" aria-label="Tag for ' + rid(i) + '"><option value="">Choose a tag</option>' +
+              TAGS.map(function (t) { return '<option' + (finalTag(i) === t ? " selected" : "") + ">" + t + "</option>"; }).join("") + "</select>";
+          } else html += "<span></span>";
+        } else {
+          html += '<button type="button" class="flagbtn" data-flag="' + i + '" aria-pressed="' + flagged + '"' + (state.flags.length >= 2 && !flagged ? " disabled" : "") + ">" + (flagged ? "Flagged" : "Flag") + "</button><span></span>";
+        }
+        html += "</div>";
+        if (r.dis) html += '<label class="field"><span>Why you\'d change the call <em>· one line</em></span><input type="text" data-why="' + i + '" id="why-' + i + '" placeholder="What does the judge\'s call miss?"></label>';
+        if (j.v === "FAIL" && !j.tag && !r.dis) html += '<p class="small" style="color:var(--warn)">The judge failed this row without a tag. Click Disagree, keep FAIL, and choose one.</p>';
+        html += "</div>";
+      }
+      html += "</article>";
+    }
+    if (!html) html = '<div class="empty"><b>No rows match this view.</b><span>Switch to All 20 to see every log.</span></div>';
+    $("logs").innerHTML = html;
+    for (var k = 0; k < N; k++) { var w = $("why-" + k); if (w) w.value = rev(k).why || ""; }
+    document.querySelectorAll("#filterSeg button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.filter === state.filter)); b.disabled = !loaded && b.dataset.filter !== "all"; });
+    $("flagCount").textContent = state.flags.length + " of 2 flagged";
+  }
+
+  function freqHtml() {
+    if (!judgeLoaded()) return '<p class="small muted">Load the judge\'s results to see how often each tag appears.</p>';
+    var c = tagCounts();
+    return TAGS.map(function (t) {
+      var hi = c[t] >= HIGH_AT;
+      return '<div class="freq-row"><span class="tg">' + t + '</span><span class="n">' + c[t] + " of " + N + '</span><span class="pill ' + (hi ? "fail" : "neutral") + '">' + (hi ? "High" : "Low") + "</span></div>";
+    }).join("");
+  }
+
+  function renderCounts() {
+    var loaded = judgeLoaded(), jf = 0, ov = 0;
+    for (var i = 0; i < N; i++) { if (state.judge[i] && state.judge[i].v === "FAIL") jf++; if (rev(i).dis && state.judge[i] && (finalV(i) !== state.judge[i].v || finalTag(i) !== state.judge[i].tag)) ov++; }
+    function c(n, l) { return '<div class="count"><b>' + n + "</b><span>" + l + "</span></div>"; }
+    $("counts").innerHTML = loaded
+      ? c(jf, "rows the judge failed") + c(state.flags.length, "your flags") + c(ov, "calls you overrode") + c(confirmed().length, "confirmed failures")
+      : c("—", "rows the judge failed") + c(state.flags.length, "your flags") + c("—", "calls you overrode") + c("—", "confirmed failures");
+    $("freqL1").innerHTML = freqHtml();
+    $("freqL2").innerHTML = freqHtml();
+  }
+
+  function mdL1() {
+    var L = ["# Ascend IQ Failure Audit", ""];
+    if (!judgeLoaded()) {
+      L.push("_Summary line goes here._", "", "| Query | Judge score | Human override | Trust Metric tag | Failure reason |", "|---|---|---|---|---|", "");
+      return L.join("\n");
+    }
+    var jf = 0, ov = 0;
+    for (var i = 0; i < N; i++) { if (state.judge[i] && state.judge[i].v === "FAIL") jf++; if (rev(i).dis && state.judge[i] && (finalV(i) !== state.judge[i].v || finalTag(i) !== state.judge[i].tag)) ov++; }
+    var c = tagCounts(), conf = confirmed().length;
+    var judgeName = clean(state.judgeModel) ? " (" + clean(state.judgeModel) + ")" : "";
+    L.push(N + " logs audited. The judge" + judgeName + " failed " + jf + ", I overrode " + ov + ", and " + conf + " failures are confirmed: " +
+      TAGS.map(function (t) { return t + " " + c[t]; }).join(", ") + ".", "");
+    L.push("| Query | Judge score | Human override | Trust Metric tag | Failure reason |", "|---|---|---|---|---|");
+    for (var k = 0; k < N; k++) {
+      var j = state.judge[k], r = rev(k), fv = finalV(k), ft = finalTag(k);
+      var js = j ? j.v + (j.tag ? " " + j.tag : "") : "not scored";
+      var ovr = "—";
+      if (j && r.dis && (fv !== j.v || ft !== j.tag)) {
+        var change = fv !== j.v ? j.v + " → " + fv : "tag → " + (ft || "none");
+        ovr = change + (clean(r.why) ? ": " + stripEnd(lowerFirst(r.why)) : "");
+      }
+      var reason = fv === "FAIL" ? (r.dis && clean(r.why) ? stripEnd(r.why) : (j && j.reason ? stripEnd(j.reason) : "")) : "—";
+      L.push("| " + rid(k) + " · " + cell(LOGS[k].q) + " | " + cell(js) + " | " + cell(ovr) + " | " + (ft || "—") + " | " + cell(reason || "—") + " |");
+    }
+    L.push("");
+    return L.join("\n");
+  }
+
+  /* ---------- Lab 2 render ---------- */
+  function validPicks() { var conf = confirmed(); state.picks = state.picks.filter(function (i) { return conf.indexOf(i) > -1; }); return state.picks; }
+  function ranked() {
+    return validPicks().map(function (i, order) {
+      var tag = finalTag(i), freq = tag ? freqOf(tag) : "Low", sev = state.sev[i] || "";
+      return { i: i, order: order, tag: tag, freq: freq, sev: sev, prio: sev ? prioOf(sev, freq) : "" };
+    }).sort(function (a, b) {
+      var pa = a.prio ? Number(a.prio[1]) : 9, pb = b.prio ? Number(b.prio[1]) : 9;
+      return pa - pb || a.order - b.order;
+    });
+  }
+
+  function renderPicks() {
+    var conf = confirmed(), picks = validPicks(), full = picks.length >= 3;
+    $("pickCount").textContent = picks.length + " of 3 picked";
+    if (!judgeLoaded() || !conf.length) {
+      $("picks").innerHTML = '<div class="empty"><b>Your confirmed failures appear here.</b><span>Finish Lab 1 first: load the judge\'s results and review the highlighted rows.</span><a href="#lab1">Go to Lab 1</a></div>';
+      return;
+    }
+    $("picks").innerHTML = conf.map(function (i) {
+      var on = picks.indexOf(i) > -1, tag = finalTag(i), r = rev(i), j = state.judge[i];
+      var reason = r.dis && clean(r.why) ? r.why : (j && j.reason) || "";
+      var html = '<button type="button" class="pick" data-pick="' + i + '" aria-pressed="' + on + '"' + (!on && full ? " disabled" : "") + ">" +
+        '<span class="box">' + (on ? picks.indexOf(i) + 1 : "") + '</span><span class="t"><span class="row-tags"><span class="rid">' + rid(i) + "</span>" +
+        (tag ? '<span class="pill">' + esc(tag) + '</span><span class="pill ' + (freqOf(tag) === "High" ? "fail" : "neutral") + '">' + freqOf(tag) + " frequency</span>" : '<span class="pill warn">No tag yet</span>') +
+        "</span><b>" + esc(LOGS[i].q) + '</b><span class="d">' + esc(reason) + "</span></span></button>";
+      if (on) {
+        var sev = state.sev[i] || "", freq = tag ? freqOf(tag) : "Low", p = sev ? prioOf(sev, freq) : "";
+        html += '<div class="pick-detail"><div class="row2">' +
+          '<label class="field"><span>Short name <em>· one the team can reuse</em></span><input type="text" data-name="' + i + '" id="name-' + i + '" placeholder="e.g. Invented review statistics"></label>' +
+          '<div style="display:grid;gap:6px"><span class="small" style="font-weight:600">Severity</span><div class="seg" role="group" aria-label="Severity"><button type="button" data-sev="' + i + '" data-val="High" aria-pressed="' + (sev === "High") + '">High</button><button type="button" data-sev="' + i + '" data-val="Low" aria-pressed="' + (sev === "Low") + '">Low</button></div></div>' +
+          "</div><div class=\"row-tags\"><span class=\"small muted\">Frequency " + freq + " (from " + esc(tag || "its tag") + ")</span>" +
+          (p ? '<span class="prio ' + p.toLowerCase() + '">' + PRIO[p] + "</span>" : '<span class="pill neutral">Set severity to get a priority</span>') + "</div></div>";
+      }
+      return "<div>" + html + "</div>";
+    }).join("");
+    picks.forEach(function (i) { var el = $("name-" + i); if (el) el.value = state.names[i] || ""; });
+  }
+
+  function nameOf(i) { return clean(state.names[i]) || rid(i); }
+  function renderMatrix() {
+    var rk = ranked(), cells = { P1: [], P0: [], P3: [], P2: [] };
+    rk.forEach(function (x, n) { if (x.prio) cells[x.prio].push((n + 1) + ". " + nameOf(x.i)); });
+    function c(p, label) {
+      return '<div class="cell ' + p.toLowerCase() + '"><span class="ct">' + PRIO[p] + '</span><span class="small muted">' + label + "</span>" +
+        cells[p].map(function (t) { return '<span class="chip">' + esc(t) + "</span>"; }).join("") + "</div>";
+    }
+    $("matrix").innerHTML = '<span></span><span class="ax">Low frequency</span><span class="ax">High frequency</span>' +
+      '<span class="ax v">High severity</span>' + c("P1", "Rare but damaging") + c("P0", "Common and damaging") +
+      '<span class="ax v">Low severity</span>' + c("P3", "Rare and minor") + c("P2", "Common but minor");
+  }
+
+  function renderImpact() {
+    function f(v, ph) { var c = clean(v); return '<span class="fill' + (c ? "" : " empty-fill") + '">' + esc(c ? stripEnd(c) : ph) + "</span>"; }
+    $("impactLine").innerHTML = "This failure matters because " + f(state.tech, "[technical error]") + " results in " + f(state.impact, "[business impact]") + ".";
+  }
+
+  function mdL2() {
+    var rk = ranked(), c = tagCounts();
+    var L = ["# Failure Taxonomy · Ascend IQ", "", "## Top 3 Prioritized Failures", "",
+      "| Rank | Failure | Trust Tag | Frequency | Severity | Priority |", "|---|---|---|---|---|---|"];
+    rk.forEach(function (x, n) {
+      L.push("| " + (n + 1) + " | " + cell(nameOf(x.i)) + " (" + rid(x.i) + ") | " + (x.tag || "—") + " | " + x.freq + (x.tag ? " (" + c[x.tag] + " of " + N + ")" : "") + " | " + (x.sev || "—") + " | " + (x.prio ? PRIO[x.prio] : "—") + " |");
+    });
+    L.push("", "## #1 Risk · Business Impact", "");
+    if (clean(state.tech) || clean(state.impact)) {
+      L.push("This failure matters because " + (clean(state.tech) ? stripEnd(lowerFirst(state.tech)) : "[technical error]") + " results in " + (clean(state.impact) ? stripEnd(lowerFirst(state.impact)) : "[business impact]") + ".");
+    } else L.push("_This failure matters because [technical error] results in [business impact]._");
+    L.push("");
+    return L.join("\n");
+  }
+
+  function renderReadiness() {
+    var rk = ranked();
+    var named = rk.length === 3 && rk.every(function (x) { return clean(state.names[x.i]); });
+    var sevd = rk.length === 3 && rk.every(function (x) { return x.sev; });
+    function p(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    $("readiness").innerHTML = p(rk.length === 3, "3 picked") + p(named, "Named") + p(sevd, "Severity set") + p(clean(state.tech) && clean(state.impact), "#1 impact");
+  }
+
+  function renderOut() { $("mdL1").textContent = mdL1(); $("mdL2").textContent = mdL2(); renderReadiness(); }
+  function renderAll() { renderLogs(); renderCounts(); renderPicks(); renderMatrix(); renderImpact(); renderOut(); }
+
+  /* ---------- Copy / download ---------- */
+  function flash(btn, t) { var o = btn.textContent; btn.textContent = t; btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); }
+  function selectPre(pre) { try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function copy(text, btn, statusEl, pre, okMsg) {
+    var done = function () { flash(btn, "Copied"); if (statusEl) { statusEl.className = "status ok"; statusEl.textContent = okMsg || "Copied."; } };
+    var fail = function () {
+      if (pre) { var d = pre.closest("details"); if (d) d.open = true; selectPre(pre); }
+      if (statusEl) { statusEl.className = "status err"; statusEl.textContent = "Your browser blocked the copy. The text is selected: press Ctrl+C or ⌘C."; }
+    };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail(); } catch (e) { fail(); }
+  }
+  var dl = null;
+  function download(name, text, statusEl) {
+    if (!dl) return;
+    dl.save({ filename: name, data: text }).then(function () {
+      statusEl.className = "status ok"; statusEl.textContent = "Saved " + name + ". Upload it to 02-failure-discovery/ in your repo.";
+    }, function (err) {
+      if (err && err.code === "declined") { statusEl.className = "status"; statusEl.textContent = "Download cancelled."; return; }
+      if (err && err.code === "rate_limited") { statusEl.className = "status err"; statusEl.textContent = "A save prompt is already open. Finish it, then try again."; return; }
+      statusEl.className = "status err"; statusEl.textContent = "Downloads aren't available here. Use Copy markdown instead.";
+      $("dlL1").hidden = true; $("dlL2").hidden = true;
+    });
+  }
+  try {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (ns) { if (ns) { dl = ns; $("dlL1").hidden = false; $("dlL2").hidden = false; } }, function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- Timer ---------- */
+  var tEnd = 0, tInt = null;
+  function tick() {
+    var left = Math.max(0, Math.round((tEnd - Date.now()) / 1000));
+    $("timer").textContent = Math.floor(left / 60) + ":" + ("0" + (left % 60)).slice(-2);
+    if (!left) { clearInterval(tInt); tInt = null; $("timer").textContent = "Time's up: run the judge"; $("timerBtn").textContent = "Restart timer"; }
+  }
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    var d = b.dataset;
+    if (d.flag != null) {
+      var i = Number(d.flag), at = state.flags.indexOf(i);
+      if (at > -1) state.flags.splice(at, 1); else if (state.flags.length < 2) state.flags.push(i);
+      renderLogs(); renderCounts(); renderOut(); persist();
+      var nb = document.querySelector('[data-flag="' + i + '"]'); if (nb) nb.focus();
+      return;
+    }
+    if (d.filter) { state.filter = d.filter; renderLogs(); persist(); return; }
+    if (d.agree != null) { var a = Number(d.agree); state.review[a] = rev(a); state.review[a].dis = false; renderAll(); persist(); return; }
+    if (d.disagree != null) {
+      var g = Number(d.disagree), r = rev(g), j = state.judge[g];
+      r.dis = true; if (!r.v) r.v = j.v === "PASS" ? "FAIL" : "PASS"; state.review[g] = r;
+      renderAll(); persist(); var w = $("why-" + g); if (w) w.focus(); return;
+    }
+    if (d.setv != null) { var s = Number(d.setv); var rv = rev(s); rv.v = d.val; state.review[s] = rv; renderAll(); persist(); return; }
+    if (d.pick != null) {
+      var p = Number(d.pick), k = state.picks.indexOf(p);
+      if (k > -1) state.picks.splice(k, 1); else if (state.picks.length < 3) state.picks.push(p);
+      renderPicks(); renderMatrix(); renderOut(); persist();
+      var pb = document.querySelector('[data-pick="' + p + '"]'); if (pb) pb.focus();
+      return;
+    }
+    if (d.sev != null) { state.sev[Number(d.sev)] = d.val; renderPicks(); renderMatrix(); renderOut(); persist(); return; }
+    if (b.id === "timerBtn") { tEnd = Date.now() + 180000; clearInterval(tInt); tInt = setInterval(tick, 1000); tick(); b.textContent = "Restart timer"; return; }
+    if (b.id === "copyJudge") { copy(judgePrompt(), b, $("loadStatus"), $("judgePre"), "Judge prompt copied with all 20 rows. Paste it into a new chat and send."); return; }
+    if (b.id === "loadJudge") {
+      var res = parseJudge(state.judgeReply), got = Object.keys(res.out).length, st = $("loadStatus");
+      if (!got) { st.className = "status err"; st.textContent = "No rows found. Paste the judge's reply as is: one line per row, starting with R01, R02 and so on."; return; }
+      state.judge = res.out; state.filter = "hl";
+      Object.keys(state.review).forEach(function (x) { if (!state.judge[x]) delete state.review[x]; });
+      var missing = []; for (var m = 0; m < N; m++) if (!state.judge[m]) missing.push(rid(m));
+      st.className = "status " + (missing.length ? "err" : "ok");
+      st.textContent = missing.length ? "Loaded " + got + " of 20 rows. Missing: " + missing.join(", ") + ". Ask the judge to score those rows, add its lines to the reply, and load again." : "Loaded all 20 rows. The highlighted rows are ready for your review.";
+      renderAll(); persist();
+      var first = document.querySelector(".log.hl"); if (first && window.innerWidth > 920) first.scrollIntoView({ block: "start" });
+      return;
+    }
+    if (b.id === "copyL1") { copy(mdL1(), b, $("statusL1"), $("mdL1"), "Copied. Paste it over audit-log.md in your repo, then commit."); return; }
+    if (b.id === "copyL2") { copy(mdL2(), b, $("statusL2"), $("mdL2"), "Copied. Paste it over failure-taxonomy.md in your repo, then commit."); return; }
+    if (b.id === "dlL1") { download("audit-log.md", mdL1(), $("statusL1")); return; }
+    if (b.id === "dlL2") { download("failure-taxonomy.md", mdL2(), $("statusL2")); return; }
+  });
+
+  document.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.dataset && t.dataset.settag != null) { var i = Number(t.dataset.settag), r = rev(i); r.tag = t.value; state.review[i] = r; renderAll(); persist(); }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.why != null) { var i = Number(d.why), r = rev(i); r.why = t.value; state.review[i] = r; }
+    else if (d.name != null) { state.names[Number(d.name)] = t.value; renderMatrix(); }
+    else if (t.id === "judgeModel" || t.id === "judgeReply") { state[t.id] = t.value; }
+    else if (t.id === "tech" || t.id === "impact") { state[t.id] = t.value; renderImpact(); }
+    else return;
+    renderOut(); persist();
+  });
+
+  /* ---------- Init ---------- */
+  $("judgePre").textContent = judgePrompt();
+  ["judgeModel", "judgeReply", "tech", "impact"].forEach(function (id) { $(id).value = state[id]; });
+  if (!judgeLoaded()) state.filter = "all";
+  renderAll();
+})();
+</script>

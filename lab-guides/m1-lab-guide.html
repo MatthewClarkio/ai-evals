@@ -489,8 +489,8 @@ footer .wrap { display: grid; gap: 6px; }
   /* "Agree, The judge…" reads badly: lowercase a plain capitalized first word, but keep names and "I". */
   var KEEP_CAPS = ["Version", "Priya", "Claude", "Gemini", "November", "Friday", "Ascend", "Stripe", "Adyen", "Salesforce", "Sales", "Fortune"];
   function lowerFirst(s) {
-    var c = clean(s), m = c.match(/^([A-Z][a-z]+)\b/);
-    if (!m || KEEP_CAPS.indexOf(m[1]) > -1) return c;
+    var c = clean(s), m = c.match(/^([A-Z][a-z]*)\b/);
+    if (!m || m[1] === "I" || KEEP_CAPS.indexOf(m[1]) > -1) return c;
     return c.charAt(0).toLowerCase() + c.slice(1);
   }
 
