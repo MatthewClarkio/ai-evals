@@ -71,6 +71,8 @@ ai-evals/
 ├── 05-scale/                         ← Module 5
 │   ├── coverage-matrix.md            coverage across product lines
 │   └── eval-budget.md                eval budget + trade-offs
-└── 06-culture/                       ← Module 6
-    └── ship-hold-memo.md             ship-or-hold recommendation
+├── 06-culture/                       ← Module 6
+│   └── ship-hold-memo.md             ship-or-hold recommendation
+└── lab-guides/                       ← course materials, nothing to edit
+    └── m1-lab-guide.html             source for the Module 1 Lab Guide
 ```
