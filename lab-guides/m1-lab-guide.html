@@ -1,0 +1,791 @@
+<title>Module 1 Lab Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column per lab; Lab 2 splits into canvas (left) and live markdown (right), stacking on phones. */
+:root {
+  --paper: #F5F6F8;
+  --surface: #FFFFFF;
+  --ink: #161A22;
+  --muted: #586071;
+  --line: #DADFE7;
+  --accent: #2741C4;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #E7EBFB;
+  --pass: #176B43;
+  --pass-soft: #E2F2E9;
+  --fail: #B0281F;
+  --fail-soft: #FBE7E5;
+  --warn: #8A5A00;
+  --warn-soft: #FBF0D9;
+  --code-bg: #EEF0F4;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+    --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+    --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+    --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+  --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+  --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+  --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); }
+h2 { font-size: clamp(24px, 3.4vw, 30px); }
+h3 { font-size: 19px; }
+h4 { font-size: 16px; font-weight: 500; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font: 500 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+code, .mono { font-family: var(--mono); font-size: 0.92em; }
+code { background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+/* Top bar */
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 500 13px/1.2 var(--mono); color: var(--muted); }
+.brand b { color: var(--ink); font-weight: 500; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.tabs a:hover { border-color: var(--accent); }
+.tabs a span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+/* Hero */
+.hero { padding-block: 40px 28px; display: grid; gap: 14px; }
+.hero p.lede { font-size: 17px; max-width: 64ch; color: var(--muted); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+/* Lab sections */
+.lab { padding-block: 32px 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.lab-head { display: grid; gap: 10px; margin-bottom: 26px; max-width: 72ch; }
+.lab-head .timer { display: inline-flex; align-items: center; gap: 8px; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--code-bg); color: var(--muted); }
+
+/* Steps */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; counter-reset: step; }
+.step { display: grid; grid-template-columns: 36px minmax(0, 1fr); gap: 14px; padding-block: 18px; border-top: 1px dashed var(--line); counter-increment: step; }
+.step:first-child { border-top: 0; padding-top: 0; }
+.step::before { content: counter(step); font: 700 15px/36px var(--display); width: 36px; height: 36px; text-align: center; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+.step-body { display: grid; gap: 12px; min-width: 0; }
+.step-body > p { max-width: 68ch; }
+
+/* Prompt blocks */
+.prompt { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; min-width: 0; }
+.prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 10px 8px 14px; border-bottom: 1px solid var(--line); }
+.prompt-head .eyebrow { color: var(--ink); }
+.prompt pre { margin: 0; padding: 14px; font: 400 13.5px/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 360px; overflow: auto; }
+.prompt pre .slot { background: var(--accent-soft); color: var(--accent); border-radius: 3px; padding: 0 3px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+
+button { font: 500 13px/1 var(--body); cursor: pointer; border-radius: 6px; padding: 8px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, .choice:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.copied { border-color: var(--pass); color: var(--pass); }
+
+/* Forms */
+label.field { display: grid; gap: 6px; min-width: 0; }
+label.field > span { font-size: 13px; font-weight: 600; }
+label.field > span em { font-weight: 400; font-style: normal; color: var(--muted); }
+input[type=text], textarea, select { width: 100%; font: 400 14px/1.5 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 9px 11px; }
+textarea { resize: vertical; min-height: 84px; }
+textarea.mono { font: 400 13px/1.55 var(--mono); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.75; }
+
+/* Score panel */
+.scorecard { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.score-col { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.score-col h4 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.facts { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.facts label { display: grid; grid-template-columns: 18px minmax(0,1fr); gap: 8px; align-items: start; font-size: 13.5px; cursor: pointer; }
+.facts input { margin-top: 3px; accent-color: var(--accent); }
+.facts .added { color: var(--fail); }
+.method { font: 500 11px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 14px; max-width: 72ch; }
+
+/* Scenario */
+.scenario { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 20px; display: grid; gap: 14px; }
+.scenario p { max-width: 70ch; }
+.stakes { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; }
+.stake { border-top: 2px solid var(--ink); padding-top: 8px; display: grid; gap: 2px; }
+.stake b { font: 700 22px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.stake span { font-size: 13px; color: var(--muted); }
+
+/* Canvas layout */
+.canvas { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 880px) { .canvas { grid-template-columns: minmax(0, 1fr); } }
+.canvas-form { display: grid; gap: 28px; min-width: 0; }
+.cblock { display: grid; gap: 14px; }
+.cblock-head { display: grid; gap: 4px; padding-bottom: 8px; border-bottom: 1.5px solid var(--ink); }
+.cblock-head .eyebrow { color: var(--accent); }
+
+.promise { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; }
+.promise-line { font: 500 16px/1.55 var(--body); }
+.promise-line .fill { border-bottom: 1.5px solid var(--accent); padding: 0 2px; }
+.promise-line .fill.empty { color: var(--muted); border-bottom-style: dashed; }
+.outcome-hints { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.choice .t .ex { font-size: 13px; color: var(--ink); }
+.choice .t .ex i { font-style: normal; font: 500 11px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-right: 6px; }
+.three { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+
+.choices { display: grid; gap: 8px; }
+.choice { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 10px; text-align: left; width: 100%; padding: 12px 14px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); line-height: 1.45; font-weight: 400; }
+.choice .box { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--muted); display: grid; place-items: center; font: 700 12px/1 var(--mono); color: var(--accent-ink); margin-top: 1px; }
+.choice[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.choice[aria-pressed="true"] .box { background: var(--accent); border-color: var(--accent); }
+.choice .t { display: grid; gap: 3px; min-width: 0; }
+.choice .t b { font-family: var(--display); font-size: 16px; font-weight: 700; }
+.choice .t .d { font-size: 13.5px; color: var(--muted); }
+.choice .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+.picked-detail { display: grid; gap: 10px; padding: 12px 14px; border: 1px solid var(--accent); border-top: 0; border-radius: 0 0 var(--r) var(--r); margin-top: -9px; background: var(--surface); }
+.counter { font: 500 12px/1 var(--mono); color: var(--muted); }
+
+.to-sides { display: grid; grid-template-columns: minmax(0,1fr) auto minmax(0,1fr); gap: 8px; font-size: 13px; margin-top: 4px; }
+.to-sides div { background: var(--code-bg); border-radius: 5px; padding: 6px 8px; }
+.to-sides .arrow { align-self: center; color: var(--muted); font-family: var(--mono); background: none; padding: 0; }
+@media (max-width: 480px) { .to-sides { grid-template-columns: minmax(0,1fr); } .to-sides .arrow { display: none; } }
+.framing { font-size: 13.5px; display: grid; gap: 4px; }
+
+/* Output panel */
+.out { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 68px); display: grid; gap: 10px; min-width: 0; }
+@media (max-width: 880px) { .out { position: static; } }
+.out-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; }
+.out-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+.out pre { margin: 0; padding: 14px; font: 400 12.5px/1.6 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: min(62vh, 640px); overflow: auto; }
+.out-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.status { font-size: 13px; min-height: 1.4em; }
+.status.ok { color: var(--pass); }
+.status.err { color: var(--fail); }
+.save-steps { font-size: 13.5px; margin: 0; padding-left: 20px; display: grid; gap: 4px; }
+.readiness { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.lab1-out { display: grid; gap: 10px; }
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: grid; gap: 6px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  .choice, button { transition: border-color .15s, box-shadow .15s, background-color .15s; }
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>AI Evals</b> · Module 1 Lab Guide</div>
+    <nav class="tabs" aria-label="Labs">
+      <a href="#lab1"><span>Lab 1</span>Compare A and B</a>
+      <a href="#lab2"><span>Lab 2</span>Strategy Canvas</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="eyebrow">Module 1 · Define What Good Looks Like for an AI Feature</div>
+    <h1>Module 1 Lab Guide</h1>
+    <p class="lede">Both of today's labs in one place. In Lab 1 you score two prompt versions with an LLM judge. In Lab 2 you build Ascend IQ's evaluation strategy and save it to your repo.</p>
+    <div class="meta">
+      <span><b>You need:</b> two AI chat tools from different model families (for example ChatGPT and Claude)</span>
+      <span><b>Saves to:</b> <code>01-evaluation-strategy/</code></span>
+      <span><b>Your work:</b> kept in this browser as you type</span>
+    </div>
+  </section>
+
+  <!-- ============ LAB 1 ============ -->
+  <section class="lab" id="lab1">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="timer"><span class="pill">Lab 1 · 25 min</span><span class="pill neutral">Optional notes · not graded</span></div>
+        <h2>Compare Version A and Version B</h2>
+        <p class="muted">Run two prompt versions on the same email, have a model from a different family score both, and see whether the prompt change moved the score.</p>
+      </div>
+
+      <ol class="steps">
+        <li class="step"><div class="step-body">
+          <h3>Run Version A</h3>
+          <p>Open a new chat in the LLM you use (ChatGPT, Claude, or Gemini). Paste the Version A prompt with the email below it, and send. <b>Copy A + email</b> puts both on your clipboard in one go.</p>
+          <div class="pair">
+            <div class="prompt">
+              <div class="prompt-head"><span class="eyebrow">Version A · Concise</span><button type="button" data-copy="a">Copy A + email</button></div>
+              <pre id="txt-a"></pre>
+            </div>
+            <div class="prompt">
+              <div class="prompt-head"><span class="eyebrow">The email</span><button type="button" data-copy="email">Copy email</button></div>
+              <pre id="txt-email"></pre>
+            </div>
+          </div>
+          <label class="field"><span>Version A output <em>· paste the reply</em></span>
+            <textarea id="aOut" class="mono" rows="5" placeholder="• Social engagement up 25% MoM…"></textarea>
+          </label>
+        </div></li>
+
+        <li class="step"><div class="step-body">
+          <h3>Run Version B</h3>
+          <p>Open a second new chat and do the same with Version B.</p>
+          <div class="prompt">
+            <div class="prompt-head"><span class="eyebrow">Version B · Narrative</span><button type="button" data-copy="b">Copy B + email</button></div>
+            <pre id="txt-b"></pre>
+          </div>
+          <label class="field"><span>Version B output <em>· paste the reply</em></span>
+            <textarea id="bOut" class="mono" rows="5" placeholder="The Q4 campaign is off to a strong start…"></textarea>
+          </label>
+        </div></li>
+
+        <li class="step"><div class="step-body">
+          <h3>Ask a judge from a different model family</h3>
+          <p>Open a chat in a different model family (for example, Claude if you used ChatGPT). Paste the judge prompt, the email, and both outputs, and send. A judge from the same family tends to favor its own writing.</p>
+          <p class="small muted">Once both outputs are pasted above, <b>Copy filled judge prompt</b> fills in the email and both outputs for you.</p>
+          <div class="prompt">
+            <div class="prompt-head"><span class="eyebrow">Judge prompt</span><button type="button" class="primary" data-copy="judge" id="copyJudge">Copy filled judge prompt</button></div>
+            <pre id="txt-judge"></pre>
+          </div>
+          <div class="pair">
+            <label class="field"><span>Judge model</span>
+              <input type="text" id="judgeModel" placeholder="e.g. Claude">
+            </label>
+            <label class="field"><span>Judge's reply <em>· paste it as is</em></span>
+              <textarea id="judgeReply" class="mono" rows="3" placeholder="Version A: 1, …&#10;Version B: 0, …"></textarea>
+            </label>
+          </div>
+        </div></li>
+
+        <li class="step"><div class="step-body">
+          <h3>Do you agree with the judge?</h3>
+          <p>Read the judge's scores and reasons, then score the outputs yourself. The checks below run the other two methods from the toolkit on the same outputs: the code-based checks run automatically, and the key-fact list is your human judgment.</p>
+          <div class="scorecard" id="scorecard"></div>
+        </div></li>
+
+        <li class="step"><div class="step-body">
+          <h3>Share it and keep your notes</h3>
+          <p>Post both scores, and whether you agreed with the judge, in <b>#cohort-channel</b>.</p>
+          <p>To keep your results, copy the markdown below and paste it over <code>01-evaluation-strategy/eval-harness-proof.md</code> in your repo. It's optional and not graded.</p>
+          <div class="lab1-out out-card">
+            <div class="out-head">
+              <span class="eyebrow">eval-harness-proof.md</span>
+              <div class="out-actions">
+                <button type="button" class="primary" id="copyL1">Copy markdown</button>
+                <button type="button" id="dlL1" hidden>Download .md</button>
+              </div>
+            </div>
+            <pre id="mdL1" style="margin:0;padding:14px;font:400 12.5px/1.6 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;max-height:320px;overflow:auto;"></pre>
+          </div>
+          <div class="status" id="statusL1" role="status"></div>
+        </div></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ LAB 2 ============ -->
+  <section class="lab" id="lab2">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="timer"><span class="pill">Lab 2 · 20 min</span><span class="pill pass">Graded · final project deliverable 1</span></div>
+        <h2>Build Your Evaluation Strategy</h2>
+        <p class="muted">Define what “good” means for Ascend IQ: the promise it makes to users, the three trust metrics that protect it, and the trade-offs you'll accept.</p>
+      </div>
+
+      <div class="canvas">
+        <div class="canvas-form">
+
+          <div class="cblock">
+            <div class="cblock-head"><span class="eyebrow">Step 1 · Section 1 of the canvas</span><h3>Product Strategy, The Context</h3></div>
+            <p>Read who Ascend IQ is for, what they use it for, and what's at stake. The three fields are filled in from the Final Project Brief. Edit them if you want to sharpen them.</p>
+            <div class="scenario">
+              <div class="eyebrow">Scenario · B2B · Ascend Analytics</div>
+              <p>You are the Group Product Manager at Ascend Analytics, a premium B2B market-intelligence platform. The platform is powerful but dense, and engagement is dropping because users struggle to find specific insights quickly. Your team built <b>Ascend IQ</b>, a customer-facing AI agent that answers plain-language questions like “Compare the pricing models of Stripe and Adyen” or “Summarize the negative G2 reviews for Salesforce.”</p>
+              <div class="stakes">
+                <div class="stake"><b>$50,000+</b><span>a year each client pays for verified data</span></div>
+                <div class="stake"><b>Top 50</b><span>enterprise accounts the CPO wants to unlock next month</span></div>
+                <div class="stake"><b>Q4</b><span>retention targets at risk; Sales is already promoting the feature</span></div>
+              </div>
+            </div>
+            <label class="field"><span>Target user</span><input type="text" id="tUser"></label>
+            <label class="field"><span>Key use case</span><input type="text" id="tUse"></label>
+            <label class="field"><span>Value proposition</span><input type="text" id="tValue"></label>
+          </div>
+
+          <div class="cblock">
+            <div class="cblock-head"><span class="eyebrow">Step 2 · Section 2 of the canvas</span><h3>Write your user promise</h3></div>
+            <p>First decide the outcome Ascend IQ has to deliver: how fast, how accurate, how verifiable. Then complete the sentence.</p>
+            <div class="promise">
+              <p class="promise-line" id="promiseLine"></p>
+              <div class="three">
+                <label class="field"><span>[user]</span><input type="text" id="pUser" placeholder="VP-level strategists at Fortune 500 clients"></label>
+                <label class="field"><span>[outcome]</span><input type="text" id="pOutcome" placeholder="how fast, how accurate, how verifiable"></label>
+                <label class="field"><span>[business value]</span><input type="text" id="pValue" placeholder="what Ascend Analytics gets: retention, renewals, Q4"></label>
+              </div>
+              <div class="outcome-hints">
+                <span class="small muted">A strong [outcome] answers all three:</span>
+                <span class="pill neutral">Fast · how quickly?</span>
+                <span class="pill neutral">Accurate · how correct?</span>
+                <span class="pill neutral">Verifiable · can the VP check the source?</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="cblock">
+            <div class="cblock-head"><span class="eyebrow">Step 3 · Section 2 of the canvas</span><h3>Pick three trust metrics</h3></div>
+            <p>Click three of the five trust metrics, and write one line on why each one protects your promise. <span class="counter" id="mCount"></span></p>
+            <div class="choices" id="metricList"></div>
+            <label class="field"><span>Why these three <em>· one line on why they belong together</em></span>
+              <input type="text" id="whyThree" placeholder="Together they cover…">
+            </label>
+          </div>
+
+          <div class="cblock">
+            <div class="cblock-head"><span class="eyebrow">Step 4 · Section 3 of the canvas</span><h3>Commit to two trade-offs</h3></div>
+            <p>Click the two trade-offs you're most likely to face with Ascend IQ's clients, and finish “We prioritize [X] over [Y] because…” for each. Tags show which of your three metrics each one touches. <span class="counter" id="tCount"></span></p>
+            <div class="choices" id="tradeList"></div>
+          </div>
+
+        </div>
+
+        <aside class="out" aria-label="Your canvas as markdown">
+          <div class="out-card">
+            <div class="out-head">
+              <span class="eyebrow">strategy-canvas.md</span>
+              <div class="out-actions">
+                <button type="button" class="primary" id="copyL2">Copy markdown</button>
+                <button type="button" id="dlL2" hidden>Download .md</button>
+              </div>
+            </div>
+            <pre id="mdL2"></pre>
+          </div>
+          <div class="readiness" id="readiness"></div>
+          <div class="status" id="statusL2" role="status"></div>
+          <div class="note">
+            <b>Step 5 · Save it to your repo</b>
+            <ol class="save-steps">
+              <li>Click <b>Copy markdown</b>.</li>
+              <li>Open <code>01-evaluation-strategy/strategy-canvas.md</code> in your repo and click the pencil icon.</li>
+              <li>Paste over the whole file, and commit.</li>
+            </ol>
+            <p class="small" style="margin-top:6px">Or click <b>Download .md</b> and upload it to the same folder.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Next session · Module 2: Build a Failure Taxonomy by Business Impact.</b> Your strategy canvas is the frame for the failure audit you run there.</p>
+    <p>Ascend Analytics and Ascend IQ are a fictional teaching scenario. AI Evals Certification · Product School.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var PROMPT_A = "You are an executive briefing assistant. Summarize in exactly 3 bullet points under 60 words. No preamble, no extra text.";
+  var PROMPT_B = "You are a PR communications assistant. Write a 100-word narrative summary highlighting wins first, then risks and next steps. Keep a positive tone. No bullets.";
+  var EMAIL = "Summarize this email for the CEO.\n\nSubject: Q4 Marketing Campaign Update\n\nHi team,\n\nSocial media engagement is up 25% month-over-month due to the new content calendar and paid ad experiments.\n\nNewsletter open rate dropped from 42% to 35%; we'll test new subject lines next week.\n\nThe product video campaign is delayed until November, pending legal approval; creative assets are ready.\n\nPlease ensure all campaign tracking links are added by Friday.\n\nBest,\nPriya";
+  var JUDGE_HEAD = "You are grading two email summaries written for a CEO. Give each summary a score of 1 (pass) or 0 (fail).\n1 = pass: concise and faithful to the email. It keeps the key facts (results, problems, deadlines) and adds nothing that is not in the email.\n0 = fail: wordy, drops a key fact, or invents one.\nReply in this format:\nVersion A: [1 or 0], [one-sentence reason]\nVersion B: [1 or 0], [one-sentence reason]";
+
+  var FACTS = [
+    "Social engagement up 25% month-over-month",
+    "Driven by the new content calendar and paid ad experiments",
+    "Newsletter open rate dropped from 42% to 35%",
+    "New subject lines get tested next week",
+    "Product video delayed until November, pending legal approval",
+    "Tracking links due by Friday"
+  ];
+
+  var METRICS = [
+    { id: "latency", name: "Latency", def: "Time for AI to return a complete first-time response (P95 / P99).",
+      ex: "A VP asks for a Stripe vs. Adyen pricing comparison and waits 12 seconds for the answer." },
+    { id: "halluc", name: "Hallucination Rate", def: "% of responses containing provably false or fabricated info (against standard input).",
+      ex: "Ascend IQ quotes a pricing figure or a G2 complaint that isn't in Ascend's verified data." },
+    { id: "fair", name: "Fairness", def: "Degree of output-quality consistency across different user groups / demographics / personas.",
+      ex: "Answers about non-US or mid-market companies are thinner or less accurate than answers about Fortune 500 names." },
+    { id: "robust", name: "Robustness", def: "% of responses that stay coherent & accurate when faced with messy, adversarial, or out-of-scope inputs.",
+      ex: "A vague or misspelled question like “stripe vs adyn fees,” or one about a company Ascend doesn't cover." },
+    { id: "ux", name: "UX Trust", def: "Whether the experience feels consistent and trustworthy. It breaks when the tone undermines the user's confidence.",
+      ex: "The same question gets a confident answer one day and a hedge the next, or a salesy tone a VP won't trust." }
+  ];
+  var TRADES = [
+    { id: "hl", a: "Hallucination Rate", b: "Latency", am: "halluc", bm: "latency",
+      benefit: "Higher factual integrity (larger model & RAG)", cost: "Slower response time (compute & retrieval)",
+      dilemma: "A compliance summarizer that's 97% correct takes five seconds, versus one that's 90% correct but instant.",
+      framing: "Is “perfect but slow” better than “good enough but instant” for your users?" },
+    { id: "fh", a: "Fairness", b: "Hallucination Rate", am: "fair", bm: "halluc",
+      benefit: "Broader, fairer reach (equitable performance)", cost: "Lower top-end score on the majority group",
+      dilemma: "A multilingual chatbot tuned for fairness performs slightly worse in English, giving the majority group a lower factual score.",
+      framing: "Is it worth sacrificing peak accuracy for broader inclusivity and lower legal risk?" },
+    { id: "ru", a: "Robustness", b: "Early UX Trust", am: "robust", bm: "ux",
+      benefit: "More resilient to edge cases & adversarial inputs", cost: "Slower rollout, delaying user access",
+      dilemma: "A bank delays its AI Financial Advisor to stress-test robustness, trading time-to-market to prevent a catastrophic failure.",
+      framing: "What's the cost of skipping stress-testing now versus fixing a catastrophic failure later?" },
+    { id: "su", a: "Safety", b: "UX Trust", am: "robust", bm: "ux",
+      benefit: "Stricter safety filters (fewer false negatives)", cost: "Blocking legitimate queries (more false positives)",
+      dilemma: "A trust-and-safety classifier tuned for safety blocks 40% of normal messages, frustrating users with false positives.",
+      framing: "Which is more acceptable: widespread user frustration, or a single safety failure?" }
+  ];
+  var MNAME = {}; METRICS.forEach(function (m) { MNAME[m.id] = m.name; });
+
+  var DEFAULT_CONTEXT = {
+    tUser: "VP-level strategists and product leaders at Fortune 500 companies who pay $50,000+ a year for verified market-intelligence data",
+    tUse: "Asking plain-language questions, such as comparing competitors' pricing or summarizing negative reviews, instead of digging through a dense platform by hand",
+    tValue: "Verified answers in seconds, so clients get value from their subscription and renew"
+  };
+
+  var KEY = "ai-evals-m1-lab-guide-v1";
+  var state = {
+    aOut: "", bOut: "", judgeModel: "", judgeReply: "",
+    agree: { a: "", b: "" }, why: { a: "", b: "" },
+    facts: { a: [], b: [] }, added: { a: false, b: false }, changed: { a: false, b: false },
+    tUser: DEFAULT_CONTEXT.tUser, tUse: DEFAULT_CONTEXT.tUse, tValue: DEFAULT_CONTEXT.tValue,
+    pUser: "", pOutcome: "", pValue: "",
+    metrics: [], mWhy: {}, whyThree: "",
+    trades: [], swap: {}, because: {}
+  };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && typeof saved === "object") { Object.keys(state).forEach(function (k) { if (k in saved) state[k] = saved[k]; }); }
+  } catch (e) {}
+  var saveTimer = null;
+  function persist() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250);
+  }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(s) { return String(s || "").trim(); }
+  function stripEnd(s) { return clean(s).replace(/[.。]+$/, ""); }
+  function or(s, ph) { var v = clean(s); return v ? v : ph; }
+  /* "Agree, The judge…" reads badly: lowercase a plain capitalized first word, but keep names and "I". */
+  var KEEP_CAPS = ["Version", "Priya", "Claude", "Gemini", "November", "Friday", "Ascend", "Stripe", "Adyen", "Salesforce", "Sales", "Fortune"];
+  function lowerFirst(s) {
+    var c = clean(s), m = c.match(/^([A-Z][a-z]+)\b/);
+    if (!m || KEEP_CAPS.indexOf(m[1]) > -1) return c;
+    return c.charAt(0).toLowerCase() + c.slice(1);
+  }
+
+  /* ---------- Lab 1 ---------- */
+  $("txt-a").textContent = PROMPT_A;
+  $("txt-b").textContent = PROMPT_B;
+  $("txt-email").textContent = EMAIL;
+
+  function judgeText() {
+    return JUDGE_HEAD + "\n\nEMAIL:\n" + EMAIL + "\n\nVERSION A:\n" + or(state.aOut, "[paste Version A's output]") + "\n\nVERSION B:\n" + or(state.bOut, "[paste Version B's output]");
+  }
+  function renderJudge() {
+    var html = esc(JUDGE_HEAD) + "\n\nEMAIL:\n<span class=\"slot\">" + (state.aOut || state.bOut ? "Priya's email (filled in)" : "[paste the email]") + "</span>" +
+      "\n\nVERSION A:\n" + (clean(state.aOut) ? esc(clean(state.aOut)) : "<span class=\"slot\">[paste Version A's output]</span>") +
+      "\n\nVERSION B:\n" + (clean(state.bOut) ? esc(clean(state.bOut)) : "<span class=\"slot\">[paste Version B's output]</span>");
+    $("txt-judge").innerHTML = html;
+    var ready = clean(state.aOut) && clean(state.bOut);
+    $("copyJudge").textContent = ready ? "Copy filled judge prompt" : "Copy judge prompt";
+  }
+
+  function words(s) { var m = clean(s).match(/[A-Za-z0-9$%’'.,-]+/g); return m ? m.filter(function (w) { return /[A-Za-z0-9]/.test(w); }).length : 0; }
+  function bullets(s) { return clean(s).split(/\n/).filter(function (l) { return /^\s*([-*•–]|\d+[.)])\s+/.test(l); }).length; }
+
+  function codeChecks(v) {
+    var text = v === "a" ? state.aOut : state.bOut;
+    if (!clean(text)) return '<span class="pill neutral">Paste the output to run checks</span>';
+    var w = words(text), b = bullets(text), out = [];
+    if (v === "a") {
+      out.push('<span class="pill ' + (b === 3 ? "pass" : "fail") + '">' + b + " bullet" + (b === 1 ? "" : "s") + " · needs exactly 3</span>");
+      out.push('<span class="pill ' + (w < 60 ? "pass" : "fail") + '">' + w + " words · under 60</span>");
+    } else {
+      out.push('<span class="pill ' + (b === 0 ? "pass" : "fail") + '">' + (b === 0 ? "No bullets" : b + " bullet lines") + " · needs none</span>");
+      var near = Math.abs(w - 100) <= 10;
+      out.push('<span class="pill ' + (near ? "pass" : "warn") + '">' + w + " words · aim for 100</span>");
+    }
+    return out.join("");
+  }
+
+  function renderScorecard() {
+    var html = "";
+    ["a", "b"].forEach(function (v) {
+      var label = v === "a" ? "Version A" : "Version B";
+      var kept = state.facts[v].length;
+      html += '<div class="score-col">' +
+        "<h4><span>" + label + '</span><span class="counter">' + kept + " / " + FACTS.length + " facts kept</span></h4>" +
+        '<div class="method">Code-based · automatic</div><div class="checks" id="checks-' + v + '">' + codeChecks(v) + "</div>" +
+        '<div class="method">Human · tick every key fact it kept, then flag problems</div><ul class="facts">' +
+        FACTS.map(function (f, i) {
+          return '<li><label><input type="checkbox" data-fact="' + v + '" value="' + i + '"' + (state.facts[v].indexOf(i) > -1 ? " checked" : "") + "><span>" + esc(f) + "</span></label></li>";
+        }).join("") +
+        '<li><label><input type="checkbox" data-added="' + v + '"' + (state.added[v] ? " checked" : "") + '><span class="added">It added something that is not in the email</span></label></li>' +
+        '<li><label><input type="checkbox" data-changed="' + v + '"' + (state.changed[v] ? " checked" : "") + '><span class="added">It changed what a fact means (for example, a delay framed as a win)</span></label></li></ul>' +
+        '<div class="method">Your call on the judge</div>' +
+        '<div class="seg" role="group" aria-label="' + label + ' agreement">' +
+        '<button type="button" data-agree="' + v + '" data-val="Agree" aria-pressed="' + (state.agree[v] === "Agree") + '">Agree</button>' +
+        '<button type="button" data-agree="' + v + '" data-val="Disagree" aria-pressed="' + (state.agree[v] === "Disagree") + '">Disagree</button></div>' +
+        '<label class="field"><span>Why <em>· one line</em></span><input type="text" id="why-' + v + '" data-why="' + v + '" placeholder="What did you see that the judge did or didn\'t?"></label>' +
+        "</div>";
+    });
+    $("scorecard").innerHTML = html;
+    $("why-a").value = state.why.a; $("why-b").value = state.why.b;
+  }
+  function refreshChecks() {
+    ["a", "b"].forEach(function (v) { var el = $("checks-" + v); if (el) el.innerHTML = codeChecks(v); });
+  }
+
+  function mdL1() {
+    var L = [];
+    L.push("# Compare Version A and Version B, Module 1 (optional notes)", "");
+    L.push("> Optional. Use this file to keep your results from the Module 1 Hands-On Lab, **Compare Version A and Version B**. It is not graded; the Module 1 deliverable is `strategy-canvas.md`.", ">", "> The steps, both prompts, the judge prompt, and the email are in the **Module 1 Lab Guide**.", "");
+    L.push("## Version A output", "", or(state.aOut, "_Paste the output from the Version A chat._"), "");
+    L.push("## Version B output", "", or(state.bOut, "_Paste the output from the Version B chat._"), "");
+    L.push("## Judge scores", "");
+    L.push("Judged by: " + or(state.judgeModel, "_which model_"), "");
+    if (clean(state.judgeReply)) { clean(state.judgeReply).split(/\n+/).forEach(function (l) { L.push(clean(l) + "  "); }); L[L.length - 1] = L[L.length - 1].trim(); }
+    else { L.push("_Version A: 1 or 0, one-sentence reason_  ", "_Version B: 1 or 0, one-sentence reason_"); }
+    L.push("");
+    L.push("## Do you agree with the judge?", "");
+    ["a", "b"].forEach(function (v, i) {
+      var who = v === "a" ? "Version A" : "Version B";
+      var line = state.agree[v] ? who + ": " + state.agree[v] + (clean(state.why[v]) ? ", " + stripEnd(lowerFirst(state.why[v])) + "." : ".") : "_" + who + ": agree or disagree, and why._";
+      L.push(line + (i === 0 ? "  " : ""));
+    });
+    L.push("");
+    return L.join("\n");
+  }
+
+  /* ---------- Lab 2 ---------- */
+  function renderPromise() {
+    function f(v, ph) { var c = clean(v); return '<span class="fill' + (c ? "" : " empty") + '">' + esc(c ? stripEnd(c) : ph) + "</span>"; }
+    $("promiseLine").innerHTML = "For " + f(state.pUser, "[user]") + ", Ascend IQ promises to " + f(state.pOutcome, "[outcome]") + " so that " + f(state.pValue, "[business value]") + ".";
+  }
+
+  function renderMetrics() {
+    var full = state.metrics.length >= 3;
+    $("mCount").textContent = state.metrics.length + " of 3 picked";
+    $("metricList").innerHTML = METRICS.map(function (m) {
+      var on = state.metrics.indexOf(m.id) > -1;
+      var order = on ? state.metrics.indexOf(m.id) + 1 : "";
+      var btn = '<button type="button" class="choice" data-metric="' + m.id + '" aria-pressed="' + on + '"' + (!on && full ? " disabled" : "") + ">" +
+        '<span class="box">' + (on ? order : "") + '</span><span class="t"><b>' + esc(m.name) + '</b><span class="d">' + esc(m.def) + '</span><span class="ex"><i>At Ascend IQ</i>' + esc(m.ex) + "</span></span></button>";
+      if (on) {
+        btn += '<div class="picked-detail"><label class="field"><span>Why it protects your promise <em>· one line</em></span>' +
+          '<input type="text" data-mwhy="' + m.id + '" id="mwhy-' + m.id + '" placeholder="A single invented figure in front of a $50K client…"></label></div>';
+      }
+      return "<div>" + btn + "</div>";
+    }).join("");
+    state.metrics.forEach(function (id) { var el = $("mwhy-" + id); if (el) el.value = state.mWhy[id] || ""; });
+  }
+
+  function sides(t) { return state.swap[t.id] ? [t.b, t.a] : [t.a, t.b]; }
+  function touches(t) {
+    var n = 0; if (state.metrics.indexOf(t.am) > -1) n++; if (state.metrics.indexOf(t.bm) > -1) n++; return n;
+  }
+  function renderTrades() {
+    var full = state.trades.length >= 2;
+    $("tCount").textContent = state.trades.length + " of 2 picked";
+    $("tradeList").innerHTML = TRADES.map(function (t) {
+      var on = state.trades.indexOf(t.id) > -1;
+      var n = touches(t);
+      var tag = state.metrics.length === 0 ? "" :
+        n === 2 ? '<span class="pill pass">Both sides in your three</span>' :
+        n === 1 ? '<span class="pill">One side in your three</span>' : '<span class="pill neutral">Not in your three</span>';
+      var safetyNote = t.id === "su" ? '<span class="pill neutral">Safety is measured through Robustness</span>' : "";
+      var btn = '<button type="button" class="choice" data-trade="' + t.id + '" aria-pressed="' + on + '"' + (!on && full ? " disabled" : "") + ">" +
+        '<span class="box">' + (on ? state.trades.indexOf(t.id) + 1 : "") + '</span><span class="t"><b>' + esc(t.a) + " vs. " + esc(t.b) + "</b>" +
+        '<span class="d">' + esc(t.dilemma) + "</span>" +
+        '<span class="to-sides"><div><b>You prioritize:</b> ' + esc(t.benefit) + '</div><div class="arrow">↔</div><div><b>You sacrifice:</b> ' + esc(t.cost) + "</div></span>" +
+        '<span class="tags">' + tag + safetyNote + "</span></span></button>";
+      if (on) {
+        var s = sides(t);
+        btn += '<div class="picked-detail"><div class="framing"><span class="method">The PM framing</span><span>' + esc(t.framing) + "</span></div>" +
+          '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="small">We prioritize <b>' + esc(s[0]) + "</b> over <b>" + esc(s[1]) + "</b></span>" +
+          '<button type="button" data-swap="' + t.id + '">Swap sides</button></div>' +
+          '<label class="field"><span>…because <em>· your business justification</em></span>' +
+          '<textarea rows="2" data-because="' + t.id + '" id="because-' + t.id + '" placeholder="Why is the sacrifice acceptable for Ascend IQ\'s clients right now?"></textarea></label></div>';
+      }
+      return "<div>" + btn + "</div>";
+    }).join("");
+    state.trades.forEach(function (id) { var el = $("because-" + id); if (el) el.value = state.because[id] || ""; });
+  }
+
+  function mdL2() {
+    var L = [];
+    L.push("# AI Evaluation Strategy Canvas", "");
+    L.push("> Repo file `ai-evals/01-evaluation-strategy/strategy-canvas.md` (the repo is your submission).", "> Feeds the **Evaluation strategy** card of the final presentation you build in Module 6.", "");
+    L.push("## 1. Product Strategy, The Context", "");
+    L.push("- **Target user:** " + or(state.tUser, "_…_"));
+    L.push("- **Key use case:** " + or(state.tUse, "_…_"));
+    L.push("- **Value proposition:** " + or(state.tValue, "_…_"), "");
+    L.push("## 2. Measurements, The Execution", "");
+    var promise = clean(state.pUser) || clean(state.pOutcome) || clean(state.pValue)
+      ? "For " + or(stripEnd(state.pUser), "[user]") + ", Ascend IQ promises to " + or(stripEnd(state.pOutcome), "[outcome]") + " so that " + or(stripEnd(state.pValue), "[business value]") + "."
+      : "_For [user], [product] promises to [outcome] so that [business value]._";
+    L.push("- **User promise.** " + promise);
+    L.push("- **Top 3 trust metrics:**");
+    for (var i = 0; i < 3; i++) {
+      var id = state.metrics[i];
+      if (id) {
+        var m = METRICS.filter(function (x) { return x.id === id; })[0];
+        var why = clean(state.mWhy[id]);
+        L.push("  - **" + m.name + "**, " + lowerFirst(m.def) + (why ? " Protects the promise: " + stripEnd(lowerFirst(why)) + "." : ""));
+      } else {
+        L.push("  - **_Metric " + (i + 1) + "_**, _definition / measurable signal_");
+      }
+    }
+    L.push("- **Why these three:** " + or(state.whyThree, "_…_"), "");
+    L.push("## 3. Strategic Trade-Offs, The Cost", "");
+    for (var j = 0; j < 2; j++) {
+      var tid = state.trades[j];
+      if (tid) {
+        var t = TRADES.filter(function (x) { return x.id === tid; })[0], s = sides(t), bec = clean(state.because[tid]);
+        L.push("### Trade-off " + (j + 1) + " · " + s[0] + " ↔ " + s[1], "");
+        L.push("We prioritize " + s[0] + " over " + s[1] + " because " + (bec ? stripEnd(lowerFirst(bec.replace(/^because\s+/i, ""))) + "." : "_… (business justification)._"), "");
+      } else {
+        var ph = j === 0 ? ["A", "B"] : ["C", "D"];
+        L.push("### Trade-off " + (j + 1) + " · _Metric " + ph[0] + " ↔ Metric " + ph[1] + "_", "");
+        L.push("_We prioritize " + ph[0] + " over " + ph[1] + " because … (business justification)._", "");
+      }
+    }
+    L.push("---", "_Generated from the AI Evaluation Strategy Canvas, M1 lab tool, AI Evals Certification._", "");
+    return L.join("\n");
+  }
+
+  function renderReadiness() {
+    var promiseDone = clean(state.pUser) && clean(state.pOutcome) && clean(state.pValue);
+    var whyDone = state.metrics.length === 3 && state.metrics.every(function (id) { return clean(state.mWhy[id]); });
+    var tradeDone = state.trades.length === 2 && state.trades.every(function (id) { return clean(state.because[id]); });
+    function p(ok, txt) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + txt + "</span>"; }
+    $("readiness").innerHTML = p(promiseDone, "Promise") + p(whyDone, "3 metrics + why") + p(clean(state.whyThree), "Why these three") + p(tradeDone, "2 trade-offs + because");
+  }
+
+  /* ---------- Output ---------- */
+  function renderOut() {
+    $("mdL1").textContent = mdL1();
+    $("mdL2").textContent = mdL2();
+    renderReadiness();
+  }
+
+  function flash(btn, txt) {
+    var old = btn.textContent; btn.textContent = txt; btn.classList.add("copied");
+    setTimeout(function () { btn.textContent = old; btn.classList.remove("copied"); }, 1600);
+  }
+  function selectPre(pre) {
+    try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {}
+  }
+  function copy(text, btn, statusEl, pre) {
+    var done = function () { flash(btn, "Copied"); if (statusEl) { statusEl.className = "status ok"; statusEl.textContent = "Copied. Paste it over the file in your repo, then commit."; } };
+    var fail = function () {
+      if (pre) selectPre(pre);
+      if (statusEl) { statusEl.className = "status err"; statusEl.textContent = "Your browser blocked the copy. The text is selected: press Ctrl+C or ⌘C."; }
+      else flash(btn, "Copy blocked: select and copy by hand");
+    };
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail);
+      else fail();
+    } catch (e) { fail(); }
+  }
+
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.copy) {
+      var map = { a: PROMPT_A + "\n\n" + EMAIL, b: PROMPT_B + "\n\n" + EMAIL, email: EMAIL, judge: judgeText() };
+      var pre = { a: $("txt-a"), b: $("txt-b"), email: $("txt-email"), judge: $("txt-judge") }[b.dataset.copy];
+      copy(map[b.dataset.copy], b, null, pre);
+      return;
+    }
+    if (b.dataset.agree) { state.agree[b.dataset.agree] = state.agree[b.dataset.agree] === b.dataset.val ? "" : b.dataset.val; b.parentNode.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(state.agree[b.dataset.agree] === x.dataset.val)); }); persist(); renderOut(); return; }
+    if (b.dataset.metric) {
+      var id = b.dataset.metric, i = state.metrics.indexOf(id);
+      if (i > -1) state.metrics.splice(i, 1); else if (state.metrics.length < 3) state.metrics.push(id);
+      renderMetrics(); renderTrades(); persist(); renderOut();
+      var nb = document.querySelector('[data-metric="' + id + '"]'); if (nb) nb.focus();
+      return;
+    }
+    if (b.dataset.trade) {
+      var tid = b.dataset.trade, k = state.trades.indexOf(tid);
+      if (k > -1) state.trades.splice(k, 1); else if (state.trades.length < 2) state.trades.push(tid);
+      renderTrades(); persist(); renderOut();
+      var tb = document.querySelector('[data-trade="' + tid + '"]'); if (tb) tb.focus();
+      return;
+    }
+    if (b.dataset.swap) { state.swap[b.dataset.swap] = !state.swap[b.dataset.swap]; renderTrades(); persist(); renderOut(); return; }
+    if (b.id === "copyL1") { copy(mdL1(), b, $("statusL1"), $("mdL1")); return; }
+    if (b.id === "copyL2") { copy(mdL2(), b, $("statusL2"), $("mdL2")); return; }
+    if (b.id === "dlL1") { download("eval-harness-proof.md", mdL1(), $("statusL1")); return; }
+    if (b.id === "dlL2") { download("strategy-canvas.md", mdL2(), $("statusL2")); return; }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target;
+    if (t.dataset.fact) return;
+    if (t.dataset.why) { state.why[t.dataset.why] = t.value; }
+    else if (t.dataset.mwhy) { state.mWhy[t.dataset.mwhy] = t.value; }
+    else if (t.dataset.because) { state.because[t.dataset.because] = t.value; }
+    else if (t.id && t.id in state && typeof state[t.id] === "string") {
+      state[t.id] = t.value;
+      if (t.id === "aOut" || t.id === "bOut") { renderJudge(); refreshChecks(); }
+      if (t.id === "pUser" || t.id === "pOutcome" || t.id === "pValue") renderPromise();
+    } else return;
+    persist(); renderOut();
+  });
+  document.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.dataset.fact) {
+      var v = t.dataset.fact, n = Number(t.value), arr = state.facts[v], at = arr.indexOf(n);
+      if (t.checked && at < 0) arr.push(n); if (!t.checked && at > -1) arr.splice(at, 1);
+      var h = t.closest(".score-col").querySelector(".counter"); if (h) h.textContent = arr.length + " / " + FACTS.length + " facts kept";
+      persist();
+    } else if (t.dataset.added) { state.added[t.dataset.added] = t.checked; persist(); }
+    else if (t.dataset.changed) { state.changed[t.dataset.changed] = t.checked; persist(); }
+  });
+
+  /* Downloads, when this view offers them */
+  var dl = null;
+  function download(name, text, statusEl) {
+    if (!dl) return;
+    dl.save({ filename: name, data: text }).then(function () {
+      statusEl.className = "status ok"; statusEl.textContent = "Saved " + name + ". Upload it to 01-evaluation-strategy/ in your repo.";
+    }, function (err) {
+      if (err && err.code === "declined") { statusEl.className = "status"; statusEl.textContent = "Download cancelled."; return; }
+      if (err && err.code === "rate_limited") { statusEl.className = "status err"; statusEl.textContent = "A save prompt is already open. Finish it, then try again."; return; }
+      statusEl.className = "status err"; statusEl.textContent = "Downloads aren't available here. Use Copy markdown instead.";
+      $("dlL1").hidden = true; $("dlL2").hidden = true;
+    });
+  }
+  try {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (ns) { if (ns) { dl = ns; $("dlL1").hidden = false; $("dlL2").hidden = false; } }, function () {});
+    }
+  } catch (e) {}
+
+  /* Initial fill */
+  ["aOut", "bOut", "judgeModel", "judgeReply", "tUser", "tUse", "tValue", "pUser", "pOutcome", "pValue", "whyThree"].forEach(function (id) { $(id).value = state[id]; });
+  renderJudge(); renderScorecard(); renderPromise(); renderMetrics(); renderTrades(); renderOut();
+})();
+</script>
