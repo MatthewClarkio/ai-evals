@@ -74,5 +74,6 @@ ai-evals/
 ├── 06-culture/                       ← Module 6
 │   └── ship-hold-memo.md             ship-or-hold recommendation
 └── lab-guides/                       ← course materials, nothing to edit
-    └── m1-lab-guide.html             source for the Module 1 Lab Guide
+    ├── m1-lab-guide.html             source for the Module 1 Lab Guide
+    └── m2-lab-guide.html             source for the Module 2 Lab Guide
 ```
