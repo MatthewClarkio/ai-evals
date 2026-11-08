@@ -212,7 +212,7 @@ footer .wrap { display: grid; gap: 6px; }
       <div class="lab-head">
         <div class="row-tags"><span class="pill">Lab 1 · 30 min</span><span class="pill pass">Graded · audit-log.md</span></div>
         <h2>Audit Ascend IQ's Logs</h2>
-        <p class="muted">Check 20 logged answers against their references with an LLM judge, then decide which of the judge's calls hold up. Latency is measured from server logs, so this text audit uses the other four trust metrics.</p>
+        <p class="muted">Check 20 logged answers against their references with an LLM judge, then decide which of the judge's calls hold up. These logs were captured in <b>October 2026</b>. Latency is measured from server logs, so this text audit uses the other four trust metrics.</p>
       </div>
 
       <div class="tags-legend">
@@ -391,9 +391,9 @@ footer .wrap { display: grid; gap: 6px; }
     { q: "how are the payment guys doing",
       a: "I'm not sure what you mean. Could you rephrase your question?",
       r: "Ascend's Payments segment covers Stripe, Adyen, Block, PayPal and Klarna. Q3 2026 segment revenue growth: 14% year over year." },
-    { q: "Compare Monday.com and Asana pricing for a 500-seat team.",
-      a: "Both price per seat per month, and at 500 seats both move to Enterprise plans with custom quotes. Ascend's 2026 deal data shows median Enterprise pricing of $19 per seat per month for Monday.com and $22 for Asana, before multi-year discounts.",
-      r: "Ascend 2026 deal data, Enterprise plans at 300–1,000 seats: median $19 per seat per month (Monday.com), $22 (Asana), before multi-year discounts." },
+    { q: "What do Monday.com and Asana charge per seat for a 500-seat team? I'm putting it in our board deck.",
+      a: "Median Enterprise price at 500 seats: $19 per seat per month for Monday.com and $22 for Asana.",
+      r: "Ascend 2026 deal data, Enterprise plans at 300–1,000 seats (n=86 deals): median $19 per seat per month (Monday.com), $22 (Asana)." },
     { q: "Why is Figma's enterprise growth slowing?",
       a: "As anyone in product should already know, growth always slows at scale. To spell it out: Ascend's data shows Figma's enterprise seat growth fell from 34% to 22% year over year as large accounts reached full adoption, and Dev Mode upsells are offsetting part of the slowdown.",
       r: "Ascend 2026: Figma enterprise seat growth fell from 34% to 22% year over year. Main driver: saturation in large accounts. Dev Mode upsell offsets part of the slowdown." },
@@ -403,9 +403,9 @@ footer .wrap { display: grid; gap: 6px; }
     { q: "What are the top three reasons customers churn from Zendesk, per Ascend's data?",
       a: "Per Ascend's 2026 churn interviews (n=140): cost at renewal (41%), moving to a help desk bundled with their CRM, such as Salesforce Service Cloud or HubSpot (29%), and limited AI features (18%).",
       r: "Ascend 2026 Zendesk churn interviews (n=140): cost at renewal 41%; switching to CRM-bundled help desks (Salesforce Service Cloud, HubSpot) 29%; limited AI features 18%." },
-    { q: "Give me Stripe's strongest and weakest segments in one line each.",
-      a: "Strongest: online-first businesses and platforms, where Ascend rates its developer tools and Connect product highest. Weakest: in-person retail, where its terminal share trails Square and Adyen.",
-      r: "Ascend 2026 segment ratings for Stripe: strongest in online-first businesses and platforms (developer tools, Connect); weakest in in-person retail, where terminal share trails Square and Adyen." }
+    { q: "What's Intercom's current price per seat on its Advanced plan?",
+      a: "Intercom's Advanced plan is $85 per seat per month, billed annually.",
+      r: "Ascend pricing record for Intercom, last verified February 2025: Advanced plan $85 per seat per month, billed annually." }
   ];
   var N = LOGS.length;
   function rid(i) { return "R" + (i + 1 < 10 ? "0" : "") + (i + 1); }
@@ -567,6 +567,12 @@ footer .wrap { display: grid; gap: 6px; }
     var judgeName = clean(state.judgeModel) ? " (" + clean(state.judgeModel) + ")" : "";
     L.push(N + " logs audited. The judge" + judgeName + " failed " + jf + ", I overrode " + ov + ", and " + conf + " failures are confirmed: " +
       TAGS.map(function (t) { return t + " " + c[t]; }).join(", ") + ".", "");
+    if (state.flags.length) {
+      var fl = state.flags.slice().sort(function (a, b) { return a - b; });
+      var agreed = fl.filter(function (i) { return state.judge[i] && state.judge[i].v === "FAIL"; }).length;
+      L.push("My flags before the judge ran: " + fl.map(function (i) { return rid(i) + " (judge: " + (state.judge[i] ? state.judge[i].v : "not scored") + ")"; }).join(", ") +
+        ". The judge agreed with " + agreed + " of my " + fl.length + ".", "");
+    } else L.push("I didn't flag any rows before the judge ran.", "");
     L.push("| Query | Judge score | Human override | Trust Metric tag | Failure reason |", "|---|---|---|---|---|");
     for (var k = 0; k < N; k++) {
       var j = state.judge[k], r = rev(k), fv = finalV(k), ft = finalTag(k);
