@@ -175,6 +175,12 @@ details pre, .md { margin: 8px 0 0; padding: 12px; background: var(--code-bg); b
 .impact { font: 500 15px/1.55 var(--body); }
 .impact .fill { border-bottom: 1.5px solid var(--accent); padding: 0 2px; }
 .impact .fill.empty-fill { color: var(--muted); border-bottom-style: dashed; }
+.warn-note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+.rank-row { display: grid; grid-template-columns: 22px minmax(0,1fr) auto auto; gap: 8px; align-items: center; font-size: 13.5px; }
+.rank-row .n { font: 700 14px/1 var(--display); }
+.rank-row .nm { min-width: 0; overflow-wrap: anywhere; }
+.rank-row .mv { display: inline-flex; gap: 4px; }
+.rank-row .mv button { padding: 4px 8px; }
 .readiness { display: flex; flex-wrap: wrap; gap: 6px; }
 .note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
 .save-steps { font-size: 13.5px; margin: 4px 0 0; padding-left: 20px; display: grid; gap: 3px; }
@@ -302,13 +308,14 @@ footer .wrap { display: grid; gap: 6px; }
 
           <div style="display:grid;gap:10px">
             <div class="card-head"><h3>Step 1 and 2 · Pick three failures</h3><span class="pill neutral" id="pickCount">0 of 3 picked</span></div>
+            <div id="pickWarn" style="display:grid;gap:6px"></div>
             <div class="picks" id="picks"></div>
           </div>
 
           <div class="card">
             <span class="step-no">Step 3 · Your #1 risk as a business risk</span>
             <p class="impact" id="impactLine"></p>
-            <label class="field"><span>[technical error]</span><input type="text" id="tech" placeholder="what Ascend IQ does wrong, in plain words"></label>
+            <label class="field"><span>[technical error]</span><input type="text" id="tech" placeholder="the specific error, not the tag name"></label>
             <label class="field"><span>[business impact]</span><input type="text" id="impact" placeholder="what it costs Ascend Analytics: accounts, renewals, reputation"></label>
             <p class="small muted">Read it out loud. Would leadership act on it, or does it still describe the bug?</p>
           </div>
@@ -318,6 +325,10 @@ footer .wrap { display: grid; gap: 6px; }
           <div class="card">
             <span class="step-no">The matrix · severity × frequency</span>
             <div class="matrix" id="matrix"></div>
+          </div>
+          <div class="card">
+            <span class="step-no">Your ranking</span>
+            <div id="rankList" style="display:grid;gap:6px"></div>
           </div>
           <div class="card">
             <div class="card-head"><span class="step-no">Step 4 · Save failure-taxonomy.md</span>
@@ -629,6 +640,26 @@ footer .wrap { display: grid; gap: 6px; }
   }
 
   function nameOf(i) { return clean(state.names[i]) || rid(i); }
+  function renderRank() {
+    var rk = ranked(), warn = [];
+    if (rk.length >= 2) {
+      var tags = rk.map(function (x) { return x.tag; });
+      if (rk.length === 3 && tags[0] && tags.every(function (t) { return t === tags[0]; }))
+        warn.push("All three of your picks share " + esc(tags[0]) + ". Is a different kind of failure riskier for Ascend IQ's clients?");
+      var ps = rk.map(function (x) { return x.prio; }).filter(Boolean), tied = ps.filter(function (p, n) { return ps.indexOf(p) !== n; });
+      if (tied.length) warn.push("Two or more picks share " + tied[0] + ", so they're ranked in the order you picked them. Use the arrows in Your ranking to put the one you'd fix first at the top.");
+    }
+    $("pickWarn").innerHTML = warn.map(function (w) { return '<p class="warn-note">' + w + "</p>"; }).join("");
+    if (!rk.length) { $("rankList").innerHTML = '<p class="small muted">Pick failures to rank them here, P0 first.</p>'; return; }
+    $("rankList").innerHTML = rk.map(function (x, n) {
+      var up = n > 0 && x.prio && rk[n - 1].prio === x.prio, down = n < rk.length - 1 && x.prio && rk[n + 1].prio === x.prio;
+      return '<div class="rank-row"><span class="n">' + (n + 1) + '</span><span class="nm">' + esc(nameOf(x.i)) + ' <span class="rid">' + rid(x.i) + "</span></span>" +
+        (x.prio ? '<span class="prio ' + x.prio.toLowerCase() + '">' + x.prio + "</span>" : '<span class="pill neutral">No severity</span>') +
+        '<span class="mv"><button type="button" data-rankup="' + x.i + '" aria-label="Move ' + esc(nameOf(x.i)) + ' up"' + (up ? "" : " disabled") + '>↑</button>' +
+        '<button type="button" data-rankdown="' + x.i + '" aria-label="Move ' + esc(nameOf(x.i)) + ' down"' + (down ? "" : " disabled") + ">↓</button></span></div>";
+    }).join("");
+  }
+  function swapPicks(a, b) { var ia = state.picks.indexOf(a), ib = state.picks.indexOf(b); if (ia < 0 || ib < 0) return; state.picks[ia] = b; state.picks[ib] = a; }
   function renderMatrix() {
     var rk = ranked(), cells = { P1: [], P0: [], P3: [], P2: [] };
     rk.forEach(function (x, n) { if (x.prio) cells[x.prio].push((n + 1) + ". " + nameOf(x.i)); });
@@ -670,7 +701,7 @@ footer .wrap { display: grid; gap: 6px; }
   }
 
   function renderOut() { $("mdL1").textContent = mdL1(); $("mdL2").textContent = mdL2(); renderReadiness(); }
-  function renderAll() { renderLogs(); renderCounts(); renderPicks(); renderMatrix(); renderImpact(); renderOut(); }
+  function renderAll() { renderLogs(); renderCounts(); renderPicks(); renderMatrix(); renderRank(); renderImpact(); renderOut(); }
 
   /* ---------- Copy / download ---------- */
   function flash(btn, t) { var o = btn.textContent; btn.textContent = t; btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); }
@@ -732,11 +763,18 @@ footer .wrap { display: grid; gap: 6px; }
     if (d.pick != null) {
       var p = Number(d.pick), k = state.picks.indexOf(p);
       if (k > -1) state.picks.splice(k, 1); else if (state.picks.length < 3) state.picks.push(p);
-      renderPicks(); renderMatrix(); renderOut(); persist();
+      renderPicks(); renderMatrix(); renderRank(); renderOut(); persist();
       var pb = document.querySelector('[data-pick="' + p + '"]'); if (pb) pb.focus();
       return;
     }
-    if (d.sev != null) { state.sev[Number(d.sev)] = d.val; renderPicks(); renderMatrix(); renderOut(); persist(); return; }
+    if (d.sev != null) { state.sev[Number(d.sev)] = d.val; renderPicks(); renderMatrix(); renderRank(); renderOut(); persist(); return; }
+    if (d.rankup != null || d.rankdown != null) {
+      var me = Number(d.rankup != null ? d.rankup : d.rankdown), rk = ranked(), at2 = -1;
+      rk.forEach(function (x, n) { if (x.i === me) at2 = n; });
+      var other = rk[d.rankup != null ? at2 - 1 : at2 + 1];
+      if (other && other.prio === rk[at2].prio) swapPicks(me, other.i);
+      renderMatrix(); renderRank(); renderOut(); persist(); return;
+    }
     if (b.id === "timerBtn") { tEnd = Date.now() + 180000; clearInterval(tInt); tInt = setInterval(tick, 1000); tick(); b.textContent = "Restart timer"; return; }
     if (b.id === "copyJudge") { copy(judgePrompt(), b, $("loadStatus"), $("judgePre"), "Judge prompt copied with all 20 rows. Paste it into a new chat and send."); return; }
     if (b.id === "loadJudge") {
@@ -765,7 +803,7 @@ footer .wrap { display: grid; gap: 6px; }
   document.addEventListener("input", function (e) {
     var t = e.target, d = t.dataset || {};
     if (d.why != null) { var i = Number(d.why), r = rev(i); r.why = t.value; state.review[i] = r; }
-    else if (d.name != null) { state.names[Number(d.name)] = t.value; renderMatrix(); }
+    else if (d.name != null) { state.names[Number(d.name)] = t.value; renderMatrix(); renderRank(); }
     else if (t.id === "judgeModel" || t.id === "judgeReply") { state[t.id] = t.value; }
     else if (t.id === "tech" || t.id === "impact") { state[t.id] = t.value; renderImpact(); }
     else return;
