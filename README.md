@@ -76,5 +76,6 @@ ai-evals/
 └── lab-guides/                       ← course materials, nothing to edit
     ├── m1-lab-guide.html             source for the Module 1 Lab Guide
     ├── m2-lab-guide.html             source for the Module 2 Lab Guide
-    └── m3-lab-guide.html             source for the Module 3 Lab Guide
+    ├── m3-lab-guide.html             source for the Module 3 Lab Guide
+    └── m4-lab-guide.html             source for the Module 4 Lab Guide
 ```

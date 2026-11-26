@@ -1,0 +1,945 @@
+<title>Module 4 Lab Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: each lab is a work column (six gate cards / three release criteria) beside a sticky control panel (pushback prompt, engineering request, markdown). Same tokens as the Module 1 to 3 Lab Guides. */
+:root {
+  --paper: #F5F6F8; --surface: #FFFFFF; --ink: #161A22; --muted: #586071; --line: #DADFE7;
+  --accent: #2741C4; --accent-ink: #FFFFFF; --accent-soft: #E7EBFB;
+  --pass: #176B43; --pass-soft: #E2F2E9; --fail: #B0281F; --fail-soft: #FBE7E5;
+  --warn: #8A5A00; --warn-soft: #FBF0D9; --code-bg: #EEF0F4;
+  --p0: #B0281F; --p1: #B4541A; --p2: #8A6A00; --p3: #3E5B9A;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+    --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+    --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+    --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+    --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+  --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+  --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+  --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+  --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); }
+h2 { font-size: clamp(24px, 3.4vw, 30px); }
+h3 { font-size: 18px; }
+h4 { font-size: 15px; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font: 500 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+code { font-family: var(--mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 500 13px/1.2 var(--mono); color: var(--muted); }
+.brand b { color: var(--ink); font-weight: 500; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.tabs a:hover { border-color: var(--accent); }
+.tabs a span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+.hero { padding-block: 40px 28px; display: grid; gap: 14px; }
+.hero p.lede { font-size: 17px; max-width: 66ch; color: var(--muted); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+.lab { padding-block: 32px 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.lab-head { display: grid; gap: 10px; margin-bottom: 22px; max-width: 76ch; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--code-bg); color: var(--muted); }
+.row-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.legend > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; gap: 4px; font-size: 13.5px; align-content: start; }
+.legend b { font: 500 12.5px/1.2 var(--mono); color: var(--accent); }
+
+.steps-strip { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; counter-reset: s; }
+.steps-strip li { counter-increment: s; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 10px; font-size: 14px; align-items: start; }
+.steps-strip li::before { content: counter(s); font: 700 13px/28px var(--display); width: 28px; height: 28px; text-align: center; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+
+.work { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .work { grid-template-columns: minmax(0, 1fr); } }
+.col { min-width: 0; display: grid; gap: 18px; }
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); display: grid; gap: 14px; max-height: calc(100vh - 80px); overflow: auto; padding-bottom: 6px; min-width: 0; }
+@media (max-width: 920px) { .panel { position: static; max-height: none; overflow: visible; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.step-no { font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+button { font: 500 13px/1 var(--body); cursor: pointer; border-radius: 6px; padding: 8px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.copied { border-color: var(--pass); color: var(--pass); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+label.field, .field { display: grid; gap: 6px; min-width: 0; }
+.field > span:first-child { font-size: 13px; font-weight: 600; }
+.field > span:first-child em { font-weight: 400; font-style: normal; color: var(--muted); }
+input[type=text], textarea, select { width: 100%; font: 400 14px/1.5 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { resize: vertical; min-height: 70px; }
+textarea.mono { font: 400 12.5px/1.55 var(--mono); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.75; }
+select { padding-block: 7px; }
+.two { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .two { grid-template-columns: minmax(0,1fr); } }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex-wrap: wrap; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); padding: 7px 11px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip-btn { padding: 6px 10px; border-radius: 999px; font-size: 12.5px; }
+.chip-btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip-btn[aria-pressed="true"]::before { content: "✓ "; }
+
+.status { font-size: 13px; min-height: 1.2em; }
+.status.ok { color: var(--pass); }
+.status.err { color: var(--fail); }
+
+.ab { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .ab { grid-template-columns: minmax(0,1fr); } }
+.ab > div { background: var(--code-bg); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.ab .eyebrow { font-size: 11px; }
+.q { font-weight: 600; font-size: 15px; }
+.rid { font: 500 13px/1 var(--mono); color: var(--muted); }
+
+/* Check builders */
+.check { border-left: 3px solid var(--accent); }
+.check .role { font: 500 11.5px/1 var(--mono); color: var(--muted); }
+.returns { font-size: 13px; background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.returns b { font-weight: 600; }
+.warn-note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+
+/* Golden set browser */
+.golden { display: grid; gap: 8px; margin-top: 10px; }
+.golden article { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; }
+
+/* Results */
+.res-sum { display: grid; gap: 8px; }
+.res-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto auto; gap: 10px; align-items: center; font-size: 13.5px; padding-block: 6px; border-top: 1px solid var(--line); }
+.res-row:first-child { border-top: 0; }
+.res-row .nm { font-weight: 600; }
+.res-row .n { font: 500 12.5px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+.res-row.head { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.res-row.head .n { font-family: var(--mono); }
+.cov { display: grid; gap: 6px; padding: 10px 12px; border-radius: 6px; background: var(--code-bg); font-size: 13.5px; }
+.cov.strong { background: var(--pass-soft); }
+.cov.medium { background: var(--warn-soft); }
+.cov.weak { background: var(--fail-soft); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table.grid { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+table.grid th, table.grid td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.grid th { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); white-space: nowrap; }
+table.grid tr:last-child td { border-bottom: 0; }
+table.grid tr.target td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+table.grid tr.p0row td { background: var(--accent-soft); }
+table.grid td.qq { max-width: 230px; }
+table.grid td.why { color: var(--muted); max-width: 260px; }
+.mk { font: 500 12px/1 var(--mono); padding: 4px 7px; border-radius: 5px; white-space: nowrap; display: inline-block; }
+.mk.caught { background: var(--pass-soft); color: var(--pass); }
+.mk.missed { background: var(--fail-soft); color: var(--fail); }
+.mk.fa { background: var(--warn-soft); color: var(--warn); }
+.mk.ok { background: var(--code-bg); color: var(--muted); }
+.mk.other { background: var(--accent-soft); color: var(--accent); }
+.tgt { padding: 4px 8px; font-size: 12px; }
+.tgt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.keylist { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); align-items: center; }
+
+details summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+details pre, .md { margin: 8px 0 0; padding: 12px; background: var(--code-bg); border-radius: 6px; font: 400 12px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow: auto; }
+.empty { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 22px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+.readiness { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Lab 2 */
+.part { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; align-items: start; }
+.part .no { font: 700 15px/32px var(--display); width: 32px; height: 32px; text-align: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.part .body { display: grid; gap: 8px; min-width: 0; }
+.part .qline { font-size: 13px; color: var(--muted); }
+.evidence { font-size: 13px; color: var(--muted); background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.msg-meta { font-size: 12.5px; color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } button { transition: border-color .15s, box-shadow .15s, background-color .15s; } }
+
+/* Module 4 · gate cards and pipeline */
+.flag { border-left: 3px solid var(--line); }
+.flag.g-hard { border-left-color: var(--fail); }
+.flag.g-soft { border-left-color: var(--warn); }
+.flag.g-advisory { border-left-color: var(--accent); }
+.flag.g-none { border-left-color: var(--muted); }
+.evalline { font-size: 13.5px; background: var(--code-bg); border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px; }
+.evalline b { font-weight: 600; }
+.seg button[disabled] { opacity: 0.4; cursor: not-allowed; }
+.seg.gate button[data-gate="hard"][aria-pressed="true"] { background: var(--fail); color: var(--paper); }
+.seg.gate button[data-gate="soft"][aria-pressed="true"] { background: var(--warn); color: var(--paper); }
+.seg.gate button[data-gate="none"][aria-pressed="true"] { background: var(--muted); color: var(--paper); }
+.push { font-size: 13.5px; border-radius: 6px; padding: 8px 12px; background: var(--pass-soft); display: grid; gap: 4px; }
+.push.challenge { background: var(--warn-soft); }
+.push .who { font: 500 11.5px/1.2 var(--mono); letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.changed { font: 500 12px/1.3 var(--mono); color: var(--accent); }
+.dist { display: flex; gap: 6px; flex-wrap: wrap; }
+.pipe { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+@media (max-width: 560px) { .pipe { grid-template-columns: minmax(0, 1fr); } }
+.pipe > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; gap: 4px; font-size: 13.5px; align-content: start; }
+.pipe b { font: 500 12.5px/1.2 var(--mono); color: var(--accent); }
+.ci { border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 13px; }
+.ci .ci-head { background: var(--code-bg); padding: 8px 10px; font: 500 12px/1.3 var(--mono); color: var(--muted); }
+.ci .ci-row { display: grid; grid-template-columns: 20px minmax(0,1fr); gap: 8px; padding: 8px 10px; border-top: 1px solid var(--line); align-items: start; }
+.ci .ci-row .nm { font-family: var(--mono); font-size: 12.5px; }
+.ci .ci-row .ds { color: var(--muted); }
+.ci .ico { font: 700 13px/1.4 var(--mono); }
+.ico.hard { color: var(--fail); } .ico.soft { color: var(--warn); } .ico.advisory { color: var(--accent); }
+.crit { border-left: 3px solid var(--line); }
+.crit.hard { border-left-color: var(--fail); } .crit.soft { border-left-color: var(--warn); } .crit.advisory { border-left-color: var(--accent); }
+.sentence { display: grid; gap: 8px; font-size: 14px; }
+.sentence .lead { font-weight: 600; }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>AI Evals</b> · Module 4 Lab Guide</div>
+    <nav class="tabs" aria-label="Labs">
+      <a href="#lab1"><span>Lab 1</span>Map your eval gates</a>
+      <a href="#lab2"><span>Lab 2</span>Write your release criteria</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="eyebrow">Module 4 · Ship Safely with Eval Gates</div>
+    <h1>Module 4 Lab Guide</h1>
+    <p class="lede">An evaluator tells you the score. A gate decides whether the release ships. In Lab 1 you decide which of Engineering's six flags become gates, how hard each one blocks, and where it runs. In Lab 2 you write the release criteria into the PRD, with a plan for when the Soft gate fails.</p>
+    <div class="meta">
+      <span><b>You need:</b> any LLM, plus your <code>eval-spec.md</code> from Module 3</span>
+      <span><b>Saves to:</b> <code>04-eval-gates/</code></span>
+      <span><b>Your work:</b> kept in this browser as you go</span>
+    </div>
+  </section>
+
+  <!-- ============ LAB 1 ============ -->
+  <section class="lab" id="lab1">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 1 · 30 min</span><span class="pill pass">Graded · gate-map.md</span></div>
+        <h2>Map Your Eval Gates</h2>
+        <p class="muted">Before launch, Engineering ran Ascend IQ's evals on a test batch of answers and flagged six. Right now those evals only report a score, and nothing blocks a release. Decide which failures should become gates.</p>
+      </div>
+
+      <div class="legend" aria-label="Your four calls">
+        <div><b>No gate</b><span>The eval got it wrong, and the answer is fine.</span></div>
+        <div><b>Advisory · L1</b><span>Warns, and never blocks the release.</span></div>
+        <div><b>Soft · L2</b><span>Pauses the release until someone signs off on a documented override. About 80% of gates live here.</span></div>
+        <div><b>Hard · L3</b><span>Blocks the release until the issue is fixed. No override. For your most critical P0 risks.</span></div>
+      </div>
+
+      <div class="pipe" aria-label="Where a gate can run">
+        <div><b>Pull request</b><span>Lightweight code-based checks that run on every change. Advisory or Hard.</span></div>
+        <div><b>Staging build</b><span>The full suite, with LLM judges, on the golden set. Where most Soft gates live.</span></div>
+        <div><b>Release build</b><span>The last line of defense. Hard gates only, as a final kill switch for P0 risks.</span></div>
+      </div>
+
+      <ol class="steps-strip" style="margin-top:22px">
+        <li><span><b>Make your calls.</b> Compare each answer with what's true and pick a gate. If it gets one, pick where it runs, and write one line on the business risk behind your call.</span></li>
+        <li><span><b>Get pushback.</b> Copy the prompt into any LLM. A skeptical engineering lead pushes back on your calls. Change the ones it convinces you on.</span></li>
+        <li><span><b>Save.</b> Note what changed, then copy the markdown over <code>04-eval-gates/gate-map.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <p class="note">Ascend IQ's clients are VPs who pay $50,000+ a year for verified data, and the CPO wants to unlock it for the top 50 accounts next month. The gate level follows that objective, not the metric: the same failure can be Soft in one product and Hard in another.</p>
+          <div class="card-head"><h3>Step 1 · Engineering's six flags</h3><div class="dist" id="dist"></div></div>
+          <div id="globalLint"></div>
+          <div id="flags" style="display:grid;gap:14px"></div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · After the pushback</span>
+            <div id="changeList" class="small muted">Load the engineering lead's pushback to see which calls you changed.</div>
+            <label class="field"><span>What changed, and why <em>· or why you kept your calls</em></span><textarea id="after" rows="3" placeholder="e.g. The lead convinced me the freshness check would block correct prices, so I moved it to Soft. I kept the fairness gate Hard: one screenshot costs more than the pipeline time."></textarea></label>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 1 controls">
+          <div class="card">
+            <span class="step-no">Step 2 · Get pushback</span>
+            <div class="readiness" id="readyL1"></div>
+            <div class="btns"><button type="button" class="primary" id="copyPush">Copy pushback prompt</button></div>
+            <p class="small muted">Paste it into a new chat and send. It plays a skeptical engineering lead and replies with one line per flag.</p>
+            <details><summary>Preview the pushback prompt</summary><pre id="pushPre"></pre></details>
+            <label class="field"><span>Model you ran it in</span><input type="text" id="pushModel" placeholder="e.g. ChatGPT"></label>
+            <label class="field"><span>Its reply <em>· paste it as is</em></span><textarea id="pushReply" class="mono" rows="5" placeholder="F1 | AGREE | Hard at the staging build | …"></textarea></label>
+            <div class="btns"><button type="button" class="primary" id="loadPush">Load the pushback</button></div>
+            <div class="status" id="pushStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save gate-map.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL1">Copy markdown</button><button type="button" id="dlL1" hidden>Download .md</button></div></div>
+            <div class="status" id="statusL1" role="status"></div>
+            <details><summary>Preview gate-map.md</summary><pre id="mdL1"></pre></details>
+            <p class="small muted">Open <code>04-eval-gates/gate-map.md</code> in your repo, click the pencil icon, paste over the whole file, and commit. Or download it and upload it to the same folder.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAB 2 ============ -->
+  <section class="lab" id="lab2">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 2 · 25 min</span><span class="pill pass">Graded · launch-strategy.md</span></div>
+        <h2>Write Your Release Criteria</h2>
+        <p class="muted">Your gates are set. Now write them into the PRD as release criteria: the exact numbers the team checks before launch, and the plan if the Soft gate fails. You own the numbers. Engineering builds the pipeline that enforces them.</p>
+      </div>
+
+      <div class="legend" aria-label="Five parts of a threshold">
+        <div><b>1 · Metric</b><span>The specific variable, such as Hallucination Rate. Never just “quality”.</span></div>
+        <div><b>2 · Gate severity</b><span>Hard, Soft or Advisory, so readers know at once whether it blocks launch.</span></div>
+        <div><b>3 · Threshold</b><span>The exact pass/fail number, such as = 0% or &lt; 2.0s.</span></div>
+        <div><b>4 · Dataset</b><span>The golden set it's tested on. This closes the “tested on easy data” loophole.</span></div>
+        <div><b>5 · Method</b><span>Which evaluator runs the check. For your P0, the one in your Module 3 eval spec.</span></div>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Name the dataset.</b> The golden set every criterion is tested on, and how many cases it holds.</span></li>
+        <li><span><b>Write three criteria.</b> One Hard (your Module 3 P0), one Soft and one Advisory from Lab 1, each with its metric, threshold, method and where it runs.</span></li>
+        <li><span><b>Plan for a Soft fail.</b> Pick a lever and finish the sentence. Copy the markdown over <code>04-eval-gates/launch-strategy.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <div class="card">
+            <span class="step-no">Step 1 · The dataset</span>
+            <div class="two">
+              <label class="field"><span>Name</span><input type="text" id="dsName" placeholder="e.g. AscendIQ_GoldenSet_v1"></label>
+              <label class="field"><span>Cases in it</span><input type="text" id="dsCases" inputmode="numeric" placeholder="e.g. 20"></label>
+            </div>
+            <div id="dsWarn"></div>
+            <label class="field" id="dsPlanWrap" hidden><span>How you'll grow it to 30 <em>· the deck's floor</em></span><textarea id="dsPlan" rows="2" placeholder="e.g. Add the six flagged answers from Lab 1, plus four must-refuse requests such as share-price forecasts."></textarea></label>
+          </div>
+
+          <div class="card-head"><h3>Step 2 · Your three release criteria</h3><span class="pill neutral" id="critCount">0 of 3 written</span></div>
+          <div id="crits" style="display:grid;gap:14px"></div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · When the Soft gate fails</span>
+            <p class="small muted">A Soft gate pauses the release until someone signs off. Before anyone does, the PRD says how you'd ship with less risk while you collect more data.</p>
+            <div class="field"><span>Your lever</span><div class="chips" id="leverChips"></div></div>
+            <p class="small muted" id="leverHint"></p>
+            <div class="sentence">
+              <span class="lead" id="leverLead">If the Soft gate fails, we will…</span>
+              <input type="text" id="leverWill" aria-label="We will" placeholder="e.g. launch to 5 of the top 50 accounts, with the latency monitor on">
+              <span class="lead">…until…</span>
+              <input type="text" id="leverUntil" aria-label="Until" placeholder="e.g. P95 latency stays under 4.0s for two weeks of real traffic">
+            </div>
+            <div id="leverWarn"></div>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 2 controls">
+          <div class="card">
+            <span class="step-no">The request for Engineering</span>
+            <p class="small muted">Your criteria as the checks Engineering adds to the pipeline. It updates as you write.</p>
+            <div id="ciMock"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save launch-strategy.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL2">Copy markdown</button><button type="button" id="dlL2" hidden>Download .md</button></div></div>
+            <div class="readiness" id="readyL2"></div>
+            <div class="status" id="statusL2" role="status"></div>
+            <pre class="md" id="mdL2"></pre>
+            <p class="small muted">Open <code>04-eval-gates/launch-strategy.md</code>, click the pencil icon, paste over the whole file, and commit.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>After class · Post-Class Practice (optional).</b> Set the gate policy for an Ascend IQ pull request, run a simulated pipeline, and find the policy that blocks only what should never ship.</p>
+    <p><b>Next session · Module 5: Run Evals on Live Traffic Across Product Lines.</b> Your gates keep running after launch.</p>
+    <p>Ascend Analytics, Ascend IQ and every figure on this page are a fictional teaching scenario. Company names are used for realism; the numbers are illustrative, not facts about those companies.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* Engineering's six flags from a pre-launch test batch. Illustrative data for a fictional scenario. */
+  var FLAGS = [
+    { id: "F1", label: "Unsupported statistic", tag: "#HALLUCINATION", metric: "Hallucination Rate", kind: "judge",
+      evalName: "Factuality judge", score: "0 · “46% isn't in the reference, which says 12%.”",
+      q: "What share of Zendesk's negative G2 reviews this year mention its AI features?",
+      a: "About 46% of negative reviews this year complain about Zendesk's AI agents, making it the top theme.",
+      t: "Ascend analysis of 2026 negative G2 reviews for Zendesk (n=505): AI features mentioned in 12%. The top theme is pricing at 34%.",
+      phT: "e.g. = 0% of golden-set answers" },
+    { id: "F2", label: "Stale source record", tag: "#HALLUCINATION", metric: "Stale-record rate", kind: "code",
+      evalName: "Freshness rule", score: "FAIL · “Source record is 19 months old. The limit is 6 months.”",
+      q: "What does Zoom charge per user for Zoom Workplace Business?",
+      a: "Zoom Workplace Business is $21.99 per user per month, billed monthly.",
+      t: "Ascend pricing record, last verified March 2025: $21.99 per user per month, billed monthly. There's no newer record, so the price may have changed.",
+      phT: "e.g. 0 answers served from records older than 6 months without a date" },
+    { id: "F3", label: "Slow answers", tag: "#UX_TRUST", metric: "Latency (P95)", kind: "monitor",
+      evalName: "Latency monitor", score: "P95 6.8s on this batch · budget 4.0s. The new source-lookup step added 2.6s.",
+      q: "Compare Snowflake and Databricks pricing for a 50-person data team.",
+      a: "Snowflake bills by credits consumed, from $3.30 per credit on Enterprise; Databricks bills by DBUs, with rates by workload type. For a 50-person team the cost depends on compute hours, not seats.",
+      t: "Matches Ascend's pricing records. The answer is correct; only the time it took was flagged.",
+      phT: "e.g. P95 < 4.0s" },
+    { id: "F4", label: "Generalizes about a nationality", tag: "#FAIRNESS", metric: "Stereotyped-answer rate", kind: "judge",
+      evalName: "Fairness judge", score: "0 · “Generalizes about Brazilian buyers, and contradicts the survey.”",
+      q: "What's the best way to sell our CRM into Brazilian mid-market companies?",
+      a: "Brazilian buyers are relationship-driven and less focused on data, so lead with lunches and personal rapport rather than ROI numbers.",
+      t: "Ascend 2026 buyer survey, Brazil mid-market (n=140): top criteria are integration with local tax and invoicing systems (61%), total cost (48%) and Portuguese-language support (44%).",
+      phT: "e.g. 0 stereotyped answers on the golden set" },
+    { id: "F5", label: "Off-brand tone", tag: "#UX_TRUST", metric: "Tone consistency", kind: "judge",
+      evalName: "Tone judge", score: "3.2 / 5 · target ≥ 4.0. “Emoji and exclamation marks in an executive summary.”",
+      q: "Summarize Asana's Q3 results.",
+      a: "Asana had a solid Q3! 🎉 Revenue grew 10% to $191M, and customers spending $100K+ grew 18%. Nice momentum going into Q4!",
+      t: "Ascend earnings tracker: Asana Q3 revenue $191M (+10%); customers spending $100K+ up 18%. Every figure matches.",
+      phT: "e.g. ≥ 4.0 / 5 average" },
+    { id: "F6", label: "Didn't answer the question", tag: "", metric: "Helpfulness", kind: "judge",
+      evalName: "Helpfulness judge", score: "0 · “Didn't answer the user's question.”",
+      q: "Will Shopify's stock go up after next week's earnings?",
+      a: "Ascend doesn't forecast share prices. I can show Shopify's last four quarters of revenue growth, GMV and merchant count instead.",
+      t: "Ascend has no share-price forecasts and must decline them. In scope: revenue growth, GMV and merchant count.",
+      phT: "" }
+  ];
+  var N = FLAGS.length;
+  var GATES = [{ k: "none", name: "No gate" }, { k: "advisory", name: "Advisory" }, { k: "soft", name: "Soft" }, { k: "hard", name: "Hard" }];
+  var PLACES = [{ k: "pr", name: "Pull request", the: "the pull request" }, { k: "staging", name: "Staging build", the: "the staging build" }, { k: "release", name: "Release build", the: "the release build" }];
+  var LEVERS = [
+    { k: "delay", name: "Delay launch", hint: "The hard stop: delay and fix. It's the required lever when a Hard gate fails. For a Soft gate, ask whether another lever lets you ship with less risk." },
+    { k: "beta", name: "Beta labeling", hint: "Launch with an “experimental” label to lower expectations, and add the failed queries to your golden set." },
+    { k: "flag", name: "Feature flag", hint: "An automatic circuit breaker: link the flag to a monitoring eval, so the feature turns itself off if the metric crosses the threshold in the wild." },
+    { k: "staged", name: "Staged rollout", hint: "Launch to a small share of users first, check that your golden set matches real queries, and roll back if the production score drops." }
+  ];
+  var LEVELS = [{ k: "hard", name: "Hard", sev: "Hard", need: "Your P0 failure from Module 3, with the threshold and check from your eval spec." },
+                { k: "soft", name: "Soft", sev: "Soft", need: "A failure you gave a Soft gate in Lab 1, with the lever you'd use if it fails." },
+                { k: "advisory", name: "Advisory", sev: "Advisory", need: "A failure you gave an Advisory gate in Lab 1, which you'll ship and watch." }];
+  var FIELDS = ["fail", "metric", "thresh", "method", "at"];
+
+  /* ---------- State ---------- */
+  var KEY = "ai-evals-m4-lab-guide-v1";
+  function blankCrit() { return { row: -1, fail: "", metric: "", thresh: "", method: "", at: "", signoff: "" }; }
+  var state = {
+    calls: FLAGS.map(function () { return { gate: "", at: "", risk: "" }; }),
+    orig: null, push: {}, pushModel: "", pushReply: "", after: "",
+    dsName: "", dsCases: "", dsPlan: "", specPaste: "",
+    crit: { hard: blankCrit(), soft: blankCrit(), advisory: blankCrit() },
+    lever: "", leverWill: "", leverUntil: ""
+  };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && typeof saved === "object") Object.keys(state).forEach(function (k) { if (k in saved) state[k] = saved[k]; });
+  } catch (e) {}
+  if (!Array.isArray(state.calls) || state.calls.length !== N) state.calls = FLAGS.map(function () { return { gate: "", at: "", risk: "" }; });
+  LEVELS.forEach(function (l) { if (!state.crit[l.k]) state.crit[l.k] = blankCrit(); });
+  var saveT = null;
+  function persist() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250); }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(s) { return String(s || "").trim(); }
+  function cell(s) { return clean(s).replace(/\s*\n+\s*/g, " ").replace(/\|/g, "\\|"); }
+  function listEn(a) { return a.length <= 1 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  function gateName(k) { for (var i = 0; i < GATES.length; i++) if (GATES[i].k === k) return GATES[i].name; return ""; }
+  function place(k) { for (var i = 0; i < PLACES.length; i++) if (PLACES[i].k === k) return PLACES[i]; return null; }
+  function callText(c) {
+    if (!c || !c.gate) return "no call yet";
+    if (c.gate === "none") return "No gate";
+    return gateName(c.gate) + (place(c.at) ? " at " + place(c.at).the : "");
+  }
+  function callDone(i) { var c = state.calls[i]; return c.gate && (c.gate === "none" || c.at) && clean(c.risk); }
+  function callsDone() { var n = 0; for (var i = 0; i < N; i++) if (callDone(i)) n++; return n; }
+  function pushLoaded() { return Object.keys(state.push).length > 0; }
+  function slug(s) { return clean(s).toLowerCase().replace(/\(.*?\)/g, " ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "check"; }
+
+  /* ---------- Lab 1 · flag cards ---------- */
+  function buildFlags() {
+    $("flags").innerHTML = FLAGS.map(function (f, i) {
+      return '<article class="card flag" id="flag-' + i + '">' +
+        '<div class="card-head"><span class="row-tags"><span class="rid">' + f.id + '</span><span class="pill neutral">Flagged: ' + esc(f.label) + '</span></span><span class="pill neutral" id="badge-' + i + '">No call</span></div>' +
+        '<p class="q">' + esc(f.q) + '</p>' +
+        '<div class="ab"><div><span class="eyebrow">Ascend IQ answered</span><span>' + esc(f.a) + '</span></div><div><span class="eyebrow">What\'s true · Ascend verified data</span><span>' + esc(f.t) + '</span></div></div>' +
+        '<div class="evalline"><span><b>Automated eval:</b> ' + esc(f.evalName) + ' <span class="muted">· ' + (f.kind === "code" ? "code-based" : f.kind === "monitor" ? "performance monitor" : "LLM judge") + '</span></span><span>' + esc(f.score) + '</span></div>' +
+        '<div class="field"><span>Your call</span><div class="seg gate" role="group" aria-label="Gate for ' + f.id + '">' +
+          GATES.map(function (g) { return '<button type="button" data-gate="' + g.k + '" data-i="' + i + '" aria-pressed="false">' + g.name + "</button>"; }).join("") + "</div></div>" +
+        '<div class="field"><span>Where it runs</span><div class="seg" role="group" aria-label="Placement for ' + f.id + '">' +
+          PLACES.map(function (p) { return '<button type="button" data-place="' + p.k + '" data-i="' + i + '" aria-pressed="false">' + p.name + "</button>"; }).join("") + "</div></div>" +
+        '<label class="field"><span id="riskLbl-' + i + '">Business risk <em>· one line behind your call</em></span><input type="text" id="risk-' + i + '" data-risk="' + i + '"></label>' +
+        '<div id="lint-' + i + '"></div><div id="push-' + i + '"></div>' +
+        "</article>";
+    }).join("");
+    for (var i = 0; i < N; i++) $("risk-" + i).value = state.calls[i].risk || "";
+  }
+  function lintCall(i) {
+    var f = FLAGS[i], c = state.calls[i], w = [];
+    if (c.gate && c.gate !== "none" && !c.at) w.push("Pick where it runs.");
+    if (c.gate === "none") w.push("No gate means the eval got it wrong and the answer is fine. Check the answer against what's true: would you show it to a VP as it is?");
+    if (c.gate && c.gate !== "none" && c.at === "pr" && f.kind === "judge") w.push("An LLM judge is too slow and costly to run on every pull request. The pull request runs lightweight code-based checks; judges run on the golden set at the staging build.");
+    if (c.gate && c.gate !== "none" && c.at === "pr" && f.kind === "monitor") w.push("Latency needs a full build to measure. The pull request only runs lightweight code checks.");
+    if ((c.gate === "soft" || c.gate === "advisory") && c.at === "release") w.push("The release build is the last line of defense, for Hard gates only. Put a " + gateName(c.gate) + " gate earlier in the pipeline.");
+    if (c.gate === "soft" && c.at === "pr") w.push("A Soft gate's documented override fits the staging build. At the pull request, a check either blocks (Hard) or warns (Advisory).");
+    return w;
+  }
+  function renderCall(i) {
+    var c = state.calls[i], card = $("flag-" + i);
+    card.className = "card flag" + (c.gate ? " g-" + c.gate : "");
+    card.querySelectorAll("[data-gate]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.gate === c.gate)); });
+    card.querySelectorAll("[data-place]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.place === c.at)); b.disabled = !c.gate || c.gate === "none"; });
+    var none = c.gate === "none";
+    $("riskLbl-" + i).innerHTML = none ? "Why no gate <em>· what the eval got wrong</em>" : "Business risk <em>· one line behind your call</em>";
+    $("risk-" + i).placeholder = none ? "e.g. The answer is right. The eval needs fixing, not the product." : "e.g. Who is hurt, and what it costs Ascend, if this ships";
+    var b = $("badge-" + i);
+    b.className = "pill " + (callDone(i) ? "pass" : "neutral"); b.textContent = c.gate ? callText(c) : "No call";
+    $("lint-" + i).innerHTML = lintCall(i).map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join("");
+    var p = state.push[i], h = "";
+    if (p) {
+      h += '<div class="push' + (p.verdict === "CHALLENGE" ? " challenge" : "") + '"><span class="who">Engineering lead · ' + (p.verdict === "CHALLENGE" ? "challenges" : "agrees") + (p.suggest ? " · suggests " + esc(p.suggest) : "") + "</span><span>" + esc(p.text || "No reason given.") + "</span>";
+      var o = state.orig && state.orig[i];
+      if (o && (o.gate !== c.gate || o.at !== c.at)) h += '<span class="changed">Changed: ' + esc(callText(o)) + " → " + esc(callText(c)) + "</span>";
+      h += "</div>";
+    }
+    $("push-" + i).innerHTML = h;
+  }
+  function renderDist() {
+    var cnt = { hard: 0, soft: 0, advisory: 0, none: 0 };
+    state.calls.forEach(function (c) { if (cnt[c.gate] != null) cnt[c.gate]++; });
+    $("dist").innerHTML = '<span class="pill fail">Hard ' + cnt.hard + '</span><span class="pill warn">Soft ' + cnt.soft + '</span><span class="pill">Advisory ' + cnt.advisory + '</span><span class="pill neutral">No gate ' + cnt.none + "</span>";
+    var w = [];
+    if (cnt.hard >= 4) w.push("You've made " + cnt.hard + " of 6 flags Hard gates. A Hard gate has no override, so each one can stop the launch on its own. The deck keeps them for your most critical P0 risks.");
+    if (cnt.hard === 0 && cnt.hard + cnt.soft + cnt.advisory + cnt.none === N) w.push("None of your gates is Hard, so every failure here can ship with a sign-off. Is there one a client would fire Ascend over? In Lab 2, your Module 3 P0 gets a Hard gate.");
+    if (cnt.hard + cnt.soft + cnt.advisory >= 3 && cnt.soft === 0) w.push("None of your gates is Soft. The deck says about 80% of gates should live there, where a release pauses for a conscious decision.");
+    $("globalLint").innerHTML = w.map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join("");
+    return cnt;
+  }
+  function renderChanges() {
+    if (!pushLoaded() || !state.orig) { $("changeList").innerHTML = "Load the engineering lead's pushback to see which calls you changed."; return; }
+    var ch = changes();
+    $("changeList").innerHTML = ch.changed.length
+      ? "You changed " + ch.changed.length + " call" + (ch.changed.length === 1 ? "" : "s") + ": " + ch.changed.map(function (i) { return FLAGS[i].id; }).join(", ") + ". " + (ch.kept.length ? "You kept the lead's challenge on " + ch.kept.map(function (i) { return FLAGS[i].id; }).join(", ") + "." : "")
+      : "No calls changed yet." + (ch.kept.length ? " The lead challenged " + ch.kept.map(function (i) { return FLAGS[i].id; }).join(", ") + ". Change a call above if it convinced you, or say below why you kept it." : "");
+  }
+  function changes() {
+    var changed = [], kept = [];
+    for (var i = 0; i < N; i++) {
+      var o = state.orig && state.orig[i], c = state.calls[i];
+      if (o && (o.gate !== c.gate || o.at !== c.at)) changed.push(i);
+      else if (state.push[i] && state.push[i].verdict === "CHALLENGE") kept.push(i);
+    }
+    return { changed: changed, kept: kept };
+  }
+
+  function pushPrompt() {
+    var L = [
+      "You are the engineering lead for Ascend IQ, an AI agent that answers market-intelligence questions for VP-level clients at Fortune 500 companies. They pay $50,000+ a year for verified data. The CPO wants to unlock Ascend IQ for the top 50 enterprise accounts next month.",
+      "",
+      "Before launch, your team's evals flagged six answers from a test batch. The PM has decided which flags become release gates. You're skeptical: every gate adds time and cost to every pipeline run, and false alarms slow the team down. But you don't want to ship something that hurts the business either.",
+      "",
+      "The rules the team agreed on:",
+      "- No gate: the eval got it wrong, and the answer is fine.",
+      "- Advisory: warns, never blocks the release.",
+      "- Soft: pauses the release until someone signs off on a documented override. About 80% of gates should be Soft.",
+      "- Hard: blocks the release until the issue is fixed, with no override. Only for the most critical P0 risks.",
+      "- Pull request: lightweight code-based checks on every change. Staging build: the full suite with LLM judges on the golden set. Release build: Hard gates only, as a final kill switch.",
+      "",
+      "Ascend IQ's top risk, the P0 in its failure taxonomy, is answers that state figures Ascend's verified data doesn't contain. VPs repeat those figures to their boards.",
+      "",
+      "For each flag, push back where the PM's call is too strict, too lenient, or in the wrong place, and say what it would cost. Challenge a call that's too lenient as firmly as one that's too strict: a gate that's too soft on a P0 ships the failure that loses the account. Agree when the call is right. Don't agree just to be polite.",
+      "",
+      "Reply with exactly one line per flag and nothing else, in this format:",
+      "F1 | AGREE or CHALLENGE | the gate and place you'd pick | your pushback in one or two sentences",
+      ""
+    ];
+    FLAGS.forEach(function (f, i) {
+      var c = state.calls[i];
+      L.push("=== " + f.id + " · flagged by the " + f.evalName.toLowerCase() + " ===");
+      L.push("Question: " + f.q);
+      L.push("Ascend IQ answered: " + f.a);
+      L.push("What's true: " + f.t);
+      L.push("Automated eval: " + f.evalName + ": " + f.score);
+      L.push("PM's call: " + (c.gate ? callText(c) : "[not decided yet]"));
+      L.push((c.gate === "none" ? "PM's reason: " : "Business risk: ") + (clean(c.risk) || "[not written yet]"));
+      L.push("");
+    });
+    return L.join("\n").trim();
+  }
+  function parsePush(text) {
+    var out = {};
+    String(text || "").split(/\n/).forEach(function (raw) {
+      var line = raw.replace(/[*`]/g, "").trim();
+      var m = line.match(/^\W*F\s*0*([1-9])\b/i); if (!m) return;
+      var i = Number(m[1]) - 1; if (i < 0 || i >= N || out[i]) return;
+      var cells = line.split("|").map(function (p) { return p.trim(); }).filter(function (p) { return p !== ""; }).slice(1);
+      var v = line.match(/\b(AGREE|CHALLENGE)\b/i);
+      var verdict = v ? v[1].toUpperCase() : "";
+      var vAt = -1; cells.forEach(function (c2, k) { if (vAt < 0 && /^(AGREE|CHALLENGE)\b/i.test(c2)) vAt = k; });
+      var rest = vAt > -1 ? cells.slice(vAt + 1) : cells.slice(1);
+      var suggest = "", text2 = "";
+      if (rest.length >= 2) { suggest = rest[0]; text2 = rest.slice(1).join(" | "); }
+      else if (rest.length === 1) { if (/^(hard|soft|advisory|no gate)\b/i.test(rest[0]) && rest[0].length < 60) suggest = rest[0]; else text2 = rest[0]; }
+      if (!verdict && !text2) return;
+      out[i] = { verdict: verdict || "CHALLENGE", suggest: suggest.replace(/[.]+$/, ""), text: text2.replace(/[\s\\]+$/, "") };
+    });
+    return out;
+  }
+
+  function mdL1() {
+    var cnt = { hard: 0, soft: 0, advisory: 0, none: 0 };
+    state.calls.forEach(function (c) { if (cnt[c.gate] != null) cnt[c.gate]++; });
+    var L = ["# Module 4 · Eval Gate Map · Ascend IQ Copilot", "",
+      "Engineering's evals flagged six answers from a pre-launch test batch. My call on each: whether it becomes a gate, how hard it blocks, and where in the pipeline it runs.", "",
+      "## Gate Map", "", "| Row | Failure Mode | Severity | Placement | Rationale |", "|---|---|---|---|---|"];
+    FLAGS.forEach(function (f, i) {
+      var c = state.calls[i];
+      L.push("| " + f.id + " | " + f.label + (f.tag ? " · " + f.tag : "") + " · flagged by the " + f.evalName.toLowerCase() + " | " + (c.gate ? gateName(c.gate) : "_Not decided_") + " | " + (c.gate && c.gate !== "none" && place(c.at) ? place(c.at).name : "—") + " | " + (cell(c.risk) || "_—_") + " |");
+    });
+    L.push("", "Totals: " + cnt.hard + " Hard · " + cnt.soft + " Soft · " + cnt.advisory + " Advisory · " + cnt.none + " No gate.", "", "## After the pushback", "");
+    if (pushLoaded() && state.orig) {
+      var ch = changes(), agreed = [];
+      for (var i = 0; i < N; i++) if (state.push[i] && state.push[i].verdict === "AGREE") agreed.push(FLAGS[i].id);
+      var chall = []; for (var j = 0; j < N; j++) if (state.push[j] && state.push[j].verdict === "CHALLENGE") chall.push(FLAGS[j].id);
+      L.push("A skeptical engineering lead" + (clean(state.pushModel) ? ", played by " + clean(state.pushModel) + "," : "") + " reviewed my calls. It challenged " + (chall.length ? listEn(chall) : "none") + (agreed.length ? " and agreed with " + listEn(agreed) : "") + ".", "");
+      ch.changed.forEach(function (k) {
+        L.push("- **" + FLAGS[k].id + ": changed** from " + callText(state.orig[k]) + " to " + callText(state.calls[k]) + "." + (state.push[k] && state.push[k].text ? " The lead said: “" + cell(state.push[k].text) + "”" : ""));
+      });
+      ch.kept.forEach(function (k) {
+        L.push("- **" + FLAGS[k].id + ": kept** " + callText(state.calls[k]) + "." + (state.push[k].text ? " The lead said: “" + cell(state.push[k].text) + "”" : ""));
+      });
+      if (ch.changed.length || ch.kept.length) L.push("");
+    }
+    L.push(clean(state.after) || "_What the engineering lead's pushback changed, or why you kept your calls._", "", "## Sample Interactions", "");
+    FLAGS.forEach(function (f, i) {
+      var c = state.calls[i];
+      L.push("### " + f.id + " · " + f.label, "",
+        "- **Input:** " + f.q,
+        "- **Output:** " + f.a,
+        "- **What's true:** " + f.t,
+        "- **Automated eval:** " + f.evalName + ": " + f.score,
+        "- **My call:** " + (c.gate ? callText(c) + "." : "_Not decided._") + (clean(c.risk) ? " " + clean(c.risk) : ""), "");
+    });
+    return L.join("\n").trim() + "\n";
+  }
+
+  function readyL1() {
+    function p(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    var n = callsDone();
+    $("readyL1").innerHTML = p(n === N, n + " of 6 calls") + p(pushLoaded(), "Pushback loaded");
+  }
+
+  /* ---------- Lab 2 · criteria ---------- */
+  function buildCrits() {
+    $("crits").innerHTML = LEVELS.map(function (l) {
+      var k = l.k, h = '<div class="card crit ' + k + '" id="crit-' + k + '">' +
+        '<div class="card-head"><span class="row-tags"><span class="pill ' + (k === "hard" ? "fail" : k === "soft" ? "warn" : "") + '">' + l.name + ' gate</span></span><span class="pill neutral" id="cbadge-' + k + '">Not written</span></div>' +
+        '<p class="small muted">' + l.need + "</p>";
+      if (k === "hard") h += '<details id="specDetails"><summary>Fill this in from your eval-spec.md</summary><div style="display:grid;gap:8px;margin-top:8px"><textarea id="specPaste" class="mono" rows="4" placeholder="Paste your whole eval-spec.md from Module 3"></textarea><div class="btns"><button type="button" id="specLoad">Fill from my eval spec</button><span class="status" id="specStatus" role="status"></span></div></div></details>';
+      else h += '<label class="field"><span>The Lab 1 flag</span><select id="row-' + k + '" data-rowsel="' + k + '"></select></label><div id="rowNote-' + k + '"></div>';
+      h += '<label class="field"><span>Failure</span><input type="text" data-crit="' + k + '" data-f="fail" id="c-' + k + '-fail"></label>' +
+        '<div class="two"><label class="field"><span>Metric <em>· one variable</em></span><input type="text" data-crit="' + k + '" data-f="metric" id="c-' + k + '-metric"></label>' +
+        '<label class="field"><span>Threshold <em>· the exact number</em></span><input type="text" data-crit="' + k + '" data-f="thresh" id="c-' + k + '-thresh"></label></div>' +
+        '<label class="field"><span>Method <em>· the evaluator that runs it</em></span><input type="text" data-crit="' + k + '" data-f="method" id="c-' + k + '-method"></label>' +
+        '<div class="field"><span>Where it runs</span><div class="seg" role="group" aria-label="Placement for the ' + l.name + ' gate">' +
+          PLACES.map(function (p) { return '<button type="button" data-cplace="' + p.k + '" data-crit="' + k + '" aria-pressed="false">' + p.name + "</button>"; }).join("") + "</div></div>";
+      if (k === "soft") h += '<label class="field"><span>Who signs off the override</span><input type="text" data-crit="soft" data-f="signoff" id="c-soft-signoff" placeholder="e.g. Ascend IQ Group PM, with the ML eng lead"></label>';
+      h += '<div id="clint-' + k + '"></div></div>';
+      return h;
+    }).join("");
+    LEVELS.forEach(function (l) {
+      var c = state.crit[l.k];
+      ["fail", "metric", "thresh", "method"].concat(l.k === "soft" ? ["signoff"] : []).forEach(function (f) { $("c-" + l.k + "-" + f).value = c[f] || ""; });
+    });
+    $("specPaste").value = state.specPaste;
+    if (state.specPaste) $("specDetails").open = true;
+  }
+  function critPlaceholders() {
+    LEVELS.forEach(function (l) {
+      var c = state.crit[l.k], f = c.row > -1 ? FLAGS[c.row] : (l.k === "hard" ? FLAGS[0] : null);
+      $("c-" + l.k + "-fail").placeholder = l.k === "hard" ? "e.g. Invented statistics" : f ? "e.g. " + f.label : "Pick a Lab 1 flag above";
+      $("c-" + l.k + "-metric").placeholder = f ? "e.g. " + f.metric : "e.g. Latency (P95)";
+      $("c-" + l.k + "-thresh").placeholder = f && f.phT ? f.phT : "e.g. < 4.0s";
+      $("c-" + l.k + "-method").placeholder = l.k === "hard" ? "e.g. Rule check plus LLM judge, from my eval spec" : f ? "e.g. " + f.evalName : "e.g. Latency monitor";
+    });
+  }
+  function rowOptions(k) {
+    var sel = $("row-" + k), c = state.crit[k], opts = [];
+    for (var i = 0; i < N; i++) if (state.calls[i].gate === k || c.row === i) opts.push(i);
+    sel.innerHTML = '<option value="-1">' + (opts.length ? "Choose a flag" : "No " + gateName(k) + " gates in Lab 1 yet") + "</option>" + opts.map(function (i) {
+      return '<option value="' + i + '"' + (c.row === i ? " selected" : "") + ">" + FLAGS[i].id + " · " + esc(FLAGS[i].label) + (state.calls[i].gate !== k ? " (now " + (gateName(state.calls[i].gate) || "no call") + ")" : "") + "</option>";
+    }).join("");
+    var w = [];
+    if (!opts.length) w.push("You haven't given any flag a " + gateName(k) + " gate in Lab 1. Change a call there, or write this one in your own words.");
+    else if (c.row > -1 && state.calls[c.row].gate !== k) w.push(FLAGS[c.row].id + " is no longer a " + gateName(k) + " gate in Lab 1. Pick another flag, or change your Lab 1 call back.");
+    $("rowNote-" + k).innerHTML = w.map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join("");
+  }
+  function critDone(k) { var c = state.crit[k]; return clean(c.fail) && clean(c.metric) && clean(c.thresh) && clean(c.method) && c.at; }
+  function critsDone() { return LEVELS.filter(function (l) { return critDone(l.k); }).length; }
+  function lintCrit(k) {
+    var c = state.crit[k], w = [];
+    if (clean(c.thresh) && !/\d/.test(c.thresh)) w.push("A threshold needs a number, so Engineering knows exactly when the gate trips.");
+    var pr = clean(c.thresh).match(/(?:≥|>=|at least)\s*(\d{1,2}(?:\.\d+)?)\s*%/i);
+    if (k === "hard" && pr) w.push("A " + pr[1] + "% pass rate lets " + (Math.round((100 - Number(pr[1])) * 10) / 10) + "% of answers through a gate with no override. For a P0, the deck's NeoBank example sets its Hard hallucination gate at = 0%. Say how many failures you'd accept, if any.");
+    if (/\bquality\b/i.test(c.metric)) w.push("“Quality” is too vague for a metric. Name the one variable you measure.");
+    if (c.at === "pr" && /judge/i.test(c.method)) w.push("An LLM judge runs at the staging build, not on every pull request.");
+    if ((k === "soft" || k === "advisory") && c.at === "release") w.push("The release build is for Hard gates only.");
+    if (k === "soft" && clean(c.thresh) && !clean(c.signoff)) w.push("Say who signs off the override. A Soft gate without a named approver is a Hard gate nobody enforces.");
+    return w;
+  }
+  function renderCrits() {
+    rowOptions("soft"); rowOptions("advisory"); critPlaceholders();
+    LEVELS.forEach(function (l) {
+      var c = state.crit[l.k];
+      $("crit-" + l.k).querySelectorAll("[data-cplace]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.cplace === c.at)); });
+      var b = $("cbadge-" + l.k); b.className = "pill " + (critDone(l.k) ? "pass" : "neutral"); b.textContent = critDone(l.k) ? "Written" : "Not written";
+      $("clint-" + l.k).innerHTML = lintCrit(l.k).map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join("");
+    });
+    var noHard = !state.calls.some(function (c) { return c.gate === "hard"; }) && state.calls.every(function (c) { return c.gate; });
+    if (noHard) $("clint-hard").innerHTML = '<p class="warn-note">You didn\'t give any flag a Hard gate in Lab 1, but your P0 needs one here. If F1 is the same failure as your P0, go back and decide whether a Soft gate is enough for it.</p>' + $("clint-hard").innerHTML;
+    var n = critsDone(); $("critCount").className = "pill " + (n === 3 ? "pass" : "neutral"); $("critCount").textContent = n + " of 3 written";
+  }
+  function dsCases() { var m = String(state.dsCases || "").match(/\d+/); return m ? Number(m[0]) : null; }
+  function dsLabel() { var n = dsCases(); return (clean(state.dsName) || "the golden set") + (n != null ? " (" + n + " cases)" : ""); }
+  function renderDs() {
+    var n = dsCases(), low = n != null && n < 30;
+    $("dsWarn").innerHTML = low ? '<p class="warn-note">' + n + " cases is below the deck's floor of 30. With " + n + ", one flaky result moves the pass rate by " + (Math.round(1000 / n) / 10) + " points, and the gate starts blocking on noise.</p>" : "";
+    $("dsPlanWrap").hidden = !low;
+  }
+  function renderLever() {
+    $("leverChips").innerHTML = LEVERS.map(function (v) { return '<button type="button" class="chip-btn" data-lever="' + v.k + '" aria-pressed="' + (state.lever === v.k) + '">' + v.name + "</button>"; }).join("");
+    var lv = LEVERS.filter(function (v) { return v.k === state.lever; })[0];
+    $("leverHint").textContent = lv ? lv.hint : "Pick the lever you'd pull if the Soft gate fails.";
+    var sf = clean(state.crit.soft.metric) || clean(state.crit.soft.fail);
+    $("leverLead").textContent = "If the Soft gate" + (sf ? " on " + sf : "") + " fails, we will…";
+    var w = [];
+    if (state.lever && clean(state.leverWill) && !clean(state.leverUntil)) w.push("Finish the sentence: until what? Name the number or the date that ends the plan.");
+    if (clean(state.leverUntil) && !/\d/.test(state.leverUntil)) w.push("“Until” works best with a number or a date, so everyone knows when the plan ends.");
+    $("leverWarn").innerHTML = w.map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join("");
+  }
+  function leverSentence() {
+    var lv = LEVERS.filter(function (v) { return v.k === state.lever; })[0], sf = clean(state.crit.soft.metric) || clean(state.crit.soft.fail);
+    if (!lv && !clean(state.leverWill)) return "";
+    return "If the Soft gate" + (sf ? " on " + sf : "") + " fails, we will " + (clean(state.leverWill).replace(/[.]+$/, "") || "[what you'll do]") + " until " + (clean(state.leverUntil).replace(/[.]+$/, "") || "[when the plan ends]") + ".";
+  }
+  function ciRows() {
+    return LEVELS.filter(function (l) { var c = state.crit[l.k]; return clean(c.metric) || clean(c.fail); }).map(function (l) {
+      var c = state.crit[l.k], p = place(c.at);
+      var what = c.at === "pr" ? "the merge" : "the release";
+      var act = l.k === "hard" ? "Blocks " + what + " until it's fixed. No override." : l.k === "soft" ? "Pauses " + what + " until a documented override is signed off by " + (clean(c.signoff).replace(/[.]+$/, "") || "a named approver") + "." : "Warns in the checks. Never blocks.";
+      return { k: l.k, sev: l.sev, name: "eval / " + slug(c.metric || c.fail), act: act,
+        trip: (clean(c.metric) || clean(c.fail)) + ": " + (clean(c.thresh).replace(/[.]+$/, "") || "[threshold]"),
+        method: clean(c.method).replace(/[.]+$/, "") || "[method]", at: p ? p.name : "[where it runs]" };
+    });
+  }
+  function renderCi() {
+    var rows = ciRows();
+    if (!rows.length) { $("ciMock").innerHTML = '<div class="empty small">Write a criterion to see the check Engineering would add.</div>'; return; }
+    var ico = { hard: "✕", soft: "⏸", advisory: "!" };
+    $("ciMock").innerHTML = '<div class="ci"><div class="ci-head">Checks · Ascend IQ release pipeline</div>' + rows.map(function (r) {
+      return '<div class="ci-row"><span class="ico ' + r.k + '">' + ico[r.k] + '</span><span><span class="nm">' + esc(r.name) + '</span> <span class="pill ' + (r.k === "hard" ? "fail" : r.k === "soft" ? "warn" : "") + '">' + r.sev + " · " + esc(r.at) + '</span><br><span class="ds">' + esc(r.trip) + ". If it fails: " + esc(r.act.charAt(0).toLowerCase() + r.act.slice(1)) + "</span></span></div>";
+    }).join("") + "</div>";
+  }
+
+  function mdL2() {
+    var n = dsCases();
+    var L = ["# Module 4 · Launch Strategy · Ascend IQ Copilot", "", "## 4.0 Release Criteria", "",
+      "Ascend IQ must meet these thresholds before it unlocks for the top 50 enterprise accounts. Each one is gated on its own, against " + dsLabel() + ".", "",
+      "| Severity | Failure | Metric | Threshold | Dataset | Method | Runs at |", "|---|---|---|---|---|---|---|"];
+    LEVELS.forEach(function (l) {
+      var c = state.crit[l.k], p = place(c.at);
+      L.push("| " + l.sev + " | " + (cell(c.fail) || "_—_") + " | " + (cell(c.metric) || "_—_") + " | " + (cell(c.thresh) || "_—_") + " | " + cell(clean(state.dsName) || "_—_") + " | " + (cell(c.method) || "_—_") + " | " + (p ? p.name : "_—_") + " |");
+    });
+    L.push("");
+    if (n != null && n < 30) L.push("**Dataset:** " + n + " cases, below the 30-case floor. " + (clean(state.dsPlan) || "_How I'll grow it to 30._"), "");
+    L.push("## Mitigation Plan · Soft Gate", "");
+    var lv = LEVERS.filter(function (v) { return v.k === state.lever; })[0];
+    if (lv || clean(state.leverWill)) {
+      if (lv) L.push("**Lever:** " + lv.name + ".", "");
+      L.push(leverSentence(), "");
+      if (clean(state.crit.soft.signoff)) L.push("**Override sign-off:** " + clean(state.crit.soft.signoff) + ".", "");
+    } else L.push("_The lever you'd use if the Soft gate fails, and why._", "");
+    var rows = ciRows();
+    L.push("## Engineering request", "");
+    if (rows.length) {
+      L.push("Add these checks to the GitHub Actions workflow so they run on every change. Gate each one on its own dimension, so a gain on one metric can't hide a drop on another.", "");
+      rows.forEach(function (r, i) {
+        L.push((i + 1) + ". `" + r.name + "` · **" + r.sev + "** · " + r.at, "   - **Threshold:** " + r.trip, "   - **If it fails:** " + r.act, "   - **Method:** " + r.method, "   - **Dataset:** " + dsLabel());
+      });
+    } else L.push("_The checks Engineering adds to the pipeline._");
+    return L.join("\n").trim() + "\n";
+  }
+  function readyL2() {
+    function p(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    var d = clean(state.dsName) && dsCases() != null;
+    $("readyL2").innerHTML = p(d, "Dataset") + LEVELS.map(function (l) { return p(critDone(l.k), l.name); }).join("") + p(state.lever && clean(state.leverWill) && clean(state.leverUntil), "Soft-fail plan");
+  }
+
+  function parseSpec(text) {
+    var out = {};
+    String(text || "").split(/\n/).forEach(function (raw) {
+      var line = raw.trim(); if (line.charAt(0) !== "|") return;
+      var cells = line.replace(/\\\|/g, "/").split("|").map(function (c) { return c.replace(/[*_`]/g, "").trim(); }).slice(1, -1);
+      if (cells.length < 2) return;
+      var k = cells[0].toLowerCase();
+      if (/target risk/.test(k)) out.risk = cells[1];
+      else if (/^evaluator/.test(k)) out.method = cells[1];
+      else if (/^threshold/.test(k)) out.thresh = cells[1];
+    });
+    if (out.risk) {
+      var m = out.risk.match(/\(([^)]+)\)/);
+      out.metric = m ? m[1].trim() : "";
+      out.fail = out.risk.replace(/\s*\([^)]*\)/g, "").replace(/\s*·?\s*(output|trajectory) risk\s*$/i, "").replace(/[\s·.]+$/, "").trim();
+    }
+    return out;
+  }
+
+  /* ---------- Render ---------- */
+  function renderOut() {
+    $("pushPre").textContent = pushPrompt(); $("mdL1").textContent = mdL1(); $("mdL2").textContent = mdL2();
+    readyL1(); readyL2(); renderCi();
+  }
+  function renderLab1() { for (var i = 0; i < N; i++) renderCall(i); renderDist(); renderChanges(); }
+  function renderLab2() { renderDs(); renderCrits(); renderLever(); }
+  function renderAll() { renderLab1(); renderLab2(); renderOut(); }
+
+  /* ---------- Copy / download ---------- */
+  function flash(btn, t) { var o = btn.textContent; btn.textContent = t; btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); }
+  function selectPre(pre) { try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function copy(text, btn, statusEl, pre, okMsg) {
+    var done = function () { flash(btn, "Copied"); if (statusEl) { statusEl.className = "status ok"; statusEl.textContent = okMsg || "Copied."; } };
+    var fail = function () {
+      if (pre) { var d = pre.closest("details"); if (d) d.open = true; selectPre(pre); }
+      if (statusEl) { statusEl.className = "status err"; statusEl.textContent = "Your browser blocked the copy. The text is selected: press Ctrl+C or ⌘C."; }
+    };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail(); } catch (e) { fail(); }
+  }
+  var dl = null;
+  function download(name, text, statusEl) {
+    if (!dl) return;
+    dl.save({ filename: name, data: text }).then(function () {
+      statusEl.className = "status ok"; statusEl.textContent = "Saved " + name + ". Upload it to 04-eval-gates/ in your repo.";
+    }, function (err) {
+      if (err && err.code === "declined") { statusEl.className = "status"; statusEl.textContent = "Download cancelled."; return; }
+      if (err && err.code === "rate_limited") { statusEl.className = "status err"; statusEl.textContent = "A save prompt is already open. Finish it, then try again."; return; }
+      statusEl.className = "status err"; statusEl.textContent = "Downloads aren't available here. Use Copy markdown instead.";
+      $("dlL1").hidden = true; $("dlL2").hidden = true;
+    });
+  }
+  try {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (ns) { if (ns) { dl = ns; $("dlL1").hidden = false; $("dlL2").hidden = false; } }, function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b || b.disabled) return;
+    var d = b.dataset;
+    if (d.gate) {
+      var i = Number(d.i), c = state.calls[i];
+      c.gate = d.gate; if (c.gate === "none") c.at = "";
+      renderCall(i); renderDist(); renderChanges(); renderLab2(); renderOut(); persist(); return;
+    }
+    if (d.place) {
+      var j = Number(d.i); state.calls[j].at = d.place;
+      renderCall(j); renderChanges(); renderLab2(); renderOut(); persist(); return;
+    }
+    if (d.cplace) { state.crit[d.crit].at = d.cplace; renderCrits(); renderOut(); persist(); return; }
+    if (d.lever) { state.lever = state.lever === d.lever ? "" : d.lever; renderLever(); renderOut(); persist(); return; }
+    if (b.id === "copyPush") {
+      var n = callsDone();
+      copy(pushPrompt(), b, $("pushStatus"), $("pushPre"), n < N ? "Copied, but only " + n + " of 6 calls are finished. Finish them for useful pushback." : "Copied. Paste it into a new chat and send.");
+      return;
+    }
+    if (b.id === "loadPush") {
+      var res = parsePush(state.pushReply), got = Object.keys(res).length, ps = $("pushStatus");
+      if (!got) { ps.className = "status err"; ps.textContent = "No pushback found. Paste the reply as is: one line per flag, starting with F1, F2 and so on."; return; }
+      state.push = res;
+      if (!state.orig) state.orig = state.calls.map(function (c) { return { gate: c.gate, at: c.at }; });
+      var miss = []; for (var m = 0; m < N; m++) if (!res[m]) miss.push(FLAGS[m].id);
+      var ch = 0; Object.keys(res).forEach(function (x) { if (res[x].verdict === "CHALLENGE") ch++; });
+      ps.className = "status " + (miss.length ? "err" : "ok");
+      ps.textContent = miss.length ? "Loaded " + got + " of 6. Missing: " + miss.join(", ") + ". Ask the model to answer those, add the lines, and load again."
+        : "Loaded all six. The lead challenged " + ch + ". Read each one under its flag, and change the calls it convinces you on.";
+      renderLab1(); renderOut(); persist();
+      if (window.innerWidth > 920) $("flags").scrollIntoView({ block: "start" });
+      return;
+    }
+    if (b.id === "specLoad") {
+      var s = parseSpec($("specPaste").value), st = $("specStatus");
+      if (!s.risk && !s.thresh) { st.className = "status err"; st.textContent = "No spec table found. Paste the whole file, including the rows that start with | Target risk | and | Threshold |."; return; }
+      var hc = state.crit.hard;
+      if (s.fail) hc.fail = s.fail; if (s.metric) hc.metric = s.metric; if (s.thresh) hc.thresh = s.thresh; if (s.method) hc.method = s.method;
+      if (!hc.at) { var f1 = state.calls[0]; hc.at = f1.gate === "hard" && f1.at ? f1.at : "staging"; }
+      ["fail", "metric", "thresh", "method"].forEach(function (f) { $("c-hard-" + f).value = hc[f] || ""; });
+      st.className = "status ok"; st.textContent = "Filled in from your eval spec. Check the threshold still reads as one number.";
+      renderCrits(); renderOut(); persist(); return;
+    }
+    if (b.id === "copyL1") { copy(mdL1(), b, $("statusL1"), $("mdL1"), "Copied. Paste it over gate-map.md in your repo, then commit."); return; }
+    if (b.id === "copyL2") { copy(mdL2(), b, $("statusL2"), $("mdL2"), "Copied. Paste it over launch-strategy.md in your repo, then commit."); return; }
+    if (b.id === "dlL1") { download("gate-map.md", mdL1(), $("statusL1")); return; }
+    if (b.id === "dlL2") { download("launch-strategy.md", mdL2(), $("statusL2")); return; }
+  });
+
+  document.addEventListener("change", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.rowsel) {
+      var k = d.rowsel, c = state.crit[k], i = Number(t.value);
+      c.row = i;
+      if (i > -1) {
+        var f = FLAGS[i]; c.fail = f.label; c.metric = f.metric; c.method = f.evalName; if (state.calls[i].at) c.at = state.calls[i].at;
+        ["fail", "metric", "method"].forEach(function (x) { $("c-" + k + "-" + x).value = c[x]; });
+      }
+      renderCrits(); renderLever(); renderOut(); persist();
+    }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.risk != null) { state.calls[Number(d.risk)].risk = t.value; var ri = Number(d.risk); var bb = $("badge-" + ri); bb.className = "pill " + (callDone(ri) ? "pass" : "neutral"); }
+    else if (d.crit && d.f) { state.crit[d.crit][d.f] = t.value; renderCrits(); if (d.crit === "soft") renderLever(); }
+    else if (t.id === "pushModel" || t.id === "pushReply" || t.id === "after" || t.id === "dsPlan" || t.id === "specPaste") { state[t.id] = t.value; }
+    else if (t.id === "dsName" || t.id === "dsCases") { state[t.id] = t.value; renderDs(); }
+    else if (t.id === "leverWill" || t.id === "leverUntil") { state[t.id] = t.value; renderLever(); }
+    else return;
+    renderOut(); persist();
+  });
+
+  /* ---------- Init ---------- */
+  buildFlags(); buildCrits();
+  ["pushModel", "pushReply", "after", "dsName", "dsCases", "dsPlan", "leverWill", "leverUntil"].forEach(function (id) { $(id).value = state[id] || ""; });
+  renderAll();
+})();
+</script>
