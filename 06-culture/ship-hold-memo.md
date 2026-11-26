@@ -21,3 +21,7 @@ _Evidence: the number from your repo that proves it._
 ## Next Step · Decision Needed
 
 _What you need the CPO to approve, and by when._
+
+## After the Pressure Test
+
+_What the feedback changed, or why you kept your memo._

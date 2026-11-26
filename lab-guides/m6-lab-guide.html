@@ -1,0 +1,578 @@
+<title>Module 6 Lab Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one lab: a work column (evidence bank, answer, arguments, ask) beside a sticky panel (live pyramid, the email the CPO reads, prompt, markdown). Same tokens as the Module 1 to 5 Lab Guides. */
+:root {
+  --paper: #F5F6F8; --surface: #FFFFFF; --ink: #161A22; --muted: #586071; --line: #DADFE7;
+  --accent: #2741C4; --accent-ink: #FFFFFF; --accent-soft: #E7EBFB;
+  --pass: #176B43; --pass-soft: #E2F2E9; --fail: #B0281F; --fail-soft: #FBE7E5;
+  --warn: #8A5A00; --warn-soft: #FBF0D9; --code-bg: #EEF0F4;
+  --p0: #B0281F; --p1: #B4541A; --p2: #8A6A00; --p3: #3E5B9A;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+    --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+    --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+    --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+    --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+  --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+  --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+  --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+  --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); }
+h2 { font-size: clamp(24px, 3.4vw, 30px); }
+h3 { font-size: 18px; }
+h4 { font-size: 15px; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font: 500 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+code { font-family: var(--mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 500 13px/1.2 var(--mono); color: var(--muted); }
+.brand b { color: var(--ink); font-weight: 500; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.tabs a:hover { border-color: var(--accent); }
+.tabs a span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+.hero { padding-block: 40px 28px; display: grid; gap: 14px; }
+.hero p.lede { font-size: 17px; max-width: 66ch; color: var(--muted); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+.lab { padding-block: 32px 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.lab-head { display: grid; gap: 10px; margin-bottom: 22px; max-width: 76ch; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--code-bg); color: var(--muted); }
+.row-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.legend > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; gap: 4px; font-size: 13.5px; align-content: start; }
+.legend b { font: 500 12.5px/1.2 var(--mono); color: var(--accent); }
+
+.steps-strip { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; counter-reset: s; }
+.steps-strip li { counter-increment: s; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 10px; font-size: 14px; align-items: start; }
+.steps-strip li::before { content: counter(s); font: 700 13px/28px var(--display); width: 28px; height: 28px; text-align: center; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+
+.work { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .work { grid-template-columns: minmax(0, 1fr); } }
+.col { min-width: 0; display: grid; gap: 18px; }
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); display: grid; gap: 14px; max-height: calc(100vh - 80px); overflow: auto; padding-bottom: 6px; min-width: 0; }
+@media (max-width: 920px) { .panel { position: static; max-height: none; overflow: visible; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.step-no { font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+button { font: 500 13px/1 var(--body); cursor: pointer; border-radius: 6px; padding: 8px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.copied { border-color: var(--pass); color: var(--pass); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+label.field, .field { display: grid; gap: 6px; min-width: 0; }
+.field > span:first-child { font-size: 13px; font-weight: 600; }
+.field > span:first-child em { font-weight: 400; font-style: normal; color: var(--muted); }
+input[type=text], textarea, select { width: 100%; font: 400 14px/1.5 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { resize: vertical; min-height: 70px; }
+textarea.mono { font: 400 12.5px/1.55 var(--mono); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.75; }
+select { padding-block: 7px; }
+.two { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .two { grid-template-columns: minmax(0,1fr); } }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex-wrap: wrap; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); padding: 7px 11px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip-btn { padding: 6px 10px; border-radius: 999px; font-size: 12.5px; }
+.chip-btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip-btn[aria-pressed="true"]::before { content: "✓ "; }
+
+.status { font-size: 13px; min-height: 1.2em; }
+.status.ok { color: var(--pass); }
+.status.err { color: var(--fail); }
+
+.ab { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .ab { grid-template-columns: minmax(0,1fr); } }
+.ab > div { background: var(--code-bg); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.ab .eyebrow { font-size: 11px; }
+.q { font-weight: 600; font-size: 15px; }
+.rid { font: 500 13px/1 var(--mono); color: var(--muted); }
+
+/* Check builders */
+.check { border-left: 3px solid var(--accent); }
+.check .role { font: 500 11.5px/1 var(--mono); color: var(--muted); }
+.returns { font-size: 13px; background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.returns b { font-weight: 600; }
+.warn-note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+
+/* Golden set browser */
+.golden { display: grid; gap: 8px; margin-top: 10px; }
+.golden article { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; }
+
+/* Results */
+.res-sum { display: grid; gap: 8px; }
+.res-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto auto; gap: 10px; align-items: center; font-size: 13.5px; padding-block: 6px; border-top: 1px solid var(--line); }
+.res-row:first-child { border-top: 0; }
+.res-row .nm { font-weight: 600; }
+.res-row .n { font: 500 12.5px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+.res-row.head { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.res-row.head .n { font-family: var(--mono); }
+.cov { display: grid; gap: 6px; padding: 10px 12px; border-radius: 6px; background: var(--code-bg); font-size: 13.5px; }
+.cov.strong { background: var(--pass-soft); }
+.cov.medium { background: var(--warn-soft); }
+.cov.weak { background: var(--fail-soft); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table.grid { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+table.grid th, table.grid td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.grid th { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); white-space: nowrap; }
+table.grid tr:last-child td { border-bottom: 0; }
+table.grid tr.target td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+table.grid tr.p0row td { background: var(--accent-soft); }
+table.grid td.qq { max-width: 230px; }
+table.grid td.why { color: var(--muted); max-width: 260px; }
+.mk { font: 500 12px/1 var(--mono); padding: 4px 7px; border-radius: 5px; white-space: nowrap; display: inline-block; }
+.mk.caught { background: var(--pass-soft); color: var(--pass); }
+.mk.missed { background: var(--fail-soft); color: var(--fail); }
+.mk.fa { background: var(--warn-soft); color: var(--warn); }
+.mk.ok { background: var(--code-bg); color: var(--muted); }
+.mk.other { background: var(--accent-soft); color: var(--accent); }
+.tgt { padding: 4px 8px; font-size: 12px; }
+.tgt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.keylist { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); align-items: center; }
+
+details summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+details pre, .md { margin: 8px 0 0; padding: 12px; background: var(--code-bg); border-radius: 6px; font: 400 12px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow: auto; }
+.empty { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 22px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+.readiness { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Lab 2 */
+.part { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; align-items: start; }
+.part .no { font: 700 15px/32px var(--display); width: 32px; height: 32px; text-align: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.part .body { display: grid; gap: 8px; min-width: 0; }
+.part .qline { font-size: 13px; color: var(--muted); }
+.evidence { font-size: 13px; color: var(--muted); background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.msg-meta { font-size: 12.5px; color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } button { transition: border-color .15s, box-shadow .15s, background-color .15s; } }
+
+/* Module 6 · evidence bank, pyramid and memo preview */
+.facts { display: grid; gap: 6px; }
+.fact { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 8px; align-items: start; font-size: 13.5px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.fact .src { font: 500 11px/1.3 var(--mono); color: var(--muted); }
+.fact.used { border-color: var(--pass); background: var(--pass-soft); }
+.seg.call button[data-call="SHIP"][aria-pressed="true"] { background: var(--pass); color: var(--paper); }
+.seg.call button[data-call="HOLD"][aria-pressed="true"] { background: var(--fail); color: var(--paper); }
+.arg { border-left: 3px solid var(--accent); }
+.pyr { display: grid; gap: 6px; justify-items: center; text-align: center; font-size: 12.5px; }
+.pyr > div { display: grid; gap: 6px; width: 100%; }
+.pyr .t { background: var(--accent); color: var(--accent-ink); border-radius: 6px; padding: 8px 10px; font-weight: 600; max-width: 92%; justify-self: center; }
+.pyr .row3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 6px; }
+.pyr .a { background: var(--accent-soft); color: var(--accent); border-radius: 6px; padding: 6px 8px; font-weight: 600; min-width: 0; overflow-wrap: anywhere; }
+.pyr .e { background: var(--code-bg); color: var(--muted); border-radius: 6px; padding: 6px 8px; font-family: var(--mono); font-size: 11.5px; min-width: 0; overflow-wrap: anywhere; }
+.pyr .empty-slot { opacity: 0.5; font-style: italic; }
+.email { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); font-size: 14px; overflow: hidden; }
+.email .eh { background: var(--code-bg); padding: 8px 12px; font: 500 12px/1.4 var(--mono); color: var(--muted); display: grid; gap: 2px; }
+.email .eb { padding: 12px 14px; display: grid; gap: 10px; }
+.email ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.email .ask { font-weight: 600; }
+</style>
+
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>AI Evals</b> · Module 6 Lab Guide</div>
+    <nav class="tabs" aria-label="Lab">
+      <a href="#lab1"><span>Lab</span>Write your ship-or-hold memo</a>
+      <a href="#showcase"><span>Next</span>Finalize your deliverables</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="eyebrow">Module 6 · Make Evals the Way the Org Ships</div>
+    <h1>Module 6 Lab Guide</h1>
+    <p class="lede">Your evals for Ascend IQ are done. The CPO has to decide whether it ships to enterprise clients next sprint, and wants your recommendation in one memo. Use the evidence in your own repo, make the call, and write it answer first.</p>
+    <div class="meta">
+      <span><b>You need:</b> any LLM, plus your repo files from Modules 2 to 5</span>
+      <span><b>Saves to:</b> <code>06-culture/ship-hold-memo.md</code></span>
+      <span><b>Your work:</b> kept in this browser as you go</span>
+    </div>
+  </section>
+
+  <section class="lab" id="lab1">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab · 15 min</span><span class="pill pass">Graded · ship-hold-memo.md</span></div>
+        <h2>Write Your Ship-or-Hold Memo</h2>
+        <p class="muted">Executives read the first line and decide whether to keep going. The Pyramid Principle puts the recommendation first, so the call is clear even if they read nothing else. There's no right answer to ship or hold. What matters is that clear evidence backs up your call.</p>
+      </div>
+
+      <div class="legend" aria-label="Your memo, top to bottom">
+        <div><b>The Answer</b><span>Your call and the reason, in one sentence.</span></div>
+        <div><b>The Arguments</b><span>Two or three main points that don't overlap.</span></div>
+        <div><b>The Evidence</b><span>The number from your repo that proves each point.</span></div>
+        <div><b>The Ask</b><span>The decision you need, and by when.</span></div>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Gather your numbers.</b> Paste your files from Modules 2 to 5. The page pulls out the numbers you can cite.</span></li>
+        <li><span><b>Make the call.</b> Pick Ship or Hold, and write one sentence with your call and the reason.</span></li>
+        <li><span><b>Back it up.</b> Two or three main points, each with the number that proves it. Then the ask: what the CPO approves, and by when.</span></li>
+        <li><span><b>Pressure-test and save.</b> Copy the prompt into any LLM. Note what changed, then copy the markdown over <code>06-culture/ship-hold-memo.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <div class="card">
+            <div class="card-head"><span class="step-no">Step 1 · Your evidence</span><span class="pill neutral" id="factCount">0 numbers found</span></div>
+            <p class="small muted">Open each file in your repo, copy all of it, and paste it below. You can paste several files at once: <code>audit-log.md</code>, <code>failure-taxonomy.md</code>, <code>eval-suite.md</code>, <code>eval-spec.md</code>, <code>gate-map.md</code>, <code>launch-strategy.md</code>, <code>coverage-matrix.md</code> and <code>eval-budget.md</code>.</p>
+            <textarea id="repoPaste" class="mono" rows="5" placeholder="Paste one or more of your repo files here"></textarea>
+            <div class="btns"><button type="button" class="primary" id="readRepo">Find my numbers</button><span class="status" id="repoStatus" role="status"></span></div>
+            <div class="facts" id="facts"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 2 · The answer</span>
+            <div class="seg call" role="group" aria-label="Your call"><button type="button" data-call="SHIP">Ship</button><button type="button" data-call="HOLD">Hold</button></div>
+            <label class="field"><span>Your call and the reason, in one sentence</span><textarea id="answer" rows="2" placeholder="e.g. I recommend we hold Ascend IQ's enterprise launch for one sprint, until invented statistics are blocked by a Hard gate, to protect renewals from the top 50 accounts."></textarea></label>
+            <div id="ansWarn"></div>
+          </div>
+
+          <div class="card-head"><h3>Step 3 · The arguments</h3><span class="pill neutral" id="argCount">0 of 2 written</span></div>
+          <div id="args" style="display:grid;gap:14px"></div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · The ask</span>
+            <label class="field"><span>What you need the CPO to approve</span><input type="text" id="ask" placeholder="e.g. Approve a one-sprint hold and the Hard gate on invented statistics"></label>
+            <label class="field"><span>By when</span><input type="text" id="by" placeholder="e.g. Friday, before sprint planning"></label>
+            <div id="askWarn"></div>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="Memo controls">
+          <div class="card">
+            <span class="step-no">Your pyramid</span>
+            <div class="pyr" id="pyr"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">What the CPO reads</span>
+            <div class="email" id="email"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 4 · Pressure-test your memo</span>
+            <div class="readiness" id="ready"></div>
+            <div class="btns"><button type="button" class="primary" id="copyPt">Copy pressure-test prompt</button></div>
+            <p class="small muted">Paste it into a new chat and send. Change anything it convinces you on, in your own words.</p>
+            <details><summary>Preview the prompt</summary><pre id="ptPre"></pre></details>
+            <label class="field"><span>Model you ran it in</span><input type="text" id="ptModel" placeholder="e.g. ChatGPT"></label>
+            <label class="field"><span>What the feedback changed <em>· or why you kept your memo</em></span><textarea id="ptAfter" rows="3" placeholder="e.g. It said my second point repeated the first, so I swapped it for the eval budget gap."></textarea></label>
+            <div class="status" id="ptStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save ship-hold-memo.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyMd">Copy markdown</button><button type="button" id="dlMd" hidden>Download .md</button></div></div>
+            <div class="status" id="statusMd" role="status"></div>
+            <details><summary>Preview ship-hold-memo.md</summary><pre id="md"></pre></details>
+            <p class="small muted">Open <code>06-culture/ship-hold-memo.md</code> in your repo, click the pencil icon, paste over the whole file, and commit.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section class="lab" id="showcase">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Next · 15 min</span><span class="pill neutral">Final project</span></div>
+        <h2>Finalize Your Deliverables</h2>
+        <p class="muted">Turn the work in your repo into your final project presentation.</p>
+      </div>
+      <ol class="steps-strip">
+        <li><span><b>Open the Final Project Deliverables Builder,</b> and paste your repo link.</span></li>
+        <li><span><b>Check each card it fills in,</b> and fill in anything still blank.</span></li>
+        <li><span><b>Add what isn't in your repo:</b> your title, your one-line pitch, and your insights: friction points, key learnings and your aha moment.</span></li>
+        <li><span><b>Download <code>final-presentation.html</code>,</b> and submit it with your repo link.</span></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Showcase.</b> Two or three volunteers present for about seven minutes each, and the audience asks one question after each.</p>
+    <p>Ascend Analytics, Ascend IQ and every figure in this course are a fictional teaching scenario.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- State ---------- */
+  var KEY = "ai-evals-m6-lab-guide-v1";
+  function blankArg() { return { point: "", fact: "", ev: "" }; }
+  var state = { repoPaste: "", facts: [], call: "", answer: "", args: [blankArg(), blankArg(), blankArg()], ask: "", by: "", ptModel: "", ptAfter: "" };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && typeof saved === "object") Object.keys(state).forEach(function (k) { if (k in saved) state[k] = saved[k]; });
+  } catch (e) {}
+  if (!Array.isArray(state.args) || state.args.length !== 3) state.args = [blankArg(), blankArg(), blankArg()];
+  if (!Array.isArray(state.facts)) state.facts = [];
+  var saveT = null;
+  function persist() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250); }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(s) { return String(s || "").trim(); }
+  function one(s) { return clean(s).replace(/\s*\n+\s*/g, " "); }
+  function strip(s) { return String(s || "").replace(/[*_`]/g, "").trim(); }
+  function warnHtml(w) { return w.map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join(""); }
+  function words(s) { var c = clean(s); return c ? c.split(/\s+/).length : 0; }
+
+  /* ---------- Evidence extraction ---------- */
+  function cells(line) { return line.replace(/\\\|/g, "/").split("|").map(function (c) { return strip(c); }).slice(1, -1); }
+  function readRepo(text) {
+    var facts = [], seen = {};
+    function add(src, t) { t = one(t).replace(/\s+\./g, "."); if (!t || seen[t]) return; seen[t] = 1; facts.push({ id: "f" + facts.length, src: src, t: t }); }
+    var parts = String(text || "").split(/\n(?=# )/);
+    parts.forEach(function (p) {
+      var head = (p.match(/^#\s+(.+)$/m) || [])[1] || "", lines = p.split(/\n/);
+      if (/Failure Audit/i.test(head)) {
+        var m = p.match(/(\d+) logs audited\.([^\n]*)/i);
+        if (m) {
+          var f = m[2].match(/(\d+) failures are confirmed:?\s*([^.\n]*)/i), j = m[2].match(/judge[^,]*failed (\d+)/i), o = m[2].match(/overrode (\d+)/i);
+          if (f) add("audit-log.md", f[1] + " of " + m[1] + " audited answers failed (" + Math.round(f[1] / m[1] * 100) + "%)" + (f[2] ? ": " + f[2] : ""));
+          if (j && o) add("audit-log.md", "The LLM judge failed " + j[1] + "; I overrode " + o[1] + " of its calls");
+        }
+      } else if (/Failure Taxonomy/i.test(head)) {
+        lines.forEach(function (l) { if (/^\|\s*1\s*\|/.test(l)) { var c = cells(l); if (c.length >= 6) add("failure-taxonomy.md", "#1 risk: " + c[1] + ", " + c[2] + ", frequency " + c[3] + ", " + c[5]); } });
+        var im = p.match(/This failure matters because[^\n]+/i); if (im) add("failure-taxonomy.md", im[0]);
+      } else if (/Eval Suite/i.test(head)) {
+        var rows = 0;
+        lines.forEach(function (l) { var c = cells(l); if (c.length >= 4 && /^(Rule check|Safety rule|Judge)$/i.test(c[0]) && /\d/.test(c[1])) { rows++; add("eval-suite.md", c[0] + " caught " + c[1] + " rows that show the P0" + (c[3] && c[3] !== "—" ? ", with false alarms on " + c[3] : "")); } });
+        var cv = p.match(/Coverage for this failure:\s*\**(\w+)\**/i); if (cv) add("eval-suite.md", "Coverage for the P0 is " + cv[1] + "; a P0 needs Strong");
+      } else if (/Eval Spec/i.test(head)) {
+        lines.forEach(function (l) { var c = cells(l); if (c.length >= 2 && /^Threshold$/i.test(c[0])) add("eval-spec.md", "Spec threshold: " + c[1]); });
+        var ev = p.match(/Lab 1 evidence[^\n]*/i); if (ev && !rowsFromSuite(facts)) add("eval-spec.md", ev[0].replace(/^Lab 1 evidence,?\s*/i, ""));
+      } else if (/Gate Map/i.test(head)) {
+        var tt = p.match(/Totals:\s*([^\n]+)/i); if (tt) add("gate-map.md", "Gate map: " + tt[1].replace(/\.$/, ""));
+        var ch = p.match(/It challenged ([^\n.]+)/i); if (ch) add("gate-map.md", "The engineering lead challenged " + ch[1]);
+      } else if (/Launch Strategy/i.test(head)) {
+        lines.forEach(function (l) { var c = cells(l); if (c.length >= 4 && /^(Hard|Soft|Advisory)$/i.test(c[0]) && c[3] && c[3] !== "—") add("launch-strategy.md", c[0] + " gate on " + c[1] + ": " + c[3]); });
+        var ds = p.match(/\*\*Dataset:\*\*\s*([^\n]+)/i); if (ds) add("launch-strategy.md", "Golden set: " + ds[1].split(/\.\s/)[0].replace(/\.$/, ""));
+      } else if (/Coverage Matrix/i.test(head)) {
+        var prod = head.split("·").pop().trim();
+        lines.forEach(function (l) { if (/^\|\s*\*\*/.test(l)) { var c = cells(l), gaps = 0, parts2 = 0; c.slice(1).forEach(function (x) { if (/❌/.test(x)) gaps++; else if (/⚠️/.test(x)) parts2++; }); add("coverage-matrix.md", prod + ": " + gaps + " of 5 trust metrics have no check, and " + parts2 + " more are only partly covered"); } });
+        var iq = lines.filter(function (l) { return /^\|\s*Ascend IQ/.test(l); })[0];
+        if (iq) { var MN = ["Hallucination Rate", "Fairness", "Latency", "UX Trust", "Robustness"], ic = cells(iq).slice(1), gn = MN.filter(function (n, k) { return /❌/.test(ic[k] || ""); }); if (gn.length) add("coverage-matrix.md", "Ascend IQ: " + gn.length + " of 5 trust metrics have no check (" + gn.join(" and ") + ")"); }
+      } else if (/Eval Budget/i.test(head)) {
+        var on = p.match(/\*\*Online eval spend:\*\*\s*([^\n]+)/i), tot = p.match(/\*\*Total spend:\*\*\s*([^\n]+)/i);
+        if (on) add("eval-budget.md", "Online eval spend: " + strip(on[1]));
+        if (tot) add("eval-budget.md", "Total eval spend: " + strip(tot[1]) + " of $200,000");
+        lines.forEach(function (l) { var c = cells(l); if (c.length >= 5 && /^P[01]$/.test(c[2]) && !/Online/i.test(c[3])) add("eval-budget.md", c[0].replace(/^B\d\s*·\s*/, "") + " (" + c[2] + ") runs as a " + c[3].toLowerCase() + ", not an online eval"); });
+      }
+    });
+    return facts;
+  }
+  function rowsFromSuite(facts) { return facts.some(function (f) { return f.src === "eval-suite.md"; }); }
+  function fact(id) { for (var i = 0; i < state.facts.length; i++) if (state.facts[i].id === id) return state.facts[i]; return null; }
+
+  /* ---------- Render ---------- */
+  function renderFacts() {
+    var used = {}; state.args.forEach(function (a) { if (a.fact) used[a.fact] = 1; });
+    $("facts").innerHTML = state.facts.map(function (f) { return '<div class="fact' + (used[f.id] ? " used" : "") + '"><span>' + esc(f.t) + '</span><span class="src">' + esc(f.src) + "</span></div>"; }).join("");
+    $("factCount").className = "pill " + (state.facts.length ? "pass" : "neutral"); $("factCount").textContent = state.facts.length + " number" + (state.facts.length === 1 ? "" : "s") + " found";
+  }
+  function buildArgs() {
+    $("args").innerHTML = state.args.map(function (a, i) {
+      return '<div class="card arg"><div class="card-head"><span class="step-no">Argument ' + (i + 1) + (i === 2 ? " · optional" : "") + "</span></div>" +
+        '<label class="field"><span>Main point</span><input type="text" id="point-' + i + '" data-point="' + i + '" placeholder="' + (i === 0 ? "e.g. Ascend IQ still invents statistics our clients would repeat to their boards" : i === 1 ? "e.g. Nothing blocks a release on that failure yet" : "e.g. Two of five trust metrics have no check at all") + '"></label>' +
+        '<label class="field"><span>Evidence from your repo</span><select id="fact-' + i + '" data-fact="' + i + '"></select></label>' +
+        '<label class="field"><span>The evidence, as you\'ll say it</span><input type="text" id="ev-' + i + '" data-ev="' + i + '" placeholder="Pick a number above, then edit it into your own words"></label>' +
+        '<div id="argWarn-' + i + '"></div></div>';
+    }).join("");
+    state.args.forEach(function (a, i) { $("point-" + i).value = a.point; $("ev-" + i).value = a.ev; });
+  }
+  function renderArgSelects() {
+    state.args.forEach(function (a, i) {
+      $("fact-" + i).innerHTML = '<option value="">' + (state.facts.length ? "Choose a number" : "Find your numbers in Step 1 first") + "</option>" + state.facts.map(function (f) {
+        return '<option value="' + f.id + '"' + (a.fact === f.id ? " selected" : "") + ">" + esc(f.src + " · " + (f.t.length > 80 ? f.t.slice(0, 78) + "…" : f.t)) + "</option>";
+      }).join("");
+    });
+  }
+  function argDone(i) { var a = state.args[i]; return clean(a.point) && clean(a.ev); }
+  function argsDone() { return state.args.filter(function (a, i) { return argDone(i); }).length; }
+  function renderWarns() {
+    var w = [], a = one(state.answer);
+    if (a && state.call && !new RegExp("\\b" + (state.call === "SHIP" ? "ship|launch|release|unlock|go ahead" : "hold|delay|pause|wait") , "i").test(a)) w.push("Say the call itself in the sentence, so it's clear even if the CPO reads nothing else.");
+    if (a && !state.call) w.push("Pick Ship or Hold above.");
+    if (words(a) > 40) w.push("That's " + words(a) + " words. Keep the answer to one sentence the CPO can read in one breath, and move the detail into your arguments.");
+    if (a && !/\b(because|to protect|so that|so we|until|since|while)\b/i.test(a)) w.push("Add the reason: why this call, in a few words.");
+    $("ansWarn").innerHTML = warnHtml(w);
+    state.args.forEach(function (x, i) {
+      var aw = [];
+      if (clean(x.point) && !clean(x.ev)) aw.push("Add the evidence: a number from your repo.");
+      if (clean(x.ev) && !/\d/.test(x.ev)) aw.push("The evidence needs a number, so the CPO can check it.");
+      for (var j = 0; j < i; j++) if (x.fact && x.fact === state.args[j].fact) aw.push("Argument " + (j + 1) + " uses the same evidence. Each argument should stand on its own number.");
+      if (words(x.point) > 30) aw.push("Keep the main point to one line. The evidence carries the detail.");
+      var nums = (one(x.point).match(/\d+(?:\.\d+)?%?/g) || []).filter(function (n) { return one(x.ev).indexOf(n) < 0; });
+      if (clean(x.ev) && nums.length) aw.push("Your point says " + nums.map(function (n) { return "“" + n + "”"; }).join(" and ") + ", but the evidence doesn't. Pick the number that proves this point, or change the point.");
+      var fx = fact(x.fact);
+      if (fx && one(x.ev) === fx.t) aw.push("This is the raw line from your repo. Reword it the way the CPO would say it, for example: “6 of our 20 test answers invented a statistic.”");
+      $("argWarn-" + i).innerHTML = warnHtml(aw);
+    });
+    var k = [];
+    if (clean(state.ask) && !clean(state.by)) k.push("Say by when. A decision with no date doesn't get made.");
+    if (clean(state.by) && !/\d|monday|tuesday|wednesday|thursday|friday|saturday|sunday|today|tomorrow|week|sprint|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec/i.test(state.by)) k.push("Make the deadline a day or a date.");
+    if (/\b(thoughts|feedback|let me know|what do you think)\b/i.test(state.ask)) k.push("Ask for a decision, not for thoughts. The CPO should be able to say yes or no.");
+    $("askWarn").innerHTML = warnHtml(k);
+    var pa = clean(state.ptAfter);
+    $("ptStatus").className = "status" + (pa && (words(pa) > 80 || /\n\s*([-*•]|\d+\\?\.)\s/.test(pa)) ? " err" : "");
+    $("ptStatus").textContent = pa && (words(pa) > 80 || /\n\s*([-*•]|\d+\\?\.)\s/.test(pa)) ? "This reads like the feedback itself. Say in two or three lines what you changed because of it, or why you kept your memo." : "";
+    var n = argsDone(); $("argCount").className = "pill " + (n >= 2 ? "pass" : "neutral"); $("argCount").textContent = n + " of 2 written" + (n > 2 ? " · plus 1" : "");
+  }
+  function argList() { return state.args.map(function (a, i) { return { i: i, point: one(a.point), ev: one(a.ev) }; }).filter(function (a) { return a.point || a.ev; }); }
+  function renderPyr() {
+    var A = argList();
+    var h = '<div><div class="t' + (clean(state.answer) ? "" : " empty-slot") + '">' + esc(one(state.answer) || "The answer: your call and the reason") + "</div></div>";
+    var slots = A.length ? A : [{ point: "", ev: "" }, { point: "", ev: "" }];
+    h += '<div class="row3">' + slots.map(function (a) { return '<div class="a' + (a.point ? "" : " empty-slot") + '">' + esc(a.point || "An argument") + "</div>"; }).join("") + "</div>";
+    h += '<div class="row3">' + slots.map(function (a) { return '<div class="e' + (a.ev ? "" : " empty-slot") + '">' + esc(a.ev || "Its number") + "</div>"; }).join("") + "</div>";
+    $("pyr").innerHTML = h;
+    var by = one(state.by);
+    $("email").innerHTML = '<div class="eh"><span>To: CPO, Ascend Analytics</span><span>Subject: Ascend IQ · ' + (state.call ? (state.call === "SHIP" ? "Recommend we ship" : "Recommend we hold") : "Ship or hold") + "</span></div>" +
+      '<div class="eb"><p>' + esc(one(state.answer) || "Your answer goes here, first.") + "</p>" +
+      (A.length ? "<ol>" + A.map(function (a) { return "<li>" + esc(a.point || "…") + (a.ev ? ": " + esc(a.ev) : "") + "</li>"; }).join("") + "</ol>" : "") +
+      '<p class="ask">' + esc(clean(state.ask) ? one(state.ask).replace(/[.]+$/, "") + (by ? " by " + by.replace(/^by\s+/i, "").replace(/[.]+$/, "") : "") + "." : "Your ask goes here, last.") + "</p></div>";
+  }
+  function ptPrompt() {
+    var A = argList();
+    var L = ["You're the CPO of Ascend Analytics, a B2B market-intelligence company whose clients pay $50,000+ a year for verified data. You have to decide whether Ascend IQ, an AI agent that answers market-intelligence questions, unlocks for the top 50 enterprise accounts next sprint. Sales is already promoting it.", "",
+      "A PM has sent you the memo below. Read it as a busy executive would, then pressure-test it. Reply in under 200 words:", "1. After the first sentence alone, do you know the call and the reason?", "2. Do the arguments overlap, or does each stand on its own?", "3. Does each argument have a number that proves it? Which number is weakest?", "4. Could you say yes or no to the ask today? What would you still need?", "",
+      "=== The memo ===", "", "Decision: " + (state.call || "[not chosen]"), "", one(state.answer) || "[no answer yet]", ""];
+    A.forEach(function (a, i) { L.push((i + 1) + ". " + (a.point || "[no point]") + " Evidence: " + (a.ev || "[no evidence]")); });
+    L.push("", "Ask: " + (one(state.ask) || "[no ask yet]") + (clean(state.by) ? " By: " + one(state.by) : ""));
+    return L.join("\n");
+  }
+  function mdOut() {
+    var A = argList();
+    var L = ["# Ship-or-Hold Memo · Ascend IQ", "", "> **Decision:** " + (state.call || "_SHIP or HOLD_"), "", "## The Answer", "", one(state.answer) || "_Your call and the reason for it, in one sentence._", "", "## The Arguments", ""];
+    if (!A.length) L.push("### 1. _Main point_", "", "_Evidence: the number from your repo that proves it._", "", "### 2. _Main point_", "", "_Evidence: the number from your repo that proves it._", "");
+    A.forEach(function (a, i) {
+      var f = fact(state.args[a.i].fact);
+      L.push("### " + (i + 1) + ". " + (a.point || "_Main point_"), "", "**Evidence:** " + (a.ev || "_the number from your repo that proves it._") + (f ? " _(from " + f.src + ")_" : ""), "");
+    });
+    L.push("## Next Step · Decision Needed", "", clean(state.ask) ? one(state.ask).replace(/[.]+$/, "") + (clean(state.by) ? ", by " + one(state.by).replace(/^by\s+/i, "").replace(/[.]+$/, "") : "") + "." : "_What you need the CPO to approve, and by when._");
+    L.push("", "## After the Pressure Test", "", (clean(state.ptModel) ? "Pressure-tested in " + clean(state.ptModel) + ". " : "") + (clean(state.ptAfter) || "_What the feedback changed, or why you kept your memo._"));
+    return L.join("\n").trim() + "\n";
+  }
+  function ready() {
+    function q(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    $("ready").innerHTML = q(state.call && clean(state.answer), "Answer") + q(argsDone() >= 2, "2+ arguments") + q(clean(state.ask) && clean(state.by), "Ask and deadline");
+  }
+  function renderCall() { document.querySelectorAll("[data-call]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.call === state.call)); }); }
+  function renderOut() { renderPyr(); renderFacts(); $("ptPre").textContent = ptPrompt(); $("md").textContent = mdOut(); ready(); }
+  function renderAll() { renderCall(); renderArgSelects(); renderWarns(); renderOut(); }
+
+  /* ---------- Copy / download ---------- */
+  function flash(btn, t) { var o = btn.textContent; btn.textContent = t; btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); }
+  function selectPre(pre) { try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function copy(text, btn, statusEl, pre, okMsg) {
+    var done = function () { flash(btn, "Copied"); if (statusEl) { statusEl.className = "status ok"; statusEl.textContent = okMsg || "Copied."; } };
+    var fail = function () {
+      if (pre) { var d = pre.closest("details"); if (d) d.open = true; selectPre(pre); }
+      if (statusEl) { statusEl.className = "status err"; statusEl.textContent = "Your browser blocked the copy. The text is selected: press Ctrl+C or ⌘C."; }
+    };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail(); } catch (e) { fail(); }
+  }
+  var dl = null;
+  try {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (ns) { if (ns) { dl = ns; $("dlMd").hidden = false; } }, function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b || b.disabled) return;
+    var d = b.dataset;
+    if (d.call) { state.call = d.call; renderCall(); renderWarns(); renderOut(); persist(); return; }
+    if (b.id === "readRepo") {
+      var f = readRepo($("repoPaste").value), st = $("repoStatus");
+      if (!f.length) { st.className = "status err"; st.textContent = "No numbers found. Paste whole files, starting from the line that begins with #."; return; }
+      var keep = {}; state.args.forEach(function (a) { if (a.fact) keep[a.fact] = fact(a.fact); });
+      state.facts = f;
+      state.args.forEach(function (a) { if (a.fact) { var old = keep[a.fact], hit = old && f.filter(function (x) { return x.t === old.t; })[0]; a.fact = hit ? hit.id : ""; } });
+      var srcs = {}; f.forEach(function (x) { srcs[x.src] = 1; });
+      st.className = "status ok"; st.textContent = "Found " + f.length + " numbers in " + Object.keys(srcs).length + " file" + (Object.keys(srcs).length === 1 ? "" : "s") + ". Pick the ones that prove your call.";
+      renderAll(); persist(); return;
+    }
+    if (b.id === "copyPt") { copy(ptPrompt(), b, $("ptStatus"), $("ptPre"), argsDone() < 2 ? "Copied, but your memo has fewer than 2 arguments." : "Copied. Paste it into a new chat and send."); return; }
+    if (b.id === "copyMd") { copy(mdOut(), b, $("statusMd"), $("md"), "Copied. Paste it over ship-hold-memo.md in your repo, then commit."); return; }
+    if (b.id === "dlMd" && dl) {
+      dl.save({ filename: "ship-hold-memo.md", data: mdOut() }).then(function () { $("statusMd").className = "status ok"; $("statusMd").textContent = "Saved ship-hold-memo.md. Upload it to 06-culture/ in your repo."; },
+        function (err) { var s = $("statusMd"); if (err && err.code === "declined") { s.className = "status"; s.textContent = "Download cancelled."; return; } s.className = "status err"; s.textContent = "Downloads aren't available here. Use Copy markdown instead."; $("dlMd").hidden = true; });
+      return;
+    }
+  });
+  document.addEventListener("change", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.fact != null) {
+      var i = Number(d.fact), a = state.args[i]; a.fact = t.value;
+      var f = fact(t.value); if (f) { a.ev = f.t; $("ev-" + i).value = f.t; }
+      renderWarns(); renderOut(); persist();
+    }
+  });
+  document.addEventListener("input", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.point != null) state.args[Number(d.point)].point = t.value;
+    else if (d.ev != null) state.args[Number(d.ev)].ev = t.value;
+    else if (["repoPaste", "answer", "ask", "by", "ptModel", "ptAfter"].indexOf(t.id) > -1) state[t.id] = t.value;
+    else return;
+    renderWarns(); renderOut(); persist();
+  });
+
+  /* ---------- Init ---------- */
+  buildArgs();
+  ["repoPaste", "answer", "ask", "by", "ptModel", "ptAfter"].forEach(function (id) { $(id).value = state[id] || ""; });
+  renderAll();
+})();
+</script>

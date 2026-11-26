@@ -78,5 +78,6 @@ ai-evals/
     ├── m2-lab-guide.html             source for the Module 2 Lab Guide
     ├── m3-lab-guide.html             source for the Module 3 Lab Guide
     ├── m4-lab-guide.html             source for the Module 4 Lab Guide
-    └── m5-lab-guide.html             source for the Module 5 Lab Guide
+    ├── m5-lab-guide.html             source for the Module 5 Lab Guide
+    └── m6-lab-guide.html             source for the Module 6 Lab Guide
 ```
