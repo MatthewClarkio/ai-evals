@@ -1,0 +1,805 @@
+<title>Module 5 Lab Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: each lab is a work column (product marks and gaps / five budget cards) beside a sticky panel (portfolio matrix or budget meter, prompt, markdown). Same tokens as the Module 1 to 4 Lab Guides. */
+:root {
+  --paper: #F5F6F8; --surface: #FFFFFF; --ink: #161A22; --muted: #586071; --line: #DADFE7;
+  --accent: #2741C4; --accent-ink: #FFFFFF; --accent-soft: #E7EBFB;
+  --pass: #176B43; --pass-soft: #E2F2E9; --fail: #B0281F; --fail-soft: #FBE7E5;
+  --warn: #8A5A00; --warn-soft: #FBF0D9; --code-bg: #EEF0F4;
+  --p0: #B0281F; --p1: #B4541A; --p2: #8A6A00; --p3: #3E5B9A;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+    --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+    --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+    --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+    --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+  --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+  --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+  --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+  --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); }
+h2 { font-size: clamp(24px, 3.4vw, 30px); }
+h3 { font-size: 18px; }
+h4 { font-size: 15px; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font: 500 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+code { font-family: var(--mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 500 13px/1.2 var(--mono); color: var(--muted); }
+.brand b { color: var(--ink); font-weight: 500; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.tabs a:hover { border-color: var(--accent); }
+.tabs a span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+.hero { padding-block: 40px 28px; display: grid; gap: 14px; }
+.hero p.lede { font-size: 17px; max-width: 66ch; color: var(--muted); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+.lab { padding-block: 32px 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.lab-head { display: grid; gap: 10px; margin-bottom: 22px; max-width: 76ch; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--code-bg); color: var(--muted); }
+.row-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.legend > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; gap: 4px; font-size: 13.5px; align-content: start; }
+.legend b { font: 500 12.5px/1.2 var(--mono); color: var(--accent); }
+
+.steps-strip { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; counter-reset: s; }
+.steps-strip li { counter-increment: s; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 10px; font-size: 14px; align-items: start; }
+.steps-strip li::before { content: counter(s); font: 700 13px/28px var(--display); width: 28px; height: 28px; text-align: center; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+
+.work { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .work { grid-template-columns: minmax(0, 1fr); } }
+.col { min-width: 0; display: grid; gap: 18px; }
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); display: grid; gap: 14px; max-height: calc(100vh - 80px); overflow: auto; padding-bottom: 6px; min-width: 0; }
+@media (max-width: 920px) { .panel { position: static; max-height: none; overflow: visible; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.step-no { font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+button { font: 500 13px/1 var(--body); cursor: pointer; border-radius: 6px; padding: 8px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.copied { border-color: var(--pass); color: var(--pass); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+label.field, .field { display: grid; gap: 6px; min-width: 0; }
+.field > span:first-child { font-size: 13px; font-weight: 600; }
+.field > span:first-child em { font-weight: 400; font-style: normal; color: var(--muted); }
+input[type=text], textarea, select { width: 100%; font: 400 14px/1.5 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { resize: vertical; min-height: 70px; }
+textarea.mono { font: 400 12.5px/1.55 var(--mono); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.75; }
+select { padding-block: 7px; }
+.two { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .two { grid-template-columns: minmax(0,1fr); } }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex-wrap: wrap; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); padding: 7px 11px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip-btn { padding: 6px 10px; border-radius: 999px; font-size: 12.5px; }
+.chip-btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip-btn[aria-pressed="true"]::before { content: "✓ "; }
+
+.status { font-size: 13px; min-height: 1.2em; }
+.status.ok { color: var(--pass); }
+.status.err { color: var(--fail); }
+
+.ab { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .ab { grid-template-columns: minmax(0,1fr); } }
+.ab > div { background: var(--code-bg); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.ab .eyebrow { font-size: 11px; }
+.q { font-weight: 600; font-size: 15px; }
+.rid { font: 500 13px/1 var(--mono); color: var(--muted); }
+
+/* Check builders */
+.check { border-left: 3px solid var(--accent); }
+.check .role { font: 500 11.5px/1 var(--mono); color: var(--muted); }
+.returns { font-size: 13px; background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.returns b { font-weight: 600; }
+.warn-note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+
+/* Golden set browser */
+.golden { display: grid; gap: 8px; margin-top: 10px; }
+.golden article { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; }
+
+/* Results */
+.res-sum { display: grid; gap: 8px; }
+.res-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto auto; gap: 10px; align-items: center; font-size: 13.5px; padding-block: 6px; border-top: 1px solid var(--line); }
+.res-row:first-child { border-top: 0; }
+.res-row .nm { font-weight: 600; }
+.res-row .n { font: 500 12.5px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+.res-row.head { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.res-row.head .n { font-family: var(--mono); }
+.cov { display: grid; gap: 6px; padding: 10px 12px; border-radius: 6px; background: var(--code-bg); font-size: 13.5px; }
+.cov.strong { background: var(--pass-soft); }
+.cov.medium { background: var(--warn-soft); }
+.cov.weak { background: var(--fail-soft); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table.grid { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+table.grid th, table.grid td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.grid th { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); white-space: nowrap; }
+table.grid tr:last-child td { border-bottom: 0; }
+table.grid tr.target td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+table.grid tr.p0row td { background: var(--accent-soft); }
+table.grid td.qq { max-width: 230px; }
+table.grid td.why { color: var(--muted); max-width: 260px; }
+.mk { font: 500 12px/1 var(--mono); padding: 4px 7px; border-radius: 5px; white-space: nowrap; display: inline-block; }
+.mk.caught { background: var(--pass-soft); color: var(--pass); }
+.mk.missed { background: var(--fail-soft); color: var(--fail); }
+.mk.fa { background: var(--warn-soft); color: var(--warn); }
+.mk.ok { background: var(--code-bg); color: var(--muted); }
+.mk.other { background: var(--accent-soft); color: var(--accent); }
+.tgt { padding: 4px 8px; font-size: 12px; }
+.tgt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.keylist { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); align-items: center; }
+
+details summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+details pre, .md { margin: 8px 0 0; padding: 12px; background: var(--code-bg); border-radius: 6px; font: 400 12px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow: auto; }
+.empty { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 22px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+.readiness { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Lab 2 */
+.part { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; align-items: start; }
+.part .no { font: 700 15px/32px var(--display); width: 32px; height: 32px; text-align: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.part .body { display: grid; gap: 8px; min-width: 0; }
+.part .qline { font-size: 13px; color: var(--muted); }
+.evidence { font-size: 13px; color: var(--muted); background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.msg-meta { font-size: 12.5px; color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } button { transition: border-color .15s, box-shadow .15s, background-color .15s; } }
+
+/* Module 5 · coverage matrix and budget */
+.prod-pick { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.prod-btn { text-align: left; display: grid; gap: 4px; padding: 12px; line-height: 1.4; }
+.prod-btn b { font: 700 15px/1.2 var(--display); }
+.prod-btn .k { font: 500 11px/1 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.prod-btn span:last-child { font-size: 13px; color: var(--muted); font-weight: 400; }
+.prod-btn[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); background: var(--accent-soft); }
+ul.runs { margin: 0; padding-left: 18px; display: grid; gap: 6px; font-size: 14px; }
+ul.runs b { font-weight: 600; }
+ul.runs .cad { color: var(--muted); font-size: 13px; }
+.metric { display: grid; grid-template-columns: minmax(0, 170px) minmax(0, 1fr); gap: 10px 14px; align-items: start; padding-block: 10px; border-top: 1px solid var(--line); }
+.metric:first-of-type { border-top: 0; }
+.metric .mname b { display: block; font-weight: 600; }
+.metric .mname span { font-size: 12.5px; color: var(--muted); }
+.metric .mctl { display: grid; gap: 8px; min-width: 0; }
+@media (max-width: 560px) { .metric { grid-template-columns: minmax(0, 1fr); } }
+.seg.mark button[data-mark="ok"][aria-pressed="true"] { background: var(--pass); color: var(--paper); }
+.seg.mark button[data-mark="part"][aria-pressed="true"] { background: var(--warn); color: var(--paper); }
+.seg.mark button[data-mark="gap"][aria-pressed="true"] { background: var(--fail); color: var(--paper); }
+table.matrix { border-collapse: collapse; width: 100%; min-width: 700px; font-size: 13px; }
+table.matrix th, table.matrix td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.matrix th { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); }
+table.matrix tr:last-child td { border-bottom: 0; }
+table.matrix tr.mine td { background: var(--accent-soft); }
+table.matrix td.pn b { display: block; } table.matrix td.pn span { font-size: 12px; color: var(--muted); }
+.bud { border-left: 3px solid var(--line); }
+.bud.lv-online { border-left-color: var(--accent); } .bud.lv-audit { border-left-color: var(--warn); } .bud.lv-code { border-left-color: var(--muted); }
+.seg.level button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.cost { font: 500 13px/1.2 var(--mono); font-variant-numeric: tabular-nums; }
+.meter { display: grid; gap: 6px; }
+.meter .bar { height: 10px; border-radius: 999px; background: var(--code-bg); overflow: hidden; display: flex; }
+.meter .bar i { display: block; height: 100%; }
+.meter .bar i.on { background: var(--accent); } .meter .bar i.au { background: var(--warn); } .meter .bar i.co { background: var(--muted); }
+.meter .bar.over { box-shadow: 0 0 0 2px var(--fail); }
+.meter .nums { display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; font: 500 12.5px/1.3 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); }
+.meter .big { font: 700 22px/1.1 var(--display); font-variant-numeric: tabular-nums; }
+.meter .big.over { color: var(--fail); } .meter .big.ok { color: var(--pass); }
+.pri { font: 500 12px/1 var(--mono); padding: 4px 8px; border-radius: 999px; border: 1.5px solid currentColor; white-space: nowrap; }
+.pri.p0 { color: var(--p0); } .pri.p1 { color: var(--p1); } .pri.p2 { color: var(--p2); } .pri.p3 { color: var(--p3); }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>AI Evals</b> · Module 5 Lab Guide</div>
+    <nav class="tabs" aria-label="Labs">
+      <a href="#lab1"><span>Lab 1</span>Map your portfolio coverage</a>
+      <a href="#lab2"><span>Lab 2</span>Spend your eval budget</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="eyebrow">Module 5 · Run Evals on Live Traffic Across Product Lines</div>
+    <h1>Module 5 Lab Guide</h1>
+    <p class="lede">Your gates decide whether a change ships. Once a product is live, its quality can still slip. In Lab 1 you map which risks one of Ascend's live AI products is checked for, and decide which gap to close first. In Lab 2 you spend a $200,000 eval budget across Ascend IQ's newest risks.</p>
+    <div class="meta">
+      <span><b>You need:</b> any LLM</span>
+      <span><b>Saves to:</b> <code>05-scale/</code></span>
+      <span><b>Your work:</b> kept in this browser as you go</span>
+    </div>
+  </section>
+
+  <!-- ============ LAB 1 ============ -->
+  <section class="lab" id="lab1">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 1 · 25 min</span><span class="pill pass">Graded · coverage-matrix.md</span></div>
+        <h2>Map Your Portfolio Coverage</h2>
+        <p class="muted">Ascend IQ is the newest product in Ascend Analytics' AI portfolio, and it hasn't launched yet. Four other AI products are already live, and each team set up its own evals. Before the next eval budget is set, the CPO wants one view of which trust metrics each product is checked for.</p>
+      </div>
+
+      <div class="legend" aria-label="Your three marks">
+        <div><b>✅ Covered</b><span>An automated check runs on this risk regularly.</span></div>
+        <div><b>⚠️ Partial</b><span>Someone spot-checks it by hand, or the check only measures part of the risk.</span></div>
+        <div><b>❌ Gap</b><span>Nothing checks this risk.</span></div>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Pick a product and mark it.</b> Read what runs on it today, and mark each trust metric with the check that covers it.</span></li>
+        <li><span><b>Accept one gap, close one gap.</b> Say what would change your mind about the one you accept, and name the check that closes the other.</span></li>
+        <li><span><b>Pressure-test and save.</b> Copy the prompt into any LLM. Note what changed in the panel, then copy the markdown over <code>05-scale/coverage-matrix.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <div class="card">
+            <span class="step-no">Step 1 · Pick one product</span>
+            <div class="prod-pick" id="prodPick"></div>
+          </div>
+
+          <div class="card" id="runsCard" hidden>
+            <div class="card-head"><span class="step-no">What runs on it today</span><span class="pill neutral" id="prodKind"></span></div>
+            <p id="prodWhat"></p>
+            <ul class="runs" id="runsList"></ul>
+            <p class="small muted" id="prodNote"></p>
+          </div>
+
+          <div class="card" id="marksCard" hidden>
+            <div class="card-head"><span class="step-no">Step 1 · Mark each trust metric</span><span class="pill neutral" id="markCount">0 of 5 marked</span></div>
+            <div id="metrics"></div>
+          </div>
+
+          <div class="card" id="gapsCard" hidden>
+            <span class="step-no">Step 2 · Accept one gap, close one gap</span>
+            <div class="note small" id="exposure"></div>
+            <h4>The gap you'll accept for now</h4>
+            <label class="field"><span>Trust metric</span><select id="accMetric"></select></label>
+            <label class="field"><span>Why you can live with it</span><textarea id="accWhy" rows="2" placeholder="e.g. Nobody outside Ascend sees these tags, so a tone problem can't reach a client"></textarea></label>
+            <label class="field"><span>What would change your mind</span><input type="text" id="accChange" placeholder="e.g. If the tags start showing up in client-facing reports"></label>
+            <div id="accWarn"></div>
+            <h4 style="margin-top:6px">The gap you'll close first</h4>
+            <label class="field"><span>Trust metric</span><select id="cloMetric"></select></label>
+            <label class="field"><span>Why this one first</span><textarea id="cloWhy" rows="2" placeholder="e.g. A wrong region tag spreads into every Ascend IQ answer about APAC companies"></textarea></label>
+            <div class="field"><span>The check that would close it</span><div class="seg" role="group" aria-label="Check type" id="cloType"></div></div>
+            <label class="field"><span>What it checks <em>· one line</em></span><input type="text" id="cloCheck" placeholder="e.g. Weekly drift monitor: alerts when the share of “Unknown” tags differs by region by more than 5 points"></label>
+            <div id="cloWarn"></div>
+          </div>
+
+        </div>
+
+        <aside class="panel" aria-label="Lab 1 controls">
+          <div class="card">
+            <span class="step-no">The portfolio · one row is yours</span>
+            <div class="tbl-wrap"><div id="matrixWrap"></div></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · Pressure-test your row</span>
+            <div class="readiness" id="readyL1"></div>
+            <div class="btns"><button type="button" class="primary" id="copyPt">Copy pressure-test prompt</button></div>
+            <p class="small muted">Paste it into a new chat and send. Read the feedback and change any mark or answer it convinces you on, in your own words. Don't paste the feedback into your answers.</p>
+            <details><summary>Preview the prompt</summary><pre id="ptPre"></pre></details>
+            <label class="field"><span>Model you ran it in</span><input type="text" id="ptModel" placeholder="e.g. ChatGPT"></label>
+            <label class="field"><span>What the feedback changed <em>· or why you kept your answers</em></span><textarea id="ptAfter" rows="3" placeholder="e.g. It argued the schema check only checks format, so I moved Robustness from ✅ to ⚠️."></textarea></label>
+            <div class="status" id="ptStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save coverage-matrix.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL1">Copy markdown</button><button type="button" id="dlL1" hidden>Download .md</button></div></div>
+            <div class="status" id="statusL1" role="status"></div>
+            <details><summary>Preview coverage-matrix.md</summary><pre id="mdL1"></pre></details>
+            <p class="small muted">Open <code>05-scale/coverage-matrix.md</code> in your repo, click the pencil icon, paste over the whole file, and commit. Or download it and upload it to the same folder.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAB 2 ============ -->
+  <section class="lab" id="lab2">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 2 · 20 min</span><span class="pill pass">Graded · eval-budget.md</span></div>
+        <h2>Spend Your Eval Budget</h2>
+        <p class="muted">Engineering flagged five new failure modes for Ascend IQ this quarter. The CPO set a $200,000 quarterly cap for evals. Fund at most three at the online eval level, downgrade the rest, and stay under the cap. Coverage, cost and velocity pull against each other: spend where the risk is highest.</p>
+      </div>
+
+      <div class="legend" aria-label="Three levels of coverage">
+        <div><b>Online eval</b><span>An LLM judge or a reviewer scores live traffic continuously. The listed cost.</span></div>
+        <div><b>Periodic audit</b><span>People review a sample of answers every week or two. About 10% of the online cost.</span></div>
+        <div><b>Code-based check</b><span>A quick rule check, or a spot-check on every release. About 5% of the online cost.</span></div>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Pick a level for each failure.</b> At most three online evals, under the $200,000 cap.</span></li>
+        <li><span><b>Justify every downgrade.</b> Name the cheaper check, and say why it's enough.</span></li>
+        <li><span><b>Critique and save.</b> Copy the critique prompt into any LLM. Note what changed in the panel, then copy the markdown over <code>05-scale/eval-budget.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <div class="card-head"><h3>Step 1 · Ascend IQ's five new failure modes</h3></div>
+          <div id="buds" style="display:grid;gap:14px"></div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 2 controls">
+          <div class="card">
+            <span class="step-no">Your budget</span>
+            <div class="meter" id="meter"></div>
+            <div id="budWarn"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Step 3 · Critique your budget</span>
+            <div class="readiness" id="readyL2"></div>
+            <div class="btns"><button type="button" class="primary" id="copyCr">Copy critique prompt</button></div>
+            <p class="small muted">It includes your budget markdown. Paste it into a new chat and send. Change any level or reason it convinces you on, in your own words.</p>
+            <details><summary>Preview the prompt</summary><pre id="crPre"></pre></details>
+            <label class="field"><span>Model you ran it in</span><input type="text" id="crModel" placeholder="e.g. ChatGPT"></label>
+            <label class="field"><span>What the critique changed <em>· or why you kept your budget</em></span><textarea id="crAfter" rows="3" placeholder="e.g. It pointed out the audit only sees 2% of APAC answers, so I moved that one back online and downgraded the tone check."></textarea></label>
+            <div class="status" id="crStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save eval-budget.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL2">Copy markdown</button><button type="button" id="dlL2" hidden>Download .md</button></div></div>
+            <div class="status" id="statusL2" role="status"></div>
+            <pre class="md" id="mdL2"></pre>
+            <p class="small muted">Open <code>05-scale/eval-budget.md</code>, click the pencil icon, paste over the whole file, and commit.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>Next session · Module 6: Make Evals the Way the Org Ships.</b> Decide who owns evals, then present your ship-or-hold call for Ascend IQ.</p>
+    <p>Ascend Analytics, Ascend IQ, its sister products and every figure on this page are a fictional teaching scenario. The numbers are illustrative.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var METRICS = [
+    { k: "hall", name: "Hallucination Rate", sub: "False or made-up claims" },
+    { k: "fair", name: "Fairness", sub: "Uneven quality across groups" },
+    { k: "lat", name: "Latency", sub: "Response time" },
+    { k: "ux", name: "UX Trust", sub: "Tone that undermines confidence" },
+    { k: "rob", name: "Robustness", sub: "Fails on questions it should handle" }
+  ];
+  var MARKS = [{ k: "ok", sym: "✅", name: "Covered" }, { k: "part", sym: "⚠️", name: "Partial" }, { k: "gap", sym: "❌", name: "Gap" }];
+  var IQROW = { hall: "✅ Eval gate", fair: "❌ Not covered", lat: "✅ Eval gate", ux: "⚠️ Advisory gate", rob: "❌ Not covered" };
+
+  /* Ascend's four live AI products. auto: an automated check; regular: it still runs on a schedule. Illustrative data. */
+  var PRODUCTS = [
+    { k: "summ", name: "AI Report Summaries", kind: "External",
+      what: "Turns Ascend's 40-page research reports into one-page briefs that clients read and forward to their teams.",
+      note: "",
+      checks: [
+        { k: "nummatch", name: "Number match", does: "A script checks that every number in a brief appears in the source report.", cad: "Every release, on 50 reports", auto: true, regular: true },
+        { k: "load", name: "Load test", does: "Checks that P95 time to write a brief stays under 8 seconds.", cad: "Before every release, on 200 reports", auto: true, regular: true },
+        { k: "ratings", name: "Client ratings", does: "Clients can rate a brief from 1 to 5. A PM reads the lowest-rated briefs when there's time.", cad: "When someone has time", auto: false, regular: false }
+      ] },
+    { k: "track", name: "Competitor Signal Tracker", kind: "Internal",
+      what: "Reads news, filings and job posts every night and alerts Ascend's analysts to competitor moves. Analysts use the alerts to update the data Ascend IQ answers from.",
+      note: "It only reads English-language sources.",
+      checks: [
+        { k: "srcjudge", name: "Source judge", does: "An LLM judge checks a 5% sample of each night's alerts against the source article, and flags claims the article doesn't support.", cad: "Every night", auto: true, regular: true },
+        { k: "runtime", name: "Run-time alert", does: "Pages the data team if the nightly run takes more than 2 hours.", cad: "Every run", auto: true, regular: true },
+        { k: "useful", name: "“Not useful” button", does: "Analysts can mark an alert “not useful”. Nobody reviews the clicks.", cad: "Collected, never reviewed", auto: false, regular: false }
+      ] },
+    { k: "voice", name: "AI Voice Agent", kind: "External",
+      what: "Answers client phone calls about accounts, invoices and renewals, in English, Spanish and Japanese.",
+      note: "",
+      checks: [
+        { k: "ttfw", name: "Response-time alert", does: "Pages on-call when the time to first word passes 1.5 seconds.", cad: "Live, on every call", auto: true, regular: true },
+        { k: "replay", name: "Invoice replay", does: "A script replays 40 recorded calls and checks that the agent quotes the right invoice amount.", cad: "Before every release", auto: true, regular: true },
+        { k: "listen", name: "Call listening", does: "A support lead listens to 10 calls and notes tone problems.", cad: "Monthly", auto: false, regular: true },
+        { k: "accent", name: "Accent test", does: "Speech recognition was tested on US English speakers.", cad: "Once, before launch", auto: true, regular: false },
+        { k: "handoff", name: "Handoff count", does: "A report counts the calls the agent handed to a person after failing to understand the caller twice.", cad: "Weekly", auto: true, regular: true }
+      ] },
+    { k: "tag", name: "Automated Data Tagging", kind: "Internal",
+      what: "Tags every company in Ascend's data with an industry, a size and a region. Ascend IQ and the Report Summaries both rely on those tags.",
+      note: "About 18% of APAC companies are tagged with an “Unknown” industry, against 3% of US companies. Nobody tracks the gap.",
+      checks: [
+        { k: "schema", name: "Schema check", does: "Checks that each company gets exactly one industry from the approved list.", cad: "Every batch", auto: true, regular: true },
+        { k: "deadline", name: "Batch deadline", does: "Alerts if the nightly batch isn't finished by 6 a.m.", cad: "Every night", auto: true, regular: true },
+        { k: "retag", name: "Quarterly re-tag", does: "A data analyst re-tags 200 random companies and compares the results with the system's tags.", cad: "Quarterly", auto: false, regular: true }
+      ] }
+  ];
+  var CLOSE_TYPES = [{ k: "gate", name: "Eval gate" }, { k: "drift", name: "Drift monitor" }, { k: "audit", name: "Periodic audit" }];
+
+  /* Ascend IQ's five new failure modes this quarter. Online cost per quarter; audit 10%, code 5%. Illustrative. */
+  var FAILS = [
+    { id: "B1", name: "Invented figures in earnings-season briefs", metric: "Hallucination Rate", pri: "P0", cost: 95000,
+      why: "Earnings season doubles question volume, and new filings arrive faster than Ascend's verified data updates. Engineering saw invented revenue figures in 4 of 300 sampled answers.",
+      phCheap: "e.g. Rule check on every release: every figure in an earnings answer must match Ascend's verified data" },
+    { id: "B2", name: "New question types the golden set doesn't cover", metric: "Robustness", pri: "P1", cost: 60000,
+      why: "Questions about AI regulation and ESG grew from 2% to 11% of traffic in two months. None are in the golden set, and 1 in 5 gets “I can't help with that”.",
+      phCheap: "e.g. Weekly drift monitor: alert when a question topic outside the golden set passes 5% of traffic" },
+    { id: "B3", name: "Thinner answers about APAC companies", metric: "Fairness", pri: "P1", cost: 80000,
+      why: "Answers about APAC companies cite half as many sources as answers about US companies, and APAC clients' satisfaction is 0.6 points lower.",
+      phCheap: "e.g. Every two weeks, a reviewer compares 50 US and 50 APAC answers for depth and sources" },
+    { id: "B4", name: "Tone drifts in long conversations", metric: "UX Trust", pri: "P2", cost: 40000,
+      why: "After eight or more turns, answers get casual and start hedging. About 6% of conversations run that long.",
+      phCheap: "e.g. Every two weeks, review 30 long conversations against the tone rubric" },
+    { id: "B5", name: "Slow answers at the Monday-morning peak", metric: "Latency", pri: "P2", cost: 30000,
+      why: "P95 rises to 5.2 seconds between 8 and 10 a.m. Eastern on Mondays, against a 4.0-second budget.",
+      phCheap: "e.g. Latency alert: page on-call when P95 passes 4.0s for 15 minutes" }
+  ];
+  var LEVELS = [{ k: "online", name: "Online eval", pct: 1 }, { k: "audit", name: "Periodic audit", pct: 0.1 }, { k: "code", name: "Code-based check", pct: 0.05 }];
+  var CAP = 200000, MAX_ONLINE = 3;
+
+  /* ---------- State ---------- */
+  var KEY = "ai-evals-m5-lab-guide-v1";
+  function blankMarks() { var o = {}; METRICS.forEach(function (m) { o[m.k] = { m: "", chk: "" }; }); return o; }
+  var state = {
+    prod: "", marks: blankMarks(), accMetric: "", accWhy: "", accChange: "", cloMetric: "", cloWhy: "", cloType: "", cloCheck: "", ptModel: "", ptAfter: "",
+    lv: FAILS.map(function () { return ""; }), cheap: FAILS.map(function () { return ""; }), enough: FAILS.map(function () { return ""; }), crModel: "", crAfter: ""
+  };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && typeof saved === "object") Object.keys(state).forEach(function (k) { if (k in saved) state[k] = saved[k]; });
+  } catch (e) {}
+  METRICS.forEach(function (m) { if (!state.marks[m.k]) state.marks[m.k] = { m: "", chk: "" }; });
+  ["lv", "cheap", "enough"].forEach(function (k) { if (!Array.isArray(state[k]) || state[k].length !== FAILS.length) state[k] = FAILS.map(function () { return ""; }); });
+  var saveT = null;
+  function persist() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250); }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(s) { return String(s || "").trim(); }
+  function cell(s) { return clean(s).replace(/\s*\n+\s*/g, " ").replace(/\|/g, "\\|"); }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+  function warnHtml(w) { return w.map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join(""); }
+  function prod() { for (var i = 0; i < PRODUCTS.length; i++) if (PRODUCTS[i].k === state.prod) return PRODUCTS[i]; return null; }
+  function metric(k) { for (var i = 0; i < METRICS.length; i++) if (METRICS[i].k === k) return METRICS[i]; return null; }
+  function mark(k) { for (var i = 0; i < MARKS.length; i++) if (MARKS[i].k === k) return MARKS[i]; return null; }
+  function check(p, k) { if (!p) return null; for (var i = 0; i < p.checks.length; i++) if (p.checks[i].k === k) return p.checks[i]; return null; }
+  function marked() { return METRICS.filter(function (m) { return state.marks[m.k].m; }).length; }
+  function cellText(mk) {
+    var m = state.marks[mk], p = prod(), c = check(p, m.chk), s = mark(m.m);
+    if (!s) return "";
+    if (m.m === "gap") return "❌ Not covered";
+    return s.sym + " " + (c ? c.name : "No check named");
+  }
+
+  /* ---------- Lab 1 ---------- */
+  function renderPick() {
+    $("prodPick").innerHTML = PRODUCTS.map(function (p) {
+      return '<button type="button" class="prod-btn" data-prod="' + p.k + '" aria-pressed="' + (state.prod === p.k) + '"><span class="k">' + p.kind + "</span><b>" + esc(p.name) + "</b><span>" + esc(p.what) + "</span></button>";
+    }).join("");
+  }
+  function renderRuns() {
+    var p = prod();
+    ["runsCard", "marksCard", "gapsCard"].forEach(function (id) { $(id).hidden = !p; });
+    if (!p) return;
+    $("prodKind").textContent = p.kind; $("prodWhat").textContent = p.what;
+    $("runsList").innerHTML = p.checks.map(function (c) { return "<li><b>" + esc(c.name) + ".</b> " + esc(c.does) + ' <span class="cad">· ' + esc(c.cad) + "</span></li>"; }).join("");
+    $("prodNote").textContent = p.note;
+  }
+  function buildMetrics() {
+    var p = prod();
+    if (!p) { $("metrics").innerHTML = ""; return; }
+    $("metrics").innerHTML = METRICS.map(function (m) {
+      return '<div class="metric"><div class="mname"><b>' + m.name + "</b><span>" + m.sub + '</span></div><div class="mctl">' +
+        '<div class="seg mark" role="group" aria-label="Mark for ' + m.name + '">' + MARKS.map(function (k) { return '<button type="button" data-mark="' + k.k + '" data-m="' + m.k + '" aria-pressed="false">' + k.sym + " " + k.name + "</button>"; }).join("") + "</div>" +
+        '<select id="chk-' + m.k + '" data-chk="' + m.k + '" aria-label="The check that covers ' + m.name + '"><option value="">No check covers it</option>' + p.checks.map(function (c) { return '<option value="' + c.k + '">' + esc(c.name) + "</option>"; }).join("") + "</select>" +
+        '<div id="mlint-' + m.k + '"></div></div></div>';
+    }).join("");
+    METRICS.forEach(function (m) { $("chk-" + m.k).value = state.marks[m.k].chk || ""; });
+  }
+  function lintMark(mk) {
+    var m = state.marks[mk], c = check(prod(), m.chk), w = [];
+    if ((m.m === "ok" || m.m === "part") && !c) w.push("Name the check that covers it.");
+    if (m.m === "gap" && c) w.push(c.name + " runs on this product. If it checks this risk, the mark is at least ⚠️. If it doesn't, choose “No check covers it”.");
+    if (m.m === "ok" && c && !c.auto) w.push(c.name + " is done by hand. The legend counts manual or spot-check work as ⚠️ Partial.");
+    if ((m.m === "ok" || m.m === "part") && c && !c.regular) w.push(c.name + " doesn't run on a schedule (" + c.cad.toLowerCase() + "). A check has to keep running to count.");
+    return w;
+  }
+  function renderMarks() {
+    if (!prod()) return;
+    METRICS.forEach(function (m) {
+      document.querySelectorAll('[data-m="' + m.k + '"]').forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.mark === state.marks[m.k].m)); });
+      $("mlint-" + m.k).innerHTML = warnHtml(lintMark(m.k));
+    });
+    var n = marked(); $("markCount").className = "pill " + (n === 5 ? "pass" : "neutral"); $("markCount").textContent = n + " of 5 marked";
+  }
+  function gapOptions(sel, val) {
+    var opts = METRICS.filter(function (m) { return state.marks[m.k].m === "gap" || state.marks[m.k].m === "part" || m.k === val; });
+    sel.innerHTML = '<option value="">' + (opts.length ? "Choose a gap" : "Mark a metric ❌ or ⚠️ first") + "</option>" + opts.map(function (m) {
+      var s = mark(state.marks[m.k].m); return '<option value="' + m.k + '"' + (m.k === val ? " selected" : "") + ">" + (s ? s.sym + " " : "") + m.name + "</option>";
+    }).join("");
+  }
+  function renderGaps() {
+    var p = prod(); if (!p) return;
+    var ext = p.kind === "External";
+    $("exposure").innerHTML = "<b>" + esc(p.name) + " is " + p.kind.toLowerCase() + ".</b> " + (ext ? "Clients see its output directly, so gaps in Hallucination Rate, UX Trust and Latency hurt most: users notice right away." : "Its output feeds other products, so gaps in Robustness and Fairness hurt most: they spread quietly into everything downstream.");
+    gapOptions($("accMetric"), state.accMetric); gapOptions($("cloMetric"), state.cloMetric);
+    $("cloType").innerHTML = CLOSE_TYPES.map(function (t) { return '<button type="button" data-ctype="' + t.k + '" aria-pressed="' + (state.cloType === t.k) + '">' + t.name + "</button>"; }).join("");
+    renderGapWarns();
+  }
+  function renderGapWarns() {
+    var p = prod(); if (!p) return;
+    var ext = p.kind === "External";
+    var hurt = ext ? ["hall", "ux", "lat"] : ["rob", "fair"], aw = [], cw = [];
+    if (state.accMetric && state.accMetric === state.cloMetric) aw.push("You picked the same metric to accept and to close. Pick two different gaps.");
+    if (state.accMetric && hurt.indexOf(state.accMetric) > -1) aw.push("For an " + p.kind.toLowerCase() + " product, " + metric(state.accMetric).name + " is one of the gaps that hurt most. Be sure you can defend leaving it open.");
+    if (state.accMetric && state.marks[state.accMetric].m === "ok") aw.push("That metric is marked ✅. Accept a gap you marked ❌ or ⚠️.");
+    if (state.cloType === "gate" && state.cloMetric === "fair") cw.push("An eval gate only tests the golden set before a change ships. Uneven quality across groups often needs a person to judge, and the deck pairs it with periodic audits or a drift monitor on live traffic.");
+    if (state.cloType === "gate" && state.cloMetric === "rob") cw.push("A gate tests the cases you already have. If the problem is questions your golden set doesn't include, a drift monitor on live traffic is what finds them.");
+    if (state.cloType && !clean(state.cloCheck)) cw.push("Say in one line what the check looks at, and when it alerts.");
+    if (clean(state.cloCheck) && !/\d/.test(state.cloCheck)) cw.push("Give the check a number: what it measures, and the threshold that sets off an alert. “Check for incorrect data” can't be built.");
+    if (clean(state.accChange) && !/\d/.test(state.accChange)) aw.push("Make the trigger something you could see in a report: a number, or a specific event. Otherwise nobody knows when to reopen the gap.");
+    function long(t) { var c = clean(t); return c.split(/\s+/).length > 70 || /\n\s*[-*•]/.test(c); }
+    if (long(state.accWhy)) aw.push("This reads like pasted feedback. Keep your own one or two lines here, and note what the feedback changed in the panel.");
+    if (long(state.cloWhy)) cw.push("This reads like pasted feedback. Say in one or two lines why this gap comes first, and note what the feedback changed in the panel.");
+    $("accWarn").innerHTML = warnHtml(aw); $("cloWarn").innerHTML = warnHtml(cw);
+  }
+  function renderMatrix() {
+    var p = prod();
+    var h = '<table class="matrix"><thead><tr><th>Product</th>' + METRICS.map(function (m) { return "<th>" + m.name + "</th>"; }).join("") + "</tr></thead><tbody>";
+    h += '<tr><td class="pn"><b>Ascend IQ</b><span>External · not launched</span></td>' + METRICS.map(function (m) { return "<td>" + IQROW[m.k] + "</td>"; }).join("") + "</tr>";
+    PRODUCTS.forEach(function (q) {
+      var mine = p && q.k === p.k;
+      h += "<tr" + (mine ? ' class="mine"' : "") + '><td class="pn"><b>' + esc(q.name) + "</b><span>" + q.kind + (mine ? " · yours" : "") + "</span></td>" + METRICS.map(function (m) { return "<td>" + (mine ? esc(cellText(m.k) || "—") : '<span class="muted">—</span>') + "</td>"; }).join("") + "</tr>";
+    });
+    $("matrixWrap").innerHTML = h + "</tbody></table>";
+  }
+  function ptPrompt() {
+    var p = prod();
+    if (!p) return "Pick a product in Step 1 first.";
+    var L = ["You're the head of AI quality at Ascend Analytics, a B2B market-intelligence company whose clients pay $50,000+ a year for verified data. A PM has mapped one of Ascend's live AI products against five trust metrics, before the CPO sets next year's eval budget. Review it the way a skeptical colleague would.", "",
+      "The marks:", "- ✅ Covered: an automated check runs on this risk regularly.", "- ⚠️ Partial: someone spot-checks it by hand, or the check only measures part of the risk.", "- ❌ Gap: nothing checks this risk.", "",
+      "For an external product, gaps in Hallucination Rate, UX Trust and Latency hurt most, because clients see them right away. For an internal product, gaps in Robustness and Fairness hurt most, because they spread quietly into the products that use its output.", "",
+      "=== The product ===", p.name + " (" + p.kind + "). " + p.what + (p.note ? " " + p.note : ""), "", "What runs on it today:"];
+    p.checks.forEach(function (c) { L.push("- " + c.name + ": " + c.does + " (" + c.cad + ")"); });
+    L.push("", "=== The PM's row ===");
+    METRICS.forEach(function (m) { L.push("- " + m.name + ": " + (cellText(m.k) || "[not marked]")); });
+    L.push("", "Gap accepted for now: " + (state.accMetric ? metric(state.accMetric).name : "[not chosen]") + ". Why: " + (clean(state.accWhy) || "[not written]") + " What would change their mind: " + (clean(state.accChange) || "[not written]"));
+    var ct = CLOSE_TYPES.filter(function (t) { return t.k === state.cloType; })[0];
+    L.push("Gap to close first: " + (state.cloMetric ? metric(state.cloMetric).name : "[not chosen]") + ". Why: " + (clean(state.cloWhy) || "[not written]") + " The check: " + (ct ? ct.name + ", " : "") + (clean(state.cloCheck) || "[not written]"));
+    L.push("", "Reply in under 250 words:", "1. For each of the five metrics, AGREE or DISAGREE with the mark, with one sentence on why.", "2. Is the accepted gap safe to leave open for this product? What's the risk if it isn't?", "3. Would the close-first check actually close the gap? What would it still miss?");
+    return L.join("\n");
+  }
+  function mdL1() {
+    var p = prod();
+    var L = ["# Module 5 · Coverage Matrix · " + (p ? p.name : "[product]"), "", "## Coverage Row", "", "| Product | " + METRICS.map(function (m) { return m.name; }).join(" | ") + " |", "|---|---|---|---|---|---|",
+      "| Ascend IQ · External (not launched) | " + METRICS.map(function (m) { return IQROW[m.k]; }).join(" | ") + " |"];
+    if (p) L.push("| **" + p.name + " · " + p.kind + "** | " + METRICS.map(function (m) { return cellText(m.k) || "_—_"; }).join(" | ") + " |");
+    L.push("", "Each cell names the check that covers the risk. ✅ an automated check runs regularly · ⚠️ a manual spot-check, or a check that measures only part of the risk · ❌ nothing checks it.", "", "## What Runs Today", "");
+    if (p) { L.push(p.what + (p.note ? " " + p.note : ""), ""); p.checks.forEach(function (c) { L.push("- **" + c.name + ".** " + c.does + " _(" + c.cad + ")_"); }); }
+    else L.push("_The checks that run on your product today._");
+    L.push("", "## Accepted Gap", "");
+    if (state.accMetric) {
+      L.push("**" + metric(state.accMetric).name + " (" + (mark(state.marks[state.accMetric].m) || { sym: "" }).sym + ").** " + (clean(state.accWhy) || "_Why you can live with it._"), "", "**What would change my mind:** " + (clean(state.accChange) || "_—_"));
+    } else L.push("_The ❌ you can live with for now, why, and what would make you change your mind._");
+    L.push("", "## Critical Gap", "");
+    if (state.cloMetric) {
+      var ct = CLOSE_TYPES.filter(function (t) { return t.k === state.cloType; })[0];
+      L.push("**" + metric(state.cloMetric).name + " (" + (mark(state.marks[state.cloMetric].m) || { sym: "" }).sym + ").** " + (clean(state.cloWhy) || "_Why this one first._"), "", "**The check that closes it:** " + (ct ? ct.name + ". " : "") + (clean(state.cloCheck) || "_—_"));
+    } else L.push("_The ❌ you'd close first, why, and the check that would close it._");
+    L.push("", "## After the Pressure Test", "", (clean(state.ptModel) ? "Pressure-tested in " + clean(state.ptModel) + ". " : "") + (clean(state.ptAfter) || "_What the feedback changed, or why you kept your answers._"));
+    return L.join("\n").trim() + "\n";
+  }
+  function readyL1() {
+    function q(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    $("readyL1").innerHTML = q(!!prod(), "Product") + q(marked() === 5, marked() + " of 5 marked") + q(state.accMetric && clean(state.accWhy) && clean(state.accChange), "Accepted gap") + q(state.cloMetric && state.cloType && clean(state.cloCheck), "Gap to close");
+  }
+
+  /* ---------- Lab 2 ---------- */
+  function lvCost(i) { var l = LEVELS.filter(function (x) { return x.k === state.lv[i]; })[0]; return l ? FAILS[i].cost * l.pct : 0; }
+  function totals() {
+    var on = 0, onN = 0, all = 0, au = 0, co = 0;
+    FAILS.forEach(function (f, i) { var c = lvCost(i); all += c; if (state.lv[i] === "online") { on += c; onN++; } else if (state.lv[i] === "audit") au += c; else if (state.lv[i] === "code") co += c; });
+    return { on: on, onN: onN, all: all, au: au, co: co, set: state.lv.filter(function (x) { return x; }).length };
+  }
+  function buildBuds() {
+    $("buds").innerHTML = FAILS.map(function (f, i) {
+      return '<article class="card bud" id="bud-' + i + '">' +
+        '<div class="card-head"><span class="row-tags"><span class="rid">' + f.id + '</span><span class="pri ' + f.pri.toLowerCase() + '">' + f.pri + '</span><span class="pill neutral">' + f.metric + '</span></span><span class="cost" id="bcost-' + i + '"></span></div>' +
+        '<h4>' + esc(f.name) + "</h4><p class=\"small\">" + esc(f.why) + '</p>' +
+        '<p class="small muted">Online eval: ' + money(f.cost) + " a quarter · periodic audit about " + money(f.cost * 0.1) + " · code-based check about " + money(f.cost * 0.05) + "</p>" +
+        '<div class="seg level" role="group" aria-label="Level for ' + f.id + '">' + LEVELS.map(function (l) { return '<button type="button" data-lv="' + l.k + '" data-i="' + i + '" aria-pressed="false">' + l.name + "</button>"; }).join("") + "</div>" +
+        '<div id="down-' + i + '" style="display:grid;gap:8px" hidden>' +
+          '<label class="field"><span>What you\'ll run instead</span><input type="text" id="cheap-' + i + '" data-cheap="' + i + '" placeholder="' + esc(f.phCheap) + '"></label>' +
+          '<label class="field"><span>Why it\'s enough <em>· and what it misses</em></span><textarea id="enough-' + i + '" data-enough="' + i + '" rows="2"></textarea></label></div>' +
+        '<div id="blint-' + i + '"></div></article>';
+    }).join("");
+    FAILS.forEach(function (f, i) { $("cheap-" + i).value = state.cheap[i] || ""; $("enough-" + i).value = state.enough[i] || ""; });
+  }
+  function lintBud(i) {
+    var f = FAILS[i], l = state.lv[i], w = [];
+    if (l && l !== "online" && f.pri === "P0") w.push("This is a P0. Moving it below online means live traffic isn't scored continuously for the failure that would hurt clients most. Be ready to defend that to the CPO.");
+    if (l === "code" && f.metric === "Fairness") w.push("A code-based check can count sources, but it can't judge whether an answer is thinner for one group. The deck pairs fairness with people reviewing a sample.");
+    if (l && l !== "online" && clean(state.cheap[i]) && !clean(state.enough[i])) w.push("Say why it's enough, and what it misses.");
+    var ch = clean(state.cheap[i]);
+    if (l === "audit" && /\b(monitor|alert|script|rule|automat|threshold|page[sd]? on-call)/i.test(ch) && !/\b(review|reviewer|people|person|analyst|read|label)/i.test(ch)) w.push("That sounds automated. A drift monitor or an alert is a code-based check, about 5% of the online cost. A periodic audit is people reviewing a sample.");
+    if (l === "code" && /\b(review|reviewer|people|person|analyst|read|listen|label)/i.test(ch) && !/\b(monitor|alert|script|rule|automat)/i.test(ch)) w.push("That sounds like people reviewing a sample, which is a periodic audit, about 10% of the online cost. A code-based check runs on its own.");
+    return w;
+  }
+  function renderBuds() {
+    FAILS.forEach(function (f, i) {
+      var l = state.lv[i], card = $("bud-" + i);
+      card.className = "card bud" + (l ? " lv-" + l : "");
+      card.querySelectorAll("[data-lv]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.lv === l)); });
+      $("bcost-" + i).textContent = l ? money(lvCost(i)) : "No level";
+      $("down-" + i).hidden = !(l === "audit" || l === "code");
+      $("blint-" + i).innerHTML = warnHtml(lintBud(i));
+    });
+    var t = totals(), over = t.all > CAP;
+    var pct = function (n) { return Math.min(100, n / CAP * 100).toFixed(1) + "%"; };
+    $("meter").innerHTML = '<div class="nums"><span>Total spend</span><span>Cap ' + money(CAP) + "</span></div>" +
+      '<div class="big ' + (over ? "over" : t.set === FAILS.length ? "ok" : "") + '">' + money(t.all) + "</div>" +
+      '<div class="bar' + (over ? " over" : "") + '"><i class="on" style="width:' + pct(t.on) + '"></i><i class="au" style="width:' + pct(t.au) + '"></i><i class="co" style="width:' + pct(t.co) + '"></i></div>' +
+      '<div class="nums"><span>Online ' + money(t.on) + " · " + t.onN + " of " + MAX_ONLINE + "</span><span>" + (over ? money(t.all - CAP) + " over" : money(CAP - t.all) + " left") + "</span></div>";
+    var w = [];
+    if (t.onN > MAX_ONLINE) w.push("You've funded " + t.onN + " online evals. The cap is " + MAX_ONLINE + ".");
+    if (over) w.push("You're " + money(t.all - CAP) + " over the cap. Downgrade something, starting with the failure whose cheaper check would catch most of it.");
+    $("budWarn").innerHTML = warnHtml(w);
+  }
+  function budDone() { return FAILS.every(function (f, i) { return state.lv[i] && (state.lv[i] === "online" || (clean(state.cheap[i]) && clean(state.enough[i]))); }); }
+  function mdL2() {
+    var t = totals();
+    var L = ["# Module 5 · Eval Budget · Ascend IQ", "", "**Quarterly budget cap:** " + money(CAP),
+      "**Online eval spend:** " + money(t.on) + " (" + t.onN + " of at most " + MAX_ONLINE + " online evals)",
+      "**Total spend:** " + money(t.all) + " · " + (t.all > CAP ? money(t.all - CAP) + " over the cap" : money(CAP - t.all) + " under the cap"), "",
+      "## Budget", "", "| Failure | Trust metric | Risk | Level | Cost |", "| --- | --- | :---: | :---: | ---: |"];
+    FAILS.forEach(function (f, i) {
+      var l = LEVELS.filter(function (x) { return x.k === state.lv[i]; })[0];
+      L.push("| " + f.id + " · " + f.name + " | " + f.metric + " | " + f.pri + " | " + (l ? l.name : "_—_") + " | " + (l ? money(lvCost(i)) : "_—_") + " |");
+    });
+    L.push("", "## Downgrades", "");
+    var any = false;
+    FAILS.forEach(function (f, i) {
+      var l = LEVELS.filter(function (x) { return x.k === state.lv[i]; })[0];
+      if (!l || l.k === "online") return; any = true;
+      L.push("- **" + f.id + " · " + f.name + " (" + f.pri + ") → " + l.name + ", " + money(lvCost(i)) + ".** " + (clean(state.cheap[i]) ? "Instead: " + cell(state.cheap[i]).replace(/[.]+$/, "") + "." : "_What you'll run instead._") + " " + (clean(state.enough[i]) ? "Why it's enough: " + cell(state.enough[i]) : "_Why it's enough._"));
+    });
+    if (!any) L.push("_For each failure below the online eval level: the cheaper check you'll run, and why it's enough._");
+    L.push("", "## After the Critique", "", (clean(state.crModel) ? "Critiqued in " + clean(state.crModel) + ". " : "") + (clean(state.crAfter) || "_What the critique changed, or why you kept your budget._"));
+    return L.join("\n").trim() + "\n";
+  }
+  function crPrompt() {
+    var L = ["You're the CPO's finance partner at Ascend Analytics, a B2B market-intelligence company whose clients pay $50,000+ a year for verified data. Its AI agent, Ascend IQ, is about to unlock for the top 50 enterprise accounts. A PM has split a $200,000 quarterly eval budget across five new failure modes. They could fund at most three as online evals (an LLM judge or reviewer scoring live traffic continuously). The rest had to drop to a periodic audit (people review a sample every week or two, about 10% of the cost) or a code-based check (a quick rule check, about 5%).", "",
+      "The five failure modes, as Engineering described them:"];
+    FAILS.forEach(function (f) { L.push("- " + f.id + " · " + f.name + " (" + f.metric + ", " + f.pri + ", online " + money(f.cost) + "): " + f.why); });
+    L.push("", "Pressure-test the PM's budget below. Reply in under 250 words:", "1. Which downgrade is the riskiest, and what would its cheaper check miss?", "2. Is any online eval money spent on a failure a cheaper check would catch just as well?", "3. If a P0 or P1 sits below the online level, is the PM's reason good enough to defend to the CPO?", "", "=== The PM's budget ===", "", mdL2().replace(/\n## After the Critique[\s\S]*$/, "").trim());
+    return L.join("\n");
+  }
+  function readyL2() {
+    function q(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    var t = totals();
+    $("readyL2").innerHTML = q(t.set === FAILS.length, t.set + " of 5 levels") + q(t.onN <= MAX_ONLINE && t.set > 0, "At most 3 online") + q(t.set > 0 && t.all <= CAP, "Under the cap") + q(budDone(), "Downgrades justified");
+  }
+
+  /* ---------- Render ---------- */
+  function renderLab1() { renderPick(); renderRuns(); renderMarks(); renderGaps(); renderMatrix(); }
+  function renderOut() { $("ptPre").textContent = ptPrompt(); $("mdL1").textContent = mdL1(); $("crPre").textContent = crPrompt(); $("mdL2").textContent = mdL2(); readyL1(); readyL2(); }
+
+  /* ---------- Copy / download ---------- */
+  function flash(btn, t) { var o = btn.textContent; btn.textContent = t; btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); }
+  function selectPre(pre) { try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function copy(text, btn, statusEl, pre, okMsg) {
+    var done = function () { flash(btn, "Copied"); if (statusEl) { statusEl.className = "status ok"; statusEl.textContent = okMsg || "Copied."; } };
+    var fail = function () {
+      if (pre) { var d = pre.closest("details"); if (d) d.open = true; selectPre(pre); }
+      if (statusEl) { statusEl.className = "status err"; statusEl.textContent = "Your browser blocked the copy. The text is selected: press Ctrl+C or ⌘C."; }
+    };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail(); } catch (e) { fail(); }
+  }
+  var dl = null;
+  function download(name, text, statusEl) {
+    if (!dl) return;
+    dl.save({ filename: name, data: text }).then(function () {
+      statusEl.className = "status ok"; statusEl.textContent = "Saved " + name + ". Upload it to 05-scale/ in your repo.";
+    }, function (err) {
+      if (err && err.code === "declined") { statusEl.className = "status"; statusEl.textContent = "Download cancelled."; return; }
+      if (err && err.code === "rate_limited") { statusEl.className = "status err"; statusEl.textContent = "A save prompt is already open. Finish it, then try again."; return; }
+      statusEl.className = "status err"; statusEl.textContent = "Downloads aren't available here. Use Copy markdown instead.";
+      $("dlL1").hidden = true; $("dlL2").hidden = true;
+    });
+  }
+  try {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (ns) { if (ns) { dl = ns; $("dlL1").hidden = false; $("dlL2").hidden = false; } }, function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b || b.disabled) return;
+    var d = b.dataset;
+    if (d.prod) {
+      if (state.prod !== d.prod) { state.prod = d.prod; state.marks = blankMarks(); state.accMetric = ""; state.cloMetric = ""; }
+      buildMetrics(); renderLab1(); renderOut(); persist(); return;
+    }
+    if (d.mark) { var mm = state.marks[d.m]; mm.m = d.mark; if (d.mark === "gap") { mm.chk = ""; $("chk-" + d.m).value = ""; } renderMarks(); renderGaps(); renderMatrix(); renderOut(); persist(); return; }
+    if (d.ctype) { state.cloType = d.ctype; renderGaps(); renderOut(); persist(); return; }
+    if (d.lv) { state.lv[Number(d.i)] = d.lv; renderBuds(); renderOut(); persist(); return; }
+    if (b.id === "copyPt") {
+      copy(ptPrompt(), b, $("ptStatus"), $("ptPre"), !prod() ? "Pick a product first." : marked() < 5 ? "Copied, but only " + marked() + " of 5 metrics are marked." : "Copied. Paste it into a new chat and send.");
+      return;
+    }
+    if (b.id === "copyCr") {
+      var t = totals();
+      copy(crPrompt(), b, $("crStatus"), $("crPre"), t.set < FAILS.length ? "Copied, but only " + t.set + " of 5 levels are set." : "Copied. Paste it into a new chat and send.");
+      return;
+    }
+    if (b.id === "copyL1") { copy(mdL1(), b, $("statusL1"), $("mdL1"), "Copied. Paste it over coverage-matrix.md in your repo, then commit."); return; }
+    if (b.id === "copyL2") { copy(mdL2(), b, $("statusL2"), $("mdL2"), "Copied. Paste it over eval-budget.md in your repo, then commit."); return; }
+    if (b.id === "dlL1") { download("coverage-matrix.md", mdL1(), $("statusL1")); return; }
+    if (b.id === "dlL2") { download("eval-budget.md", mdL2(), $("statusL2")); return; }
+  });
+
+  document.addEventListener("change", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.chk) { state.marks[d.chk].chk = t.value; renderMarks(); renderMatrix(); renderOut(); persist(); }
+    else if (t.id === "accMetric" || t.id === "cloMetric") { state[t.id] = t.value; renderGaps(); renderOut(); persist(); }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.cheap != null) { state.cheap[Number(d.cheap)] = t.value; $("blint-" + d.cheap).innerHTML = warnHtml(lintBud(Number(d.cheap))); }
+    else if (d.enough != null) { state.enough[Number(d.enough)] = t.value; $("blint-" + d.enough).innerHTML = warnHtml(lintBud(Number(d.enough))); }
+    else if (["accWhy", "accChange", "cloWhy"].indexOf(t.id) > -1) { state[t.id] = t.value; renderGapWarns(); }
+    else if (["ptModel", "ptAfter", "crModel", "crAfter"].indexOf(t.id) > -1) { state[t.id] = t.value; }
+    else if (t.id === "cloCheck") { state.cloCheck = t.value; renderGapWarns(); }
+    else return;
+    renderOut(); persist();
+  });
+
+  /* ---------- Init ---------- */
+  buildMetrics(); buildBuds();
+  ["accWhy", "accChange", "cloWhy", "cloCheck", "ptModel", "ptAfter", "crModel", "crAfter"].forEach(function (id) { $(id).value = state[id] || ""; });
+  renderLab1(); renderBuds(); renderOut();
+})();
+</script>
