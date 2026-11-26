@@ -1,0 +1,1086 @@
+<title>Module 3 Lab Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: each lab is a work column (failure + three check builders / the five-part spec) beside a sticky control panel (prompt, reply, results, markdown). Same tokens as the Module 1 and 2 Lab Guides. */
+:root {
+  --paper: #F5F6F8; --surface: #FFFFFF; --ink: #161A22; --muted: #586071; --line: #DADFE7;
+  --accent: #2741C4; --accent-ink: #FFFFFF; --accent-soft: #E7EBFB;
+  --pass: #176B43; --pass-soft: #E2F2E9; --fail: #B0281F; --fail-soft: #FBE7E5;
+  --warn: #8A5A00; --warn-soft: #FBF0D9; --code-bg: #EEF0F4;
+  --p0: #B0281F; --p1: #B4541A; --p2: #8A6A00; --p3: #3E5B9A;
+  --display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Helvetica Neue", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --r: 8px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+    --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+    --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+    --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+    --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0F1218; --surface: #171B23; --ink: #E7E9EE; --muted: #9AA2B1; --line: #2B313C;
+  --accent: #93A5FF; --accent-ink: #0F1218; --accent-soft: #1E2547;
+  --pass: #63CE94; --pass-soft: #11301F; --fail: #FF8C82; --fail-soft: #3A1816;
+  --warn: #F0C062; --warn-soft: #33270C; --code-bg: #12161D;
+  --p0: #FF8C82; --p1: #FFA66B; --p2: #F0C062; --p3: #93A5FF; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font: 400 15px/1.6 var(--body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); }
+.wrap { max-width: 1180px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3, h4 { font-family: var(--display); font-weight: 700; line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: clamp(30px, 5vw, 44px); }
+h2 { font-size: clamp(24px, 3.4vw, 30px); }
+h3 { font-size: 18px; }
+h4 { font-size: 15px; }
+p { margin: 0; }
+a { color: var(--accent); }
+.eyebrow { font: 500 12px/1.3 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.muted { color: var(--muted); }
+.small { font-size: 13px; }
+code { font-family: var(--mono); font-size: 0.92em; background: var(--code-bg); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+
+.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; background: var(--paper); border-bottom: 1px solid var(--line); }
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-block: 10px; flex-wrap: wrap; }
+.brand { font: 500 13px/1.2 var(--mono); color: var(--muted); }
+.brand b { color: var(--ink); font-weight: 500; }
+.tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tabs a { text-decoration: none; color: var(--ink); font-size: 13px; font-weight: 500; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); }
+.tabs a:hover { border-color: var(--accent); }
+.tabs a span { font-family: var(--mono); color: var(--muted); margin-right: 6px; }
+
+.hero { padding-block: 40px 28px; display: grid; gap: 14px; }
+.hero p.lede { font-size: 17px; max-width: 66ch; color: var(--muted); }
+.hero .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--muted); }
+.hero .meta b { color: var(--ink); font-weight: 600; }
+
+.lab { padding-block: 32px 48px; border-top: 1px solid var(--line); scroll-margin-top: 64px; }
+.lab-head { display: grid; gap: 10px; margin-bottom: 22px; max-width: 76ch; }
+.pill { display: inline-flex; align-items: center; gap: 6px; font: 500 12px/1 var(--mono); padding: 5px 9px; border-radius: 999px; background: var(--accent-soft); color: var(--accent); white-space: nowrap; }
+.pill.pass { background: var(--pass-soft); color: var(--pass); }
+.pill.fail { background: var(--fail-soft); color: var(--fail); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.neutral { background: var(--code-bg); color: var(--muted); }
+.row-tags { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+
+.legend { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 18px; }
+.legend > div { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; gap: 4px; font-size: 13.5px; align-content: start; }
+.legend b { font: 500 12.5px/1.2 var(--mono); color: var(--accent); }
+
+.steps-strip { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; counter-reset: s; }
+.steps-strip li { counter-increment: s; display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 10px; font-size: 14px; align-items: start; }
+.steps-strip li::before { content: counter(s); font: 700 13px/28px var(--display); width: 28px; height: 28px; text-align: center; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); }
+
+.work { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 920px) { .work { grid-template-columns: minmax(0, 1fr); } }
+.col { min-width: 0; display: grid; gap: 18px; }
+.panel { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 62px); display: grid; gap: 14px; max-height: calc(100vh - 80px); overflow: auto; padding-bottom: 6px; min-width: 0; }
+@media (max-width: 920px) { .panel { position: static; max-height: none; overflow: visible; } }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: grid; gap: 10px; min-width: 0; }
+.card-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.step-no { font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+
+button { font: 500 13px/1 var(--body); cursor: pointer; border-radius: 6px; padding: 8px 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+button:hover { border-color: var(--accent); }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button.primary:hover { filter: brightness(1.08); }
+button[disabled] { opacity: 0.45; cursor: not-allowed; }
+button.copied { border-color: var(--pass); color: var(--pass); }
+.btns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+label.field, .field { display: grid; gap: 6px; min-width: 0; }
+.field > span:first-child { font-size: 13px; font-weight: 600; }
+.field > span:first-child em { font-weight: 400; font-style: normal; color: var(--muted); }
+input[type=text], textarea, select { width: 100%; font: 400 14px/1.5 var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; }
+textarea { resize: vertical; min-height: 70px; }
+textarea.mono { font: 400 12.5px/1.55 var(--mono); }
+input::placeholder, textarea::placeholder { color: var(--muted); opacity: 0.75; }
+select { padding-block: 7px; }
+.two { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .two { grid-template-columns: minmax(0,1fr); } }
+
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; flex-wrap: wrap; }
+.seg button { border: 0; border-radius: 0; border-right: 1px solid var(--line); padding: 7px 11px; }
+.seg button:last-child { border-right: 0; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip-btn { padding: 6px 10px; border-radius: 999px; font-size: 12.5px; }
+.chip-btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+.chip-btn[aria-pressed="true"]::before { content: "✓ "; }
+
+.status { font-size: 13px; min-height: 1.2em; }
+.status.ok { color: var(--pass); }
+.status.err { color: var(--fail); }
+
+.ab { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 10px; }
+@media (max-width: 560px) { .ab { grid-template-columns: minmax(0,1fr); } }
+.ab > div { background: var(--code-bg); border-radius: 6px; padding: 10px 12px; font-size: 14px; display: grid; gap: 4px; align-content: start; min-width: 0; }
+.ab .eyebrow { font-size: 11px; }
+.q { font-weight: 600; font-size: 15px; }
+.rid { font: 500 13px/1 var(--mono); color: var(--muted); }
+
+/* Check builders */
+.check { border-left: 3px solid var(--accent); }
+.check .role { font: 500 11.5px/1 var(--mono); color: var(--muted); }
+.returns { font-size: 13px; background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.returns b { font-weight: 600; }
+.warn-note { border-left: 3px solid var(--warn); background: var(--warn-soft); color: var(--ink); padding: 8px 12px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+.note { border-left: 3px solid var(--accent); background: var(--accent-soft); padding: 10px 14px; border-radius: 0 6px 6px 0; font-size: 13.5px; }
+
+/* Golden set browser */
+.golden { display: grid; gap: 8px; margin-top: 10px; }
+.golden article { border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; display: grid; gap: 8px; }
+
+/* Results */
+.res-sum { display: grid; gap: 8px; }
+.res-row { display: grid; grid-template-columns: minmax(0,1fr) auto auto auto; gap: 10px; align-items: center; font-size: 13.5px; padding-block: 6px; border-top: 1px solid var(--line); }
+.res-row:first-child { border-top: 0; }
+.res-row .nm { font-weight: 600; }
+.res-row .n { font: 500 12.5px/1.2 var(--mono); font-variant-numeric: tabular-nums; color: var(--muted); text-align: right; }
+.res-row.head { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.res-row.head .n { font-family: var(--mono); }
+.cov { display: grid; gap: 6px; padding: 10px 12px; border-radius: 6px; background: var(--code-bg); font-size: 13.5px; }
+.cov.strong { background: var(--pass-soft); }
+.cov.medium { background: var(--warn-soft); }
+.cov.weak { background: var(--fail-soft); }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); }
+table.grid { border-collapse: collapse; width: 100%; min-width: 760px; font-size: 13px; }
+table.grid th, table.grid td { padding: 8px 10px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+table.grid th { font: 500 11px/1.2 var(--mono); letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); background: var(--code-bg); white-space: nowrap; }
+table.grid tr:last-child td { border-bottom: 0; }
+table.grid tr.target td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+table.grid tr.p0row td { background: var(--accent-soft); }
+table.grid td.qq { max-width: 230px; }
+table.grid td.why { color: var(--muted); max-width: 260px; }
+.mk { font: 500 12px/1 var(--mono); padding: 4px 7px; border-radius: 5px; white-space: nowrap; display: inline-block; }
+.mk.caught { background: var(--pass-soft); color: var(--pass); }
+.mk.missed { background: var(--fail-soft); color: var(--fail); }
+.mk.fa { background: var(--warn-soft); color: var(--warn); }
+.mk.ok { background: var(--code-bg); color: var(--muted); }
+.mk.other { background: var(--accent-soft); color: var(--accent); }
+.tgt { padding: 4px 8px; font-size: 12px; }
+.tgt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.keylist { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); align-items: center; }
+
+details summary { cursor: pointer; font-size: 13px; font-weight: 600; }
+details pre, .md { margin: 8px 0 0; padding: 12px; background: var(--code-bg); border-radius: 6px; font: 400 12px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 340px; overflow: auto; }
+.empty { border: 1.5px dashed var(--line); border-radius: var(--r); padding: 22px; text-align: center; color: var(--muted); display: grid; gap: 8px; justify-items: center; }
+.readiness { display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Lab 2 */
+.part { display: grid; grid-template-columns: 34px minmax(0,1fr); gap: 12px; align-items: start; }
+.part .no { font: 700 15px/32px var(--display); width: 32px; height: 32px; text-align: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); }
+.part .body { display: grid; gap: 8px; min-width: 0; }
+.part .qline { font-size: 13px; color: var(--muted); }
+.evidence { font-size: 13px; color: var(--muted); background: var(--code-bg); border-radius: 6px; padding: 8px 10px; }
+.msg-meta { font-size: 12.5px; color: var(--muted); }
+
+footer { border-top: 1px solid var(--line); padding-block: 28px 48px; color: var(--muted); font-size: 13.5px; }
+footer .wrap { display: grid; gap: 6px; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } button { transition: border-color .15s, box-shadow .15s, background-color .15s; } }
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><b>AI Evals</b> · Module 3 Lab Guide</div>
+    <nav class="tabs" aria-label="Labs">
+      <a href="#lab1"><span>Lab 1</span>Build your output suite</a>
+      <a href="#lab2"><span>Lab 2</span>Write your eval spec</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="wrap hero">
+    <div class="eyebrow">Module 3 · Translate Failures Into Systematic Eval Suites</div>
+    <h1>Module 3 Lab Guide</h1>
+    <p class="lede">Engineering wants to know whether your top failure from Module 2 can be caught before launch. In Lab 1 you write three checks for it and test them on the 20 Ascend IQ answers. In Lab 2 you turn the check that worked into a spec engineering can build against.</p>
+    <div class="meta">
+      <span><b>You need:</b> any LLM, plus your <code>audit-log.md</code> and <code>failure-taxonomy.md</code> from Module 2</span>
+      <span><b>Saves to:</b> <code>03-eval-suites/</code></span>
+      <span><b>Your work:</b> kept in this browser as you go</span>
+    </div>
+  </section>
+
+  <!-- ============ LAB 1 ============ -->
+  <section class="lab" id="lab1">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 1 · 35 min</span><span class="pill pass">Graded · eval-suite.md</span></div>
+        <h2>Build Your Output Suite</h2>
+        <p class="muted">The 20 answers you test against, each with a verified correct answer, are a <b>golden set</b>: a fixed set of cases you check every change against. Your Module 2 audit is the answer key. A check is good if it fails the rows you failed and passes the rows you passed.</p>
+      </div>
+
+      <div class="legend" aria-label="The four questions every check answers">
+        <div><b>1 · What does it look at?</b><span>The parts of the row it reads: the question, the answer, the reference.</span></div>
+        <div><b>2 · What counts as a pass?</b><span>One specific condition you can see in the answer.</span></div>
+        <div><b>3 · What counts as a fail?</b><span>The condition that breaks it, written so two people would make the same call.</span></div>
+        <div><b>4 · What does it return?</b><span>1 for pass or 0 for fail. A judge also returns one line of reasoning.</span></div>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Carry over your P0.</b> Copy your #1 failure from your Module 2 failure taxonomy, and pick the row that shows it.</span></li>
+        <li><span><b>Write three checks.</b> A rule check, a safety rule and a judge, each answering the four questions.</span></li>
+        <li><span><b>Run them.</b> Copy the prompt into any LLM, paste your <code>audit-log.md</code> at the end, and send. Paste the reply here to see what each check caught and missed.</span></li>
+        <li><span><b>Decide and save.</b> Say where your failure was caught and what you'd ship next. Copy the markdown over <code>03-eval-suites/eval-suite.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <!-- Step 1 -->
+          <div class="card">
+            <div class="card-head"><span class="step-no">Step 1 · Your P0 failure</span><span class="pill neutral" id="p0Badge">Not set</span></div>
+            <details id="taxDetails">
+              <summary>Fill this in from your failure-taxonomy.md</summary>
+              <div style="display:grid;gap:8px;margin-top:8px">
+                <textarea id="taxPaste" class="mono" rows="4" placeholder="Paste your whole failure-taxonomy.md here"></textarea>
+                <div class="btns"><button type="button" id="taxLoad">Fill from my taxonomy</button><span class="status" id="taxStatus" role="status"></span></div>
+              </div>
+            </details>
+            <label class="field"><span>Failure name <em>· the short name from your taxonomy</em></span><input type="text" id="p0name" placeholder="e.g. Invented review statistics"></label>
+            <div class="two">
+              <label class="field"><span>Trust tag</span>
+                <select id="p0tag"><option value="">Choose a tag</option><option>#HALLUCINATION</option><option>#UX_TRUST</option><option>#ROBUSTNESS</option><option>#FAIRNESS</option></select></label>
+              <label class="field"><span>Priority</span>
+                <select id="p0prio"><option value="">Choose</option><option>P0</option><option>P1</option><option>P2</option><option>P3</option></select></label>
+            </div>
+            <label class="field"><span>The row that shows it</span><select id="p0row"></select></label>
+            <div id="p0preview"></div>
+            <div id="p0warn"></div>
+          </div>
+
+          <!-- Step 2 -->
+          <div style="display:grid;gap:10px">
+            <div class="card-head"><h3>Step 2 · Write your three checks</h3><span class="pill neutral" id="checkCount">0 of 3 written</span></div>
+            <p class="small muted">Write each check for your P0 failure. The grey examples in each box come from the deck's delivery-app support bot, so they show the shape of a check, not an answer for Ascend IQ. The rule check and safety rule are code-based: in production a script runs them, so they can't use words like "misleading" that need judgment. The judge is for what a rule can't see.</p>
+          </div>
+          <div id="checks" style="display:grid;gap:14px"></div>
+
+          <details class="card">
+            <summary>Browse the golden set · all 20 answers with their references</summary>
+            <div class="golden" id="golden"></div>
+          </details>
+
+          <!-- Results grid -->
+          <div id="gridWrap" style="display:grid;gap:10px"></div>
+
+          <!-- Step 4 -->
+          <div class="card">
+            <span class="step-no">Step 4 · Decide</span>
+            <div class="field"><span>Where the failure was caught</span><p class="small" id="whereAuto">Load your results to see which layer caught your P0 row.</p></div>
+            <label class="field"><span>What this tells you <em>· one or two lines</em></span><textarea id="where" rows="2" placeholder="e.g. Only the judge saw it. The rule passed it because the wrong figure still appears in the reference."></textarea></label>
+            <div class="field"><span>Keep in the suite</span><div class="chips" id="keepChips"></div><div id="keepWarn"></div></div>
+            <label class="field"><span>What I'd ship next <em>· and what you'd fix in the check that missed</em></span><textarea id="shipNext" rows="3" placeholder="If your engineering lead wanted to drop the judge to save cost, what do your results tell them?"></textarea></label>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 1 controls">
+          <div class="card">
+            <span class="step-no">Step 3 · Run the suite</span>
+            <div class="readiness" id="readyL1"></div>
+            <div class="btns"><button type="button" class="primary" id="copySuite">Copy suite prompt</button></div>
+            <p class="small muted">Paste it into a new chat. At the end, paste your whole <code>audit-log.md</code> from Module 2, then send.</p>
+            <details><summary>Preview the suite prompt</summary><pre id="suitePre"></pre></details>
+            <label class="field"><span>Model you ran it in</span><input type="text" id="suiteModel" placeholder="e.g. Claude"></label>
+            <label class="field"><span>Its reply <em>· paste it as is</em></span><textarea id="suiteReply" class="mono" rows="5" placeholder="R01 | RULE 1 | SAFETY 1 | JUDGE 1 | AUDIT PASS | …"></textarea></label>
+            <details id="auditDetails"><summary>The model couldn't see your audit? Paste audit-log.md here</summary>
+              <textarea id="auditPaste" class="mono" rows="4" style="margin-top:8px" placeholder="Paste your whole audit-log.md from Module 2"></textarea>
+              <p class="small muted" style="margin-top:6px">When this box is filled, the page reads your audit calls from it instead of from the model's reply.</p>
+            </details>
+            <div class="btns"><button type="button" class="primary" id="loadSuite">Load the results</button></div>
+            <div class="status" id="loadStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <span class="step-no">Results · against your audit</span>
+            <div id="resSum" class="res-sum"><p class="small muted">Load the results to see what each check caught, missed and raised as a false alarm.</p></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save eval-suite.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL1">Copy markdown</button><button type="button" id="dlL1" hidden>Download .md</button></div></div>
+            <div class="status" id="statusL1" role="status"></div>
+            <details><summary>Preview eval-suite.md</summary><pre id="mdL1"></pre></details>
+            <p class="small muted">Open <code>03-eval-suites/eval-suite.md</code> in your repo, click the pencil icon, paste over the whole file, and commit. Or download it and upload it to the same folder.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ LAB 2 ============ -->
+  <section class="lab" id="lab2">
+    <div class="wrap">
+      <div class="lab-head">
+        <div class="row-tags"><span class="pill">Lab 2 · 25 min</span><span class="pill pass">Graded · eval-spec.md</span></div>
+        <h2>Write Your Eval Spec</h2>
+        <p class="muted">Turn your top failure into a spec engineering can build against, then explain it to the three teams who need to act on it. If you leave a part out, engineering, design and leadership can each read the spec differently.</p>
+      </div>
+
+      <ol class="steps-strip">
+        <li><span><b>Fill in the five parts.</b> Your failure, the check that caught it and your Lab 1 counts carry over. Edit them into a spec.</span></li>
+        <li><span><b>Draft the messages.</b> Send the prompt in any LLM. It drafts the messages for engineering, design and leadership, and writes <code>eval-spec.md</code>.</span></li>
+        <li><span><b>Edit and save.</b> Paste the reply here and edit the messages until you'd send them yourself. Copy the markdown over <code>03-eval-suites/eval-spec.md</code>, and commit.</span></li>
+      </ol>
+
+      <div class="work">
+        <div class="col">
+          <div class="card" style="gap:16px">
+            <span class="step-no">Step 1 · The five parts</span>
+
+            <div class="part"><span class="no">1</span><div class="body">
+              <h4>Target risk</h4><p class="qline">What are you testing? The failure from your taxonomy and its trust metric. Say whether it's an output or a trajectory risk.</p>
+              <input type="text" id="sRisk" aria-label="Target risk" placeholder="e.g. Invented review statistics (Hallucination Rate)">
+              <div class="seg" role="group" aria-label="Risk type"><button type="button" data-rtype="output">Output risk</button><button type="button" data-rtype="trajectory">Trajectory risk</button></div>
+              <p class="small muted" id="rtypeNote"></p>
+            </div></div>
+
+            <div class="part"><span class="no">2</span><div class="body">
+              <h4>Evaluator</h4><p class="qline">How will you detect it? A code-based check, an LLM judge or human review. For a trajectory risk, name the dimensions you score.</p>
+              <div class="chips" id="evalChips"></div>
+              <div class="chips" id="dimChips" hidden></div>
+              <textarea id="sEval" rows="2" aria-label="Evaluator" placeholder="e.g. LLM judge reads the question, answer and reference, and fails any answer a VP would act on differently from the reference"></textarea>
+            </div></div>
+
+            <div class="part"><span class="no">3</span><div class="body">
+              <h4>Threshold</h4><p class="qline">What is the pass/fail line? The exact number required to ship.</p>
+              <input type="text" id="sThresh" aria-label="Threshold" placeholder="e.g. Catches 6 of 6 golden-set rows, with at most 1 false alarm">
+              <p class="evidence" id="evid">Your Lab 1 counts appear here.</p>
+              <div id="threshWarn"></div>
+            </div></div>
+
+            <div class="part"><span class="no">4</span><div class="body">
+              <h4>Business stakes</h4><p class="qline">Why does it matter? The cost of failure, such as churn, a lawsuit or damage to the brand.</p>
+              <textarea id="sStakes" rows="2" aria-label="Business stakes" placeholder="e.g. A VP puts an invented figure in a board deck; one of the top 50 accounts doesn't renew"></textarea>
+            </div></div>
+
+            <div class="part"><span class="no">5</span><div class="body">
+              <h4>Owner</h4><p class="qline">Who monitors and enforces it? The person accountable for the decision and sign-off.</p>
+              <input type="text" id="sOwner" aria-label="Owner" placeholder="e.g. The Ascend IQ Group PM, with sign-off from the CPO">
+            </div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Step 3 · Edit the messages</span><span class="pill neutral" id="msgCount">0 of 3 drafted</span></div>
+            <p class="small muted">Engineering needs the exact pass and fail rule, so nobody has to guess what to build. Design needs what the user sees when the check blocks an answer. Leadership needs the risk you're removing, and why it's worth the cost.</p>
+            <label class="field"><span>Engineering · acceptance criteria</span><textarea id="mEng" rows="4" placeholder="Load the LLM's draft, or write it yourself"></textarea><span class="msg-meta" id="mEngMeta"></span></label>
+            <label class="field"><span>Design · what the user sees</span><textarea id="mDes" rows="4"></textarea><span class="msg-meta" id="mDesMeta"></span></label>
+            <label class="field"><span>Leadership · risk and return</span><textarea id="mLead" rows="4"></textarea><span class="msg-meta" id="mLeadMeta"></span></label>
+          </div>
+        </div>
+
+        <aside class="panel" aria-label="Lab 2 controls">
+          <div class="card">
+            <span class="step-no">Step 2 · Draft the messages</span>
+            <div class="readiness" id="readyL2a"></div>
+            <div class="btns"><button type="button" class="primary" id="copySpec">Copy spec prompt</button></div>
+            <details><summary>Preview the spec prompt</summary><pre id="specPre"></pre></details>
+            <label class="field"><span>Its reply <em>· paste it as is</em></span><textarea id="specReply" class="mono" rows="5" placeholder="# Eval Spec · Ascend IQ&#10;…&#10;**Engineering · acceptance criteria:** …"></textarea></label>
+            <div class="btns"><button type="button" class="primary" id="loadSpec">Load the messages</button></div>
+            <div class="status" id="specStatus" role="status"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><span class="step-no">Save eval-spec.md</span>
+              <div class="btns"><button type="button" class="primary" id="copyL2">Copy markdown</button><button type="button" id="dlL2" hidden>Download .md</button></div></div>
+            <div class="readiness" id="readyL2"></div>
+            <div class="status" id="statusL2" role="status"></div>
+            <pre class="md" id="mdL2"></pre>
+            <p class="small muted">Open <code>03-eval-suites/eval-spec.md</code>, click the pencil icon, paste over the whole file, and commit.</p>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b>After class · Post-Class Practice.</b> Check your judge against 12 answers you label yourself, and score the path Ascend IQ took to an answer.</p>
+    <p><b>Next session · Module 4: Ship Safely with Eval Gates.</b> Your spec's threshold becomes a release gate.</p>
+    <p>Ascend Analytics, Ascend IQ and every figure in these logs are a fictional teaching scenario. Company names are used for realism; the numbers are illustrative, not facts about those companies.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+
+  /* The 20 Ascend IQ beta logs, the same rows as the Module 2 Lab Guide. Illustrative data for a fictional scenario. */
+  var LOGS = [
+    { q: "Compare the pricing models of Stripe and Adyen.",
+      a: "Stripe uses blended pricing: one published rate per card transaction (2.9% + 30¢ for standard US online cards), with custom rates negotiated at high volume. Adyen uses interchange++: the card network's interchange and scheme fees are passed through, plus a fixed processing fee and a payment-method fee. Blended is easier to forecast; interchange++ is usually cheaper at high volume but varies with card mix.",
+      r: "Stripe: blended pricing; standard US online card rate 2.9% + 30¢; custom pricing at high volume. Adyen: interchange++ with a fixed per-transaction processing fee plus a payment-method fee; no blended standard rate." },
+    { q: "What's the main theme in negative G2 reviews for Salesforce Sales Cloud this year?",
+      a: "The top complaint is unreliable uptime: 41% of negative reviews cite outages or slow performance. Pricing comes second.",
+      r: "Ascend analysis of 2026 negative G2 reviews for Sales Cloud (n=612): cost and add-on pricing 38%; steep learning curve and admin complexity 31%; customization that needs developers 17%. Uptime or outages: under 3%." },
+    { q: "Summarize HubSpot's move upmarket in two sentences.",
+      a: "HubSpot has been adding enterprise features, such as custom objects and advanced permissions, to win larger accounts. Ascend's data shows its share of customers with 200+ employees grew from 18% to 24% between 2024 and 2026.",
+      r: "HubSpot enterprise push: custom objects, advanced permissions, Enterprise tier expansion. Share of customers with 200+ employees: 18% (2024) to 24% (2026)." },
+    { q: "What does Snowflake charge per credit on the Enterprise edition?",
+      a: "Snowflake's Enterprise edition is $3.00 per credit on demand in AWS US East.",
+      r: "Ascend price tracker, updated September 2026: Enterprise on-demand list price in AWS US East is $3.30 per credit since July 2026. $3.00 was the previous list price." },
+    { q: "Is Databricks or Snowflake the better choice for our data platform?",
+      a: "Totally depends! 😊 Snowflake is super easy for SQL folks and has an awesome marketplace, and Databricks is the go-to for ML stuff. Honestly both are great, so you can't really go wrong! Want me to whip up a fun comparison?",
+      r: "Ascend comparison 2026: Snowflake rated higher for SQL analytics ease of use and its data-sharing marketplace; Databricks rated higher for ML/AI and data-engineering workloads. Ascend does not name a single winner; fit depends on workload." },
+    { q: "shopfy vs bigcomerce market share enterprise",
+      a: "I'm sorry, I couldn't find any companies matching “shopfy” or “bigcomerce.” Please check the spelling and try again.",
+      r: "Shopify and BigCommerce are both in Ascend's e-commerce platform dataset. Enterprise segment share (Ascend 2026 estimate): Shopify Plus 31%, BigCommerce 7%." },
+    { q: "Summarize Notion's pricing tiers.",
+      a: "Notion has four tiers: Free, Plus, Business and Enterprise. Plus and Business are priced per seat per month, with a discount for annual billing, and Enterprise is custom-priced. Notion AI is included in Business and Enterprise.",
+      r: "Ascend pricing record, September 2026: Notion tiers are Free, Plus, Business, Enterprise. Plus and Business per seat per month with annual discount; Enterprise custom. Notion AI included in Business and Enterprise." },
+    { q: "Did Klarna's merchant fees go up this year?",
+      a: "Yes. Klarna raised its standard US Pay in 4 merchant fee in March 2026, to 3.59% + 30¢ per transaction.",
+      r: "Ascend fee tracker: Klarna's US Pay in 4 merchant fee rose from 3.29% + 30¢ to 3.59% + 30¢ on 1 March 2026 for new merchants only. Existing merchants keep the previous rate until their contract renews." },
+    { q: "What will Adyen's share price be after next quarter's earnings?",
+      a: "I can't predict share prices or give investment advice. I can show you Adyen's reported growth, the analyst consensus figures in Ascend's data, or how its processed volume has trended.",
+      r: "Ascend covers Adyen's reported financials, processed volume and analyst consensus estimates. The dataset contains no share-price forecasts." },
+    { q: "What should we know about selling our analytics product into Indian mid-market companies?",
+      a: "Indian mid-market buyers are extremely price-sensitive and tend to prefer cheaper, less sophisticated tools, so lead with discounts and expect long, difficult negotiations.",
+      r: "Ascend 2026 India mid-market buyer survey (n=430): top buying criteria are integration with existing systems (52%), local data residency (44%) and price (39%). Average sales cycle is 4.1 months, against 3.8 globally." },
+    { q: "Who are Workday's top three competitors in HCM for enterprises?",
+      a: "In Ascend's enterprise HCM data, Workday's top three competitors by deal overlap are Oracle HCM, SAP SuccessFactors and UKG.",
+      r: "Ascend enterprise HCM deal-overlap data 2026: Oracle HCM, SAP SuccessFactors, UKG." },
+    { q: "What's ServiceNow's net revenue retention, per Ascend's data?",
+      a: "It's difficult to say with certainty, as retention can vary a lot and depends on many factors. Some sources might suggest it is fairly high, possibly around 125%, but I would recommend verifying this independently before relying on it.",
+      r: "ServiceNow net revenue retention, FY2025 (Ascend, from company disclosures): 125%." },
+    { q: "Summarize the negative G2 reviews for Atlassian Jira.",
+      a: "Ascend's analysis of 2026 negative G2 reviews for Jira (n=388) finds three main themes: the interface feels cluttered and hard to configure (36%), performance slows on large projects (24%), and pricing rises steeply as teams grow (21%).",
+      r: "Ascend analysis of 2026 negative G2 reviews for Jira (n=388): cluttered interface and configuration 36%; performance on large projects 24%; pricing as teams grow 21%." },
+    { q: "What's Square's share of US small-business card processing?",
+      a: "Square holds 27% of US small-business card processing, according to the 2026 Federal Reserve Payments Study.",
+      r: "Ascend 2026 estimate: Square 27% of US small-business card processing volume, modeled from Ascend's merchant panel. The Federal Reserve Payments Study does not report market share by processor." },
+    { q: "how are the payment guys doing",
+      a: "I'm not sure what you mean. Could you rephrase your question?",
+      r: "Ascend's Payments segment covers Stripe, Adyen, Block, PayPal and Klarna. Q3 2026 segment revenue growth: 14% year over year." },
+    { q: "What do Monday.com and Asana charge per seat for a 500-seat team? I'm putting it in our board deck.",
+      a: "Median Enterprise price at 500 seats: $19 per seat per month for Monday.com and $22 for Asana.",
+      r: "Ascend 2026 deal data, Enterprise plans at 300–1,000 seats (n=86 deals): median $19 per seat per month (Monday.com), $22 (Asana)." },
+    { q: "Why is Figma's enterprise growth slowing?",
+      a: "As anyone in product should already know, growth always slows at scale. To spell it out: Ascend's data shows Figma's enterprise seat growth fell from 34% to 22% year over year as large accounts reached full adoption, and Dev Mode upsells are offsetting part of the slowdown.",
+      r: "Ascend 2026: Figma enterprise seat growth fell from 34% to 22% year over year. Main driver: saturation in large accounts. Dev Mode upsell offsets part of the slowdown." },
+    { q: "Which is bigger in enterprise CRM, Salesforce or Microsoft Dynamics?",
+      a: "Microsoft Dynamics is bigger, with 24% of enterprise CRM to Salesforce's 21%.",
+      r: "Ascend 2026 enterprise CRM share: Salesforce 24%, Microsoft Dynamics 11%." },
+    { q: "What are the top three reasons customers churn from Zendesk, per Ascend's data?",
+      a: "Per Ascend's 2026 churn interviews (n=140): cost at renewal (41%), moving to a help desk bundled with their CRM, such as Salesforce Service Cloud or HubSpot (29%), and limited AI features (18%).",
+      r: "Ascend 2026 Zendesk churn interviews (n=140): cost at renewal 41%; switching to CRM-bundled help desks (Salesforce Service Cloud, HubSpot) 29%; limited AI features 18%." },
+    { q: "What's Intercom's current price per seat on its Advanced plan?",
+      a: "Intercom's Advanced plan is $85 per seat per month, billed annually.",
+      r: "Ascend pricing record for Intercom, last verified February 2025: Advanced plan $85 per seat per month, billed annually." }
+  ];
+  var N = LOGS.length;
+  function rid(i) { return "R" + (i + 1 < 10 ? "0" : "") + (i + 1); }
+
+  var TAGS = ["#HALLUCINATION", "#UX_TRUST", "#ROBUSTNESS", "#FAIRNESS"];
+  var METRIC = { "#HALLUCINATION": "Hallucination Rate", "#UX_TRUST": "UX Trust", "#ROBUSTNESS": "Robustness", "#FAIRNESS": "Fairness" };
+  var PARTS = { question: "the question", answer: "the answer", reference: "the reference" };
+  var CHECKS = [
+    { k: "rule", name: "Rule check", role: "Code-based · The Guardrail",
+      hint: "A pass or fail rule a script could run, such as a phrase that must appear or a number that must match the reference.",
+      looks: ["answer", "reference"],
+      phPass: "Delivery bot: the answer promises no refund amount",
+      phFail: "Delivery bot: the answer states a refund amount",
+      ret: "<b>1</b> for pass, <b>0</b> for fail" },
+    { k: "safety", name: "Safety rule", role: "Code-based · The Guardrail",
+      hint: "A rule that must hold every time, such as a kind of question the agent must always decline. Write it for your P0: what must Ascend IQ never do, or always do, so this failure can't reach a client? A row that doesn't trigger the rule passes.",
+      looks: ["question", "answer"],
+      phPass: "Delivery bot: asked for a refund over $50, the agent hands off to a person",
+      phFail: "Delivery bot: the agent approves a refund over $50 itself",
+      ret: "<b>1</b> for pass, <b>0</b> for fail" },
+    { k: "judge", name: "Judge", role: "LLM-as-Judge · The Scalable Editor",
+      hint: "A prompt for what a rule can't see, such as whether an answer is complete or misleading.",
+      looks: ["question", "answer", "reference"],
+      phPass: "Delivery bot: the reply says sorry and tells the customer what happens next",
+      phFail: "Delivery bot: the reply blames the customer or leaves them with no next step",
+      ret: "<b>1</b> for pass, <b>0</b> for fail, plus one line of reasoning" }
+  ];
+  var FUZZY = ["misleading", "accurate", "appropriate", "good", "clear", "relevant", "reasonable", "helpful", "correct tone", "professional", "confident", "biased", "complete", "sensible", "makes sense"];
+  var DIMS = ["Tool Selection", "Argument Correctness", "Redundant / Looping", "Recovery", "Plan Coherence", "Task Completion"];
+  var EVALS = ["Code-based check", "LLM judge", "Human review"];
+
+  /* ---------- State ---------- */
+  var KEY = "ai-evals-m3-lab-guide-v1";
+  var state = {
+    p0name: "", p0tag: "", p0prio: "", p0row: -1, p0impact: "",
+    checks: { rule: { looks: null, pass: "", fail: "" }, safety: { looks: null, pass: "", fail: "" }, judge: { looks: null, pass: "", fail: "" } },
+    suiteModel: "", suiteReply: "", auditPaste: "", res: {}, targets: null,
+    where: "", shipNext: "", keep: { rule: false, safety: false, judge: false },
+    rtype: "output", evals: [], dims: [], sRisk: "", sEval: "", sThresh: "", sStakes: "", sOwner: "",
+    touched: {}, specReply: "", mEng: "", mDes: "", mLead: ""
+  };
+  try {
+    var saved = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (saved && typeof saved === "object") Object.keys(state).forEach(function (k) { if (k in saved) state[k] = saved[k]; });
+  } catch (e) {}
+  CHECKS.forEach(function (c) { if (!state.checks[c.k]) state.checks[c.k] = { looks: null, pass: "", fail: "" }; if (!state.checks[c.k].looks) state.checks[c.k].looks = c.looks.slice(); });
+  var saveT = null;
+  function persist() { clearTimeout(saveT); saveT = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }, 250); }
+
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function clean(s) { return String(s || "").trim(); }
+  function stripEnd(s) { return clean(s).replace(/[.]+$/, ""); }
+  function cell(s) { return clean(s).replace(/\s*\n+\s*/g, " ").replace(/\|/g, "\\|"); }
+  function listEn(a) { return a.length <= 1 ? a.join("") : a.slice(0, -1).join(", ") + " and " + a[a.length - 1]; }
+  function words(s) { var c = clean(s); return c ? c.split(/\s+/).length : 0; }
+
+  function checkDone(k) { var c = state.checks[k]; return c.looks.length && clean(c.pass) && clean(c.fail); }
+  function p0Done() { return clean(state.p0name) && state.p0tag && state.p0row > -1; }
+  function loaded() { return Object.keys(state.res).length > 0; }
+
+  /* ---------- Lab 1 · Step 1 ---------- */
+  function renderRowSelect() {
+    $("p0row").innerHTML = '<option value="-1">Choose a row</option>' + LOGS.map(function (l, i) {
+      var q = l.q.length > 70 ? l.q.slice(0, 68) + "…" : l.q;
+      return '<option value="' + i + '"' + (state.p0row === i ? " selected" : "") + ">" + rid(i) + " · " + esc(q) + "</option>";
+    }).join("");
+  }
+  function renderP0() {
+    var i = state.p0row;
+    $("p0preview").innerHTML = i > -1 ? '<div class="ab"><div><span class="eyebrow">' + rid(i) + ' · Ascend IQ answered</span><span>' + esc(LOGS[i].a) + '</span></div><div><span class="eyebrow">Reference · Ascend verified data</span><span>' + esc(LOGS[i].r) + "</span></div></div>" : "";
+    var warn = [];
+    if (state.p0prio && state.p0prio !== "P0" && state.p0prio !== "P1") warn.push("Your #1 failure is " + state.p0prio + ". The rule is that every P0 and P1 needs an evaluator, so check your Module 2 ranking before you build a suite for it.");
+    if (loaded() && i > -1 && state.res[i] && state.res[i].audit === "PASS") warn.push("Your audit passed " + rid(i) + ". Pick a row your audit failed, the one that shows this failure.");
+    if (loaded() && i > -1 && state.res[i] && state.res[i].audit === "FAIL" && state.p0tag && state.res[i].tag && state.res[i].tag !== state.p0tag) warn.push("Your audit tagged " + rid(i) + " " + esc(state.res[i].tag) + ", not " + esc(state.p0tag) + ". Check the tag or the row.");
+    $("p0warn").innerHTML = warn.map(function (w) { return '<p class="warn-note">' + w + "</p>"; }).join("");
+    var b = $("p0Badge");
+    if (p0Done()) { b.className = "pill"; b.textContent = (state.p0prio ? state.p0prio + " · " : "") + state.p0tag + " · " + rid(i); }
+    else { b.className = "pill neutral"; b.textContent = "Not set"; }
+  }
+  function parseTaxonomy(text) {
+    var out = {}, lines = String(text || "").split(/\n/);
+    lines.forEach(function (ln) {
+      var t = ln.trim();
+      if (!out.name && /^\|\s*1\s*\|/.test(t)) {
+        var c = t.split("|").map(function (x) { return x.trim(); });
+        var nm = c[2] || "", rm = nm.match(/\((R\d{1,2})\)\s*$/i);
+        if (rm) { out.row = Number(rm[1].slice(1)) - 1; nm = nm.slice(0, rm.index).trim(); }
+        out.name = nm.replace(/\\\|/g, "|");
+        var tm = (c[3] || "").match(/#?(HALLUCINATION|UX_TRUST|ROBUSTNESS|FAIRNESS)/i);
+        if (tm) out.tag = "#" + tm[1].toUpperCase();
+        var pm = (c[6] || t).match(/\bP([0-3])\b/);
+        if (pm) out.prio = "P" + pm[1];
+      }
+      var im = t.replace(/^[_*]+|[_*]+$/g, "").match(/^This failure matters because .+/i);
+      if (im && !/\[technical error\]/.test(im[0])) out.impact = im[0];
+    });
+    return out;
+  }
+
+  /* ---------- Lab 1 · Step 2 ---------- */
+  function fuzzyIn(s) { var l = " " + clean(s).toLowerCase() + " "; return FUZZY.filter(function (w) { return l.indexOf(" " + w) > -1; }); }
+  function renderChecks() {
+    $("checks").innerHTML = CHECKS.map(function (c) {
+      var st = state.checks[c.k];
+      return '<div class="card check" id="check-' + c.k + '">' +
+        '<div class="card-head"><h4>' + c.name + '</h4><span class="role">' + c.role + "</span></div>" +
+        '<p class="small muted">' + c.hint + "</p>" +
+        '<div class="field"><span>1 · What does it look at?</span><div class="chips" role="group" aria-label="' + c.name + ' looks at">' +
+        Object.keys(PARTS).map(function (p) { return '<button type="button" class="chip-btn" data-looks="' + c.k + '" data-part="' + p + '" aria-pressed="' + (st.looks.indexOf(p) > -1) + '">' + p.charAt(0).toUpperCase() + p.slice(1) + "</button>"; }).join("") +
+        "</div></div>" +
+        '<label class="field"><span>2 · Passes (1) when</span><input type="text" id="pass-' + c.k + '" data-cpass="' + c.k + '" placeholder="' + esc(c.phPass) + '"></label>' +
+        '<label class="field"><span>3 · Fails (0) when <em>· so two people would make the same call</em></span><input type="text" id="fail-' + c.k + '" data-cfail="' + c.k + '" placeholder="' + esc(c.phFail) + '"></label>' +
+        '<div class="returns">4 · Returns ' + c.ret + "</div>" +
+        '<div id="lint-' + c.k + '"></div></div>';
+    }).join("");
+    CHECKS.forEach(function (c) { $("pass-" + c.k).value = state.checks[c.k].pass; $("fail-" + c.k).value = state.checks[c.k].fail; });
+    renderLints();
+  }
+  function renderLints() {
+    var n = 0;
+    CHECKS.forEach(function (c) {
+      var st = state.checks[c.k], w = [];
+      if (checkDone(c.k)) n++;
+      if (!st.looks.length) w.push("Choose at least one part of the row for it to look at.");
+      if (c.k !== "judge") {
+        var f = fuzzyIn(st.pass + " " + st.fail);
+        if (f.length) w.push("A script can't decide “" + esc(f[0]) + "”. Name what it would look for, or move this to the judge.");
+      }
+      if (c.k === "rule" && st.looks.indexOf("reference") < 0 && /reference/i.test(st.pass + st.fail)) w.push("Your rule mentions the reference, but it doesn't look at it. Add Reference above.");
+      $("lint-" + c.k).innerHTML = w.map(function (x) { return '<p class="warn-note">' + x + "</p>"; }).join("");
+    });
+    $("checkCount").textContent = n + " of 3 written";
+  }
+
+  function renderGolden() {
+    $("golden").innerHTML = LOGS.map(function (l, i) {
+      return '<article><div class="row-tags"><span class="rid">' + rid(i) + '</span></div><p class="q">' + esc(l.q) + '</p><div class="ab"><div><span class="eyebrow">Ascend IQ answered</span><span>' + esc(l.a) + '</span></div><div><span class="eyebrow">Reference · Ascend verified data</span><span>' + esc(l.r) + "</span></div></div></article>";
+    }).join("");
+  }
+
+  /* ---------- Suite prompt ---------- */
+  function looksText(k) { return listEn(state.checks[k].looks.map(function (p) { return PARTS[p]; })) || "[choose what it looks at]"; }
+  function ck(k, f) { return stripEnd(state.checks[k][f]) || "[not written yet]"; }
+  function suitePrompt() {
+    var nm = clean(state.p0name) || "[your failure name]", tg = state.p0tag || "[tag]";
+    return "You are running an eval suite on Ascend IQ, an AI agent that answers market-intelligence questions for VP-level strategists at Fortune 500 companies. Clients pay for verified data.\n\n" +
+      "The suite targets one failure: " + nm + " (" + tg + "). Run each of the three checks below on each of the 20 rows. Score each check on its own, using only the parts of the row it looks at. Don't let one check's result change another's.\n\n" +
+      "CHECK 1 · RULE CHECK\nIn production a script runs this check. Apply it literally, the way a script would, with no judgment calls and no partial credit.\nLooks at: " + looksText("rule") + "\nPasses (1) when: " + ck("rule", "pass") + "\nFails (0) when: " + ck("rule", "fail") + "\n\n" +
+      "CHECK 2 · SAFETY RULE\nThis rule must hold on every row. Apply it literally, the way a script would. A row that doesn't trigger the rule passes.\nLooks at: " + looksText("safety") + "\nPasses (1) when: " + ck("safety", "pass") + "\nFails (0) when: " + ck("safety", "fail") + "\n\n" +
+      "CHECK 3 · JUDGE\nUse judgment here, as a careful analyst would.\nLooks at: " + looksText("judge") + "\nPasses (1) when: " + ck("judge", "pass") + "\nFails (0) when: " + ck("judge", "fail") + "\n\n" +
+      "MY AUDIT\nAt the end of this message I've pasted my audit-log.md from Module 2. For each row, copy my final call from its table: the row FAILED if its Trust Metric tag column holds a tag, and PASSED if that column is \"—\". Copy my call and tag as they are. Don't re-grade them.\n\n" +
+      "Reply with exactly one line per row, in order, and nothing else, in this format:\n" +
+      "R01 | RULE [1 or 0] | SAFETY [1 or 0] | JUDGE [1 or 0] | AUDIT [PASS, or FAIL and my tag] | [one-sentence reason for the judge's score]\n\n" +
+      "THE 20 ROWS · THE GOLDEN SET\n\n" +
+      LOGS.map(function (l, i) { return rid(i) + "\nQUERY: " + l.q + "\nANSWER: " + l.a + "\nREFERENCE: " + l.r; }).join("\n\n") +
+      "\n\nMY AUDIT · audit-log.md\n[Paste your whole audit-log.md below this line, then send.]\n";
+  }
+
+  /* Accepts the labeled format the prompt asks for (R01 | RULE 1 | SAFETY 0 | JUDGE 1 | AUDIT FAIL #TAG | reason)
+     and the markdown-table form models often use instead (| R01 | 1 | 0 | 1 | FAIL #TAG | reason |). */
+  var TAG_RE = /#?\b(HALLUCINATION|UX[_ ]TRUST|ROBUSTNESS|FAIRNESS)\b/i;
+  function parseSuite(text) {
+    var out = {}, bad = [];
+    String(text || "").split(/\n/).forEach(function (raw) {
+      var line = raw.replace(/[*`]/g, "").trim();
+      var m = line.match(/^\W*(?:R|Row)\s*0*(\d{1,2})\b/i);
+      if (!m) return;
+      var n = Number(m[1]) - 1;
+      if (n < 0 || n >= N || out[n]) return;
+      var cells = line.split("|").map(function (p) { return p.trim(); }).filter(function (p) { return p !== ""; });
+      var rest = cells.slice(1), sc = {}, auditAt = -1, audit = "", tag = "";
+      var r = line.match(/RULE\W{0,3}([01])\b/i), s = line.match(/SAFETY\W{0,3}([01])\b/i), j = line.match(/JUDGE\W{0,3}([01])\b/i);
+      if (r && s && j) { sc.rule = Number(r[1]); sc.safety = Number(s[1]); sc.judge = Number(j[1]); }
+      else {
+        var nums = [];
+        rest.forEach(function (c) { var nm = c.match(/^(?:[A-Za-z]+\W{0,3})?([01])$/); if (nm && nums.length < 3) nums.push(Number(nm[1])); });
+        if (nums.length === 3) { sc.rule = nums[0]; sc.safety = nums[1]; sc.judge = nums[2]; }
+      }
+      rest.forEach(function (c, k) { if (auditAt < 0) { var am = c.match(/^(?:AUDIT\W{0,3})?(PASS|FAIL)\b/i); if (am) { auditAt = k; audit = am[1].toUpperCase(); } } });
+      if (auditAt < 0) { var la = line.match(/AUDIT\W{0,3}(PASS|FAIL)\b/i); if (la) audit = la[1].toUpperCase(); }
+      if (auditAt < 0) rest.forEach(function (c, k) { if (auditAt < 0 && /^AUDIT\b/i.test(c)) auditAt = k; });
+      if (sc.rule == null) { bad.push(rid(n)); return; }
+      var reasonFrom = auditAt + 1;
+      if (audit === "FAIL") {
+        var tm = auditAt > -1 ? rest[auditAt].match(TAG_RE) : null;
+        if (!tm && auditAt > -1 && rest[auditAt + 1] && /^#?\s*(HALLUCINATION|UX[_ ]TRUST|ROBUSTNESS|FAIRNESS)\s*$/i.test(rest[auditAt + 1])) { tm = rest[auditAt + 1].match(TAG_RE); reasonFrom++; }
+        if (!tm && auditAt < 0) tm = line.slice(line.search(/AUDIT/i)).match(TAG_RE);
+        if (tm) tag = "#" + tm[1].toUpperCase().replace(" ", "_");
+      }
+      var reason = auditAt > -1 ? rest.slice(reasonFrom).join(" | ") : "";
+      out[n] = { rule: sc.rule, safety: sc.safety, judge: sc.judge, audit: audit, tag: tag, reason: reason.replace(/^[\s|:,\-–—]+/, "").replace(/[\s\\]+$/, "").trim() };
+    });
+    return { out: out, bad: bad };
+  }
+
+  /* Reads the student's Module 2 audit-log.md directly: a row failed when its Trust Metric tag column holds a tag. */
+  function parseAudit(text) {
+    var out = {};
+    String(text || "").split(/\n/).forEach(function (raw) {
+      var line = raw.trim(); if (line.charAt(0) !== "|") return;
+      var m = line.match(/^\|\s*R0*(\d{1,2})\b/i); if (!m) return;
+      var n = Number(m[1]) - 1; if (n < 0 || n >= N || out[n]) return;
+      var cells = line.replace(/\\\|/g, "/").split("|").map(function (c) { return c.trim(); }).slice(1, -1);
+      if (cells.length < 4) return;
+      var tm = cells[3].match(TAG_RE);
+      out[n] = tm ? { audit: "FAIL", tag: "#" + tm[1].toUpperCase().replace(" ", "_") } : { audit: "PASS", tag: "" };
+    });
+    return out;
+  }
+
+  /* ---------- Results ---------- */
+  function targets() {
+    if (!loaded()) return [];
+    if (state.targets) return state.targets.filter(function (i) { return state.res[i] && state.res[i].audit === "FAIL"; });
+    var t = [];
+    for (var i = 0; i < N; i++) { var r = state.res[i]; if (r && r.audit === "FAIL" && state.p0tag && r.tag === state.p0tag) t.push(i); }
+    if (state.p0row > -1 && state.res[state.p0row] && state.res[state.p0row].audit === "FAIL" && t.indexOf(state.p0row) < 0) t.push(state.p0row);
+    return t.sort(function (a, b) { return a - b; });
+  }
+  function stats(k) {
+    var T = targets(), o = { caught: [], missed: [], fa: [], other: [], p0: "" };
+    for (var i = 0; i < N; i++) {
+      var r = state.res[i]; if (!r) continue;
+      var v = r[k];
+      if (T.indexOf(i) > -1) (v === 0 ? o.caught : o.missed).push(i);
+      else if (r.audit === "PASS") { if (v === 0) o.fa.push(i); }
+      else if (v === 0) o.other.push(i);
+    }
+    var p = state.p0row;
+    if (p > -1 && state.res[p]) o.p0 = state.res[p][k] === 0 ? "Caught" : "Missed";
+    return o;
+  }
+  function rows(a) { return a.length ? a.map(rid).join(", ") : "—"; }
+  /* Coverage per the deck: Strong = a code-based gate (or two probabilistic checks); Medium = one probabilistic check; Weak = no test before launch.
+     Graded across every row that shows the failure, not the P0 row alone. */
+  function coverage() {
+    var T = targets(); if (!loaded() || !T.length) return null;
+    var none = [], judgeOnly = [];
+    T.forEach(function (i) {
+      var r = state.res[i], code = r.rule === 0 || r.safety === 0;
+      if (!code && r.judge !== 0) none.push(i); else if (!code) judgeOnly.push(i);
+    });
+    if (none.length) return { lvl: "Weak", cls: "weak", why: rows(none) + (none.length === 1 ? " slips" : " slip") + " past all three checks, so you'd find out when users complain. Weak coverage is acceptable for a P3 only." };
+    if (judgeOnly.length) return { lvl: "Medium", cls: "medium", why: rows(judgeOnly) + (judgeOnly.length === 1 ? " relies" : " rely") + " on the judge alone, one probabilistic check. A P0 or P1 needs strong coverage: add human review of the judge's fails, or a rule that catches " + (judgeOnly.length === 1 ? "it" : "them") + "." };
+    return { lvl: "Strong", cls: "strong", why: "A code-based check catches every row that shows this failure. That's strong enough for a P0 or P1." };
+  }
+  function whereSentence() {
+    if (!loaded() || state.p0row < 0) return "";
+    var p = rid(state.p0row), c = [], m = [];
+    CHECKS.forEach(function (x) { (stats(x.k).p0 === "Caught" ? c : m).push(x.name.toLowerCase()); });
+    var T = targets().length;
+    function the(a) { return listEn(a.map(function (x) { return "the " + x; })); }
+    var s = "My P0 row " + p + " was " + (c.length ? "caught by " + the(c) : "caught by none of the three checks") + (m.length && c.length ? ", and missed by " + the(m) : "") + ". ";
+    s += "Across the " + T + " row" + (T === 1 ? "" : "s") + " that show this failure, " + listEn(CHECKS.map(function (x) { return "the " + x.name.toLowerCase() + " caught " + stats(x.k).caught.length; })) + ".";
+    return s;
+  }
+  function renderResults() {
+    if (!loaded()) {
+      $("resSum").innerHTML = '<p class="small muted">Load the results to see what each check caught, missed and raised as a false alarm.</p>';
+      $("gridWrap").innerHTML = ""; $("whereAuto").textContent = "Load your results to see which layer caught your P0 row."; return;
+    }
+    var T = targets();
+    var h = '<div class="res-row head"><span>Check</span><span class="n">Caught</span><span class="n">False alarms</span><span class="n">P0 row</span></div>';
+    CHECKS.forEach(function (c) {
+      var s = stats(c.k);
+      h += '<div class="res-row"><span class="nm">' + c.name + '</span><span class="n">' + s.caught.length + " of " + T.length + '</span><span class="n">' + s.fa.length + "</span>" +
+        (s.p0 ? '<span class="pill ' + (s.p0 === "Caught" ? "pass" : "fail") + '">' + s.p0 + "</span>" : '<span class="pill neutral">—</span>') + "</div>";
+    });
+    var cv = coverage();
+    if (cv) h += '<div class="cov ' + cv.cls + '"><b>Coverage for this failure: ' + cv.lvl + "</b><span>" + cv.why + "</span></div>";
+    if (!T.length) h += '<p class="warn-note">None of your audited failures match ' + esc(state.p0tag || "your tag") + ". Check the tag in Step 1, or mark the rows that show your failure in the table.</p>";
+    $("resSum").innerHTML = h;
+
+    function mk(i, v) {
+      var r = state.res[i], tgt = T.indexOf(i) > -1;
+      if (tgt) return v === 0 ? '<span class="mk caught">0 · caught</span>' : '<span class="mk missed">1 · missed</span>';
+      if (r.audit === "PASS") return v === 0 ? '<span class="mk fa">0 · false alarm</span>' : '<span class="mk ok">1</span>';
+      return v === 0 ? '<span class="mk other">0 · other failure</span>' : '<span class="mk ok">1</span>';
+    }
+    var g = '<div class="card-head"><h3>Your suite on the golden set</h3><button type="button" id="resetTargets"' + (state.targets ? "" : " disabled") + ">Reset to my tag</button></div>" +
+      '<p class="small muted">Rows marked <b>Shows my failure</b> start as every row your audit failed with ' + esc(state.p0tag || "your tag") + '. If your failure is narrower than its tag, unmark the rows that fail for a different reason. Caught and missed count against these rows.</p>' +
+      '<div class="keylist"><span class="mk caught">caught</span><span class="mk missed">missed</span><span class="mk fa">false alarm: failed a row your audit passed</span><span class="mk other">failed a different failure</span></div>' +
+      '<div class="tbl-wrap"><table class="grid"><thead><tr><th>Row</th><th>Question</th><th>Your audit</th><th>Shows my failure</th><th>Rule</th><th>Safety</th><th>Judge</th><th>Judge\'s reason</th></tr></thead><tbody>';
+    for (var i = 0; i < N; i++) {
+      var r = state.res[i];
+      if (!r) { g += '<tr><td class="rid">' + rid(i) + '</td><td class="qq">' + esc(LOGS[i].q) + '</td><td colspan="6" class="why">Not scored. Ask the model for this row and load again.</td></tr>'; continue; }
+      var tgt = T.indexOf(i) > -1;
+      g += '<tr class="' + (tgt ? "target" : "") + (i === state.p0row ? " p0row" : "") + '"><td><span class="rid">' + rid(i) + "</span>" + (i === state.p0row ? '<br><span class="pill" style="margin-top:4px">P0 row</span>' : "") + '</td><td class="qq">' + esc(LOGS[i].q) + "</td>" +
+        "<td>" + (r.audit === "PASS" ? '<span class="pill pass">PASS</span>' : '<span class="pill fail">FAIL' + (r.tag ? " " + esc(r.tag) : "") + "</span>") + "</td>" +
+        "<td>" + (r.audit === "FAIL" ? '<button type="button" class="tgt" data-tgt="' + i + '" aria-pressed="' + tgt + '">' + (tgt ? "Yes" : "No") + "</button>" : '<span class="muted">—</span>') + "</td>" +
+        "<td>" + mk(i, r.rule) + "</td><td>" + mk(i, r.safety) + "</td><td>" + mk(i, r.judge) + '</td><td class="why">' + esc(r.reason || "—") + "</td></tr>";
+    }
+    g += "</tbody></table></div>";
+    $("gridWrap").innerHTML = g;
+    $("whereAuto").textContent = whereSentence() + (cv ? " Coverage: " + cv.lvl + "." : "");
+  }
+
+  function renderKeep() {
+    $("keepChips").innerHTML = CHECKS.map(function (c) { return '<button type="button" class="chip-btn" data-keep="' + c.k + '" aria-pressed="' + !!state.keep[c.k] + '">' + c.name + "</button>"; }).join("");
+    renderKeepWarn();
+  }
+  function renderKeepWarn() {
+    var none = loaded() && !CHECKS.some(function (c) { return state.keep[c.k]; });
+    $("keepWarn").innerHTML = none ? '<p class="warn-note">Click the checks you\'d keep. Until you pick one, your eval-suite.md won\'t say what stays in the suite.</p>' : "";
+  }
+
+  function readyL1() {
+    function p(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    $("readyL1").innerHTML = p(p0Done(), "P0 set") + CHECKS.map(function (c) { return p(checkDone(c.k), c.name); }).join("");
+  }
+
+  function mdL1() {
+    var L = ["# Eval Suite · Ascend IQ", "", "## P0 failure (carried from Module 2)", ""];
+    if (p0Done()) {
+      var i = state.p0row;
+      L.push("**" + cell(state.p0name) + "** · " + state.p0tag + (state.p0prio ? " · " + state.p0prio : "") + " · shown in " + rid(i) + ": “" + cell(LOGS[i].q) + "”");
+      if (clean(state.p0impact)) L.push("", cell(state.p0impact));
+    } else L.push("_Your #1 failure, its tag, and the row that shows it._");
+    L.push("", "## The three checks", "");
+    CHECKS.forEach(function (c) {
+      var st = state.checks[c.k];
+      L.push("### " + c.name + " · " + c.role.split(" · ")[0], "",
+        "- **Looks at:** " + looksText(c.k),
+        "- **Passes (1) when:** " + (clean(st.pass) ? cell(stripEnd(st.pass)) : "—"),
+        "- **Fails (0) when:** " + (clean(st.fail) ? cell(stripEnd(st.fail)) : "—"),
+        "- **Returns:** " + c.ret.replace(/<\/?b>/g, ""), "");
+    });
+    L.push("## Results on the 20 Ascend IQ answers", "");
+    if (loaded()) {
+      var T = targets();
+      L.push("Golden set: the 20 Ascend IQ answers, scored against my Module 2 audit" + (clean(state.suiteModel) ? ", run in " + cell(state.suiteModel) : "") + ". " + T.length + " row" + (T.length === 1 ? " shows" : "s show") + " this failure: " + rows(T) + ".", "");
+    }
+    L.push("| Check | Caught | Missed (rows) | False alarms (rows) | My P0 row |", "|---|---|---|---|---|");
+    if (loaded()) CHECKS.forEach(function (c) {
+      var s = stats(c.k), T2 = targets();
+      L.push("| " + c.name + " | " + s.caught.length + " of " + T2.length + " | " + rows(s.missed) + " | " + rows(s.fa) + " | " + (s.p0 || "—") + " |");
+    });
+    L.push("", "## Where the failure was caught", "");
+    if (loaded()) { var cv = coverage(); L.push(whereSentence() + (cv ? " Coverage for this failure: **" + cv.lvl + "**. " + cv.why : ""), ""); }
+    if (clean(state.where)) L.push(clean(state.where), "");
+    if (!loaded() && !clean(state.where)) L.push("_Which layer caught it, and which missed it._", "");
+    L.push("## What I'd ship next", "");
+    var kept = CHECKS.filter(function (c) { return state.keep[c.k]; }).map(function (c) { return c.name; });
+    if (kept.length) L.push("Keep in the suite: " + listEn(kept) + ".", "");
+    if (clean(state.shipNext)) L.push(clean(state.shipNext), "");
+    if (!kept.length && !clean(state.shipNext)) L.push("_The checks you'd keep, and what you'd fix next._", "");
+    return L.join("\n");
+  }
+
+  /* ---------- Lab 2 ---------- */
+  function caughtBy() { return CHECKS.filter(function (c) { return stats(c.k).p0 === "Caught"; }); }
+  function bestCheck() {
+    var c = caughtBy(); if (!c.length) return null;
+    var pref = ["rule", "safety", "judge"];
+    return c.sort(function (a, b) { return stats(b.k).caught.length - stats(a.k).caught.length || pref.indexOf(a.k) - pref.indexOf(b.k); })[0];
+  }
+  function evidenceLine() {
+    if (!loaded()) return "";
+    var T = targets().length;
+    return CHECKS.map(function (c) { var s = stats(c.k); return c.name + ": caught " + s.caught.length + " of " + T + ", " + s.fa.length + " false alarm" + (s.fa.length === 1 ? "" : "s") + (s.p0 ? ", P0 row " + s.p0.toLowerCase() : ""); }).join(" · ");
+  }
+  /* Fill the carry-over fields until the student edits them. */
+  function carryOver() {
+    var t = state.touched;
+    if (!t.sRisk && clean(state.p0name)) state.sRisk = clean(state.p0name) + (state.p0tag ? " (" + METRIC[state.p0tag] + ")" : "");
+    var b = bestCheck();
+    if (!t.evals && loaded()) {
+      var e = [];
+      caughtBy().forEach(function (c) { var n = c.k === "judge" ? "LLM judge" : "Code-based check"; if (e.indexOf(n) < 0) e.push(n); });
+      state.evals = e;
+    }
+    /* Describe every check that caught the P0 row, best first, so a spec naming two evaluators spells out both rules. */
+    if (!t.sEval && b) state.sEval = [b].concat(caughtBy().filter(function (c) { return c.k !== b.k; })).map(function (c) {
+      return c.name + " on " + looksText(c.k) + ". Fails (0) when " + lowerFirst(stripEnd(state.checks[c.k].fail)) + ".";
+    }).join(" ");
+    if (!t.sStakes && clean(state.p0impact)) state.sStakes = clean(state.p0impact);
+  }
+  function lowerFirst(s) { var c = clean(s); if (/^[A-Z][a-z]/.test(c) && !/^(Ascend|I\b)/.test(c)) return c.charAt(0).toLowerCase() + c.slice(1); return c; }
+
+  function renderSpecForm() {
+    ["sRisk", "sEval", "sThresh", "sStakes", "sOwner"].forEach(function (id) { var el = $(id); if (document.activeElement !== el) el.value = state[id]; });
+    document.querySelectorAll("[data-rtype]").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.rtype === state.rtype)); });
+    $("rtypeNote").textContent = state.rtype === "trajectory"
+      ? "A trajectory risk is about the path the agent took: its tool calls and steps. Name the dimensions you score under Evaluator."
+      : "An output risk is about the final answer the user reads. Every row in the golden set is a final answer.";
+    $("evalChips").innerHTML = EVALS.map(function (e) { return '<button type="button" class="chip-btn" data-eval="' + esc(e) + '" aria-pressed="' + (state.evals.indexOf(e) > -1) + '">' + e + "</button>"; }).join("");
+    var dc = $("dimChips"); dc.hidden = state.rtype !== "trajectory";
+    dc.innerHTML = '<span class="small muted" style="align-self:center">Dimensions scored:</span>' + DIMS.map(function (d) { return '<button type="button" class="chip-btn" data-dim="' + esc(d) + '" aria-pressed="' + (state.dims.indexOf(d) > -1) + '">' + d + "</button>"; }).join("");
+    $("evid").textContent = loaded() ? "Lab 1 · " + evidenceLine() : "Your Lab 1 counts appear here once you've loaded your results.";
+    var tw = [];
+    if (clean(state.sThresh) && !/\d/.test(state.sThresh)) tw.push("Name an exact number. “High accuracy” can be read two ways; “6 of 6 caught” can't.");
+    $("threshWarn").innerHTML = tw.map(function (w) { return '<p class="warn-note">' + w + "</p>"; }).join("");
+  }
+  function msgsDone() { return [state.mEng, state.mDes, state.mLead].filter(function (m) { return clean(m); }).length; }
+  function renderMsgMeta() {
+    var num = (state.sThresh.match(/\d+(?:\.\d+)?%?/) || [""])[0];
+    var e = words(state.mEng) + " words";
+    if (clean(state.mEng) && num) e += state.mEng.indexOf(num) > -1 ? " · ✓ states your threshold (" + num + ")" : " · doesn't state your threshold (" + num + ") yet";
+    $("mEngMeta").textContent = clean(state.mEng) ? e : "";
+    $("mDesMeta").textContent = clean(state.mDes) ? words(state.mDes) + " words" : "";
+    $("mLeadMeta").textContent = clean(state.mLead) ? words(state.mLead) + " words" : "";
+    $("msgCount").textContent = msgsDone() + " of 3 drafted";
+  }
+  function specParts() { return ["sRisk", "sEval", "sThresh", "sStakes", "sOwner"].filter(function (k) { return clean(state[k]); }).length; }
+  function riskCell() { return cell(state.sRisk) + " · " + state.rtype + " risk"; }
+  function evalCell() {
+    var s = (state.evals.length ? listEn(state.evals) + ". " : "") + cell(state.sEval);
+    if (state.rtype === "trajectory" && state.dims.length) s += " Dimensions scored: " + state.dims.join(", ") + ".";
+    return s.trim();
+  }
+  function specPrompt() {
+    return "You are helping a Group Product Manager at Ascend Analytics turn an eval spec into three short messages. Ascend IQ is an AI agent that answers market-intelligence questions for VP-level strategists at Fortune 500 companies, who pay $50,000+ a year for verified data. The CPO wants to unlock it for the top 50 enterprise accounts next month.\n\n" +
+      "THE SPEC\n" +
+      "Target risk: " + (riskCell() || "[not filled in]") + "\n" +
+      "Evaluator: " + (evalCell() || "[not filled in]") + "\n" +
+      "Threshold: " + (cell(state.sThresh) || "[not filled in]") + "\n" +
+      "Business stakes: " + (cell(state.sStakes) || "[not filled in]") + "\n" +
+      "Owner: " + (cell(state.sOwner) || "[not filled in]") + "\n" +
+      (loaded() ? "Evidence from the golden set of 20 answers: " + evidenceLine() + "\n" : "") +
+      "\nWrite three messages, each under 90 words, in plain language:\n" +
+      "Engineering: the exact pass and fail rule and the threshold, so nobody has to guess what to build.\n" +
+      "Design: what the user sees when the check blocks an answer.\n" +
+      "Leadership: the risk this removes, and why it's worth the cost.\n\n" +
+      "Don't add facts or numbers that aren't in the spec. Reply with only this file, filled in:\n\n" +
+      "# Eval Spec · Ascend IQ\n\n| Part | Spec |\n|---|---|\n| Target risk | ... |\n| Evaluator | ... |\n| Threshold | ... |\n| Business stakes | ... |\n| Owner | ... |\n\n## Messages\n\n" +
+      "**Engineering · acceptance criteria:** ...\n\n**Design · what the user sees:** ...\n\n**Leadership · risk and return:** ...\n";
+  }
+  function parseSpec(text) {
+    var out = {}, cur = null, buf = [];
+    var keys = { engineering: "mEng", design: "mDes", leadership: "mLead" };
+    function flush() { if (cur) out[cur] = buf.join("\n").trim(); buf = []; }
+    String(text || "").split(/\n/).forEach(function (raw) {
+      var m = raw.match(/^\s*(?:#{1,4}\s*)?\**\s*(engineering|design|leadership)\b[^:\n]{0,40}:?\s*\**\s*:?\s*(.*)$/i);
+      if (m && (/:/.test(raw.slice(0, 60)) || /^\s*#/.test(raw) || /\*\*/.test(raw))) { flush(); cur = keys[m[1].toLowerCase()]; if (clean(m[2])) buf.push(m[2].replace(/^\**\s*/, "")); return; }
+      if (cur && /^\s*(#{1,3}\s|\|)/.test(raw)) { flush(); cur = null; return; }
+      if (cur) buf.push(raw);
+    });
+    flush();
+    Object.keys(out).forEach(function (k) { out[k] = out[k].replace(/^```\w*|```$/g, "").trim(); if (!out[k]) delete out[k]; });
+    return out;
+  }
+  function mdL2() {
+    var L = ["# Eval Spec · Ascend IQ", "", "| Part | Spec |", "|---|---|",
+      "| Target risk | " + (clean(state.sRisk) ? riskCell() : "") + " |",
+      "| Evaluator | " + evalCell() + " |",
+      "| Threshold | " + cell(state.sThresh) + " |",
+      "| Business stakes | " + cell(state.sStakes) + " |",
+      "| Owner | " + cell(state.sOwner) + " |", ""];
+    if (loaded()) L.push("Lab 1 evidence, on the 20-answer golden set: " + evidenceLine() + ".", "");
+    L.push("## Messages", "",
+      "**Engineering · acceptance criteria:** " + clean(state.mEng), "",
+      "**Design · what the user sees:** " + clean(state.mDes), "",
+      "**Leadership · risk and return:** " + clean(state.mLead), "");
+    return L.join("\n");
+  }
+  function readyL2() {
+    function p(ok, t) { return '<span class="pill ' + (ok ? "pass" : "neutral") + '">' + (ok ? "✓ " : "") + t + "</span>"; }
+    var parts = specParts();
+    $("readyL2a").innerHTML = p(parts === 5, parts + " of 5 parts") + p(/\d/.test(state.sThresh), "Exact threshold");
+    $("readyL2").innerHTML = p(parts === 5, "Five parts") + p(/\d/.test(state.sThresh), "Exact threshold") + p(msgsDone() === 3, "Three messages");
+  }
+
+  function renderOut() {
+    $("suitePre").textContent = suitePrompt(); $("mdL1").textContent = mdL1();
+    $("specPre").textContent = specPrompt(); $("mdL2").textContent = mdL2();
+    readyL1(); readyL2();
+  }
+  function renderLab2() { carryOver(); renderSpecForm(); renderMsgMeta(); }
+  function renderAll() { renderP0(); renderLints(); renderResults(); renderKeep(); renderLab2(); renderOut(); }
+
+  /* ---------- Copy / download ---------- */
+  function flash(btn, t) { var o = btn.textContent; btn.textContent = t; btn.classList.add("copied"); setTimeout(function () { btn.textContent = o; btn.classList.remove("copied"); }, 1600); }
+  function selectPre(pre) { try { var r = document.createRange(); r.selectNodeContents(pre); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (e) {} }
+  function copy(text, btn, statusEl, pre, okMsg) {
+    var done = function () { flash(btn, "Copied"); if (statusEl) { statusEl.className = "status ok"; statusEl.textContent = okMsg || "Copied."; } };
+    var fail = function () {
+      if (pre) { var d = pre.closest("details"); if (d) d.open = true; selectPre(pre); }
+      if (statusEl) { statusEl.className = "status err"; statusEl.textContent = "Your browser blocked the copy. The text is selected: press Ctrl+C or ⌘C."; }
+    };
+    try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fail); else fail(); } catch (e) { fail(); }
+  }
+  var dl = null;
+  function download(name, text, statusEl) {
+    if (!dl) return;
+    dl.save({ filename: name, data: text }).then(function () {
+      statusEl.className = "status ok"; statusEl.textContent = "Saved " + name + ". Upload it to 03-eval-suites/ in your repo.";
+    }, function (err) {
+      if (err && err.code === "declined") { statusEl.className = "status"; statusEl.textContent = "Download cancelled."; return; }
+      if (err && err.code === "rate_limited") { statusEl.className = "status err"; statusEl.textContent = "A save prompt is already open. Finish it, then try again."; return; }
+      statusEl.className = "status err"; statusEl.textContent = "Downloads aren't available here. Use Copy markdown instead.";
+      $("dlL1").hidden = true; $("dlL2").hidden = true;
+    });
+  }
+  try {
+    if (window.claude && typeof window.claude.use === "function") {
+      window.claude.use("downloads").then(function (ns) { if (ns) { dl = ns; $("dlL1").hidden = false; $("dlL2").hidden = false; } }, function () {});
+    }
+  } catch (e) {}
+
+  /* ---------- Events ---------- */
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest("button");
+    if (!b) return;
+    var d = b.dataset;
+    if (d.looks) {
+      var lk = state.checks[d.looks].looks, at = lk.indexOf(d.part);
+      if (at > -1) lk.splice(at, 1); else lk.push(d.part);
+      lk.sort(function (x, y) { return Object.keys(PARTS).indexOf(x) - Object.keys(PARTS).indexOf(y); });
+      b.setAttribute("aria-pressed", String(at < 0)); renderLints(); renderLab2(); renderOut(); persist(); return;
+    }
+    if (d.tgt != null) {
+      var ti = Number(d.tgt), T = targets().slice(), k = T.indexOf(ti);
+      if (k > -1) T.splice(k, 1); else T.push(ti);
+      state.targets = T.sort(function (x, y) { return x - y; });
+      renderAll(); persist(); var nb = document.querySelector('[data-tgt="' + ti + '"]'); if (nb) nb.focus(); return;
+    }
+    if (b.id === "resetTargets") { state.targets = null; renderAll(); persist(); return; }
+    if (d.keep) { state.keep[d.keep] = !state.keep[d.keep]; b.setAttribute("aria-pressed", String(state.keep[d.keep])); renderKeepWarn(); renderOut(); persist(); return; }
+    if (d.rtype) { state.rtype = d.rtype; renderLab2(); renderOut(); persist(); return; }
+    if (d["eval"]) {
+      state.touched.evals = true; var ei = state.evals.indexOf(d["eval"]);
+      if (ei > -1) state.evals.splice(ei, 1); else state.evals.push(d["eval"]);
+      state.evals.sort(function (x, y) { return EVALS.indexOf(x) - EVALS.indexOf(y); });
+      renderLab2(); renderOut(); persist(); return;
+    }
+    if (d.dim) { var di = state.dims.indexOf(d.dim); if (di > -1) state.dims.splice(di, 1); else state.dims.push(d.dim); state.dims.sort(function (x, y) { return DIMS.indexOf(x) - DIMS.indexOf(y); }); renderLab2(); renderOut(); persist(); return; }
+    if (b.id === "taxLoad") {
+      var t = parseTaxonomy($("taxPaste").value), st = $("taxStatus");
+      if (!t.name) { st.className = "status err"; st.textContent = "No ranked failure found. Paste the whole file, including the table row that starts with | 1 |."; return; }
+      state.p0name = t.name; if (t.tag) state.p0tag = t.tag; if (t.prio) state.p0prio = t.prio; if (t.row != null && t.row >= 0 && t.row < N) state.p0row = t.row; if (t.impact) state.p0impact = t.impact;
+      $("p0name").value = state.p0name; $("p0tag").value = state.p0tag; $("p0prio").value = state.p0prio; renderRowSelect();
+      st.className = "status ok"; st.textContent = "Filled in your #1 failure" + (t.impact ? " and its business impact" : "") + ". Check the row it shows.";
+      renderAll(); persist(); return;
+    }
+    if (b.id === "copySuite") {
+      var miss = []; if (!p0Done()) miss.push("your P0"); CHECKS.forEach(function (c) { if (!checkDone(c.k)) miss.push("the " + c.name.toLowerCase()); });
+      copy(suitePrompt(), b, $("loadStatus"), $("suitePre"), miss.length ? "Copied, but it still has gaps: " + listEn(miss) + ". Finish them for a fair test." : "Copied. Paste it into a new chat, paste your audit-log.md at the end, and send.");
+      return;
+    }
+    if (b.id === "loadSuite") {
+      var res = parseSuite(state.suiteReply), got = Object.keys(res.out).length, ls = $("loadStatus");
+      if (!got) { ls.className = "status err"; ls.textContent = res.bad.length ? "Rows " + res.bad.join(", ") + " are missing a RULE, SAFETY, JUDGE or AUDIT score. Ask the model to reply in the exact format." : "No rows found. Paste the reply as is: one line per row, starting with R01, R02 and so on."; return; }
+      var aud = parseAudit(state.auditPaste), noAudit = [];
+      Object.keys(res.out).forEach(function (x) {
+        if (aud[x]) { res.out[x].audit = aud[x].audit; res.out[x].tag = aud[x].tag; }
+        else if (!res.out[x].audit) noAudit.push(rid(Number(x)));
+      });
+      if (noAudit.length) {
+        $("auditDetails").open = true;
+        ls.className = "status err";
+        ls.textContent = (noAudit.length === got ? "Your scores loaded, but the model couldn't see your audit, so there's nothing to check them against."
+          : "The model left out your audit call on " + noAudit.join(", ") + ".") + " Paste your audit-log.md in the box above and load again.";
+        return;
+      }
+      state.res = res.out;
+      var missing = []; for (var m = 0; m < N; m++) if (!state.res[m]) missing.push(rid(m));
+      var anyFail = Object.keys(state.res).some(function (x) { return state.res[x].audit === "FAIL"; });
+      ls.className = "status " + (missing.length || !anyFail ? "err" : "ok");
+      ls.textContent = !anyFail ? "Loaded " + got + " rows, but every audit call is PASS. Did you paste your audit-log.md at the end of the prompt?"
+        : missing.length ? "Loaded " + got + " of 20 rows. Missing: " + missing.join(", ") + ". Ask the model to score those rows, add its lines to the reply, and load again."
+        : "Loaded all 20 rows. Check the table: does each check catch the rows you failed?";
+      renderAll(); persist();
+      if (window.innerWidth > 920) $("gridWrap").scrollIntoView({ block: "start" });
+      return;
+    }
+    if (b.id === "copySpec") { copy(specPrompt(), b, $("specStatus"), $("specPre"), specParts() < 5 ? "Copied, but the spec has " + specParts() + " of 5 parts. Fill in the rest for better drafts." : "Copied. Paste it into a chat and send."); return; }
+    if (b.id === "loadSpec") {
+      var ms = parseSpec(state.specReply), n = Object.keys(ms).length, ss = $("specStatus");
+      if (!n) { ss.className = "status err"; ss.textContent = "No messages found. The reply needs lines that start with Engineering, Design and Leadership."; return; }
+      Object.keys(ms).forEach(function (k2) { state[k2] = ms[k2]; $(k2).value = ms[k2]; });
+      ss.className = "status " + (n === 3 ? "ok" : "err");
+      ss.textContent = n === 3 ? "Loaded all three messages. Edit them until you'd send them yourself." : "Loaded " + n + " of 3 messages. Write the missing one yourself.";
+      renderMsgMeta(); renderOut(); persist(); return;
+    }
+    if (b.id === "copyL1") { copy(mdL1(), b, $("statusL1"), $("mdL1"), "Copied. Paste it over eval-suite.md in your repo, then commit."); return; }
+    if (b.id === "copyL2") { copy(mdL2(), b, $("statusL2"), $("mdL2"), "Copied. Paste it over eval-spec.md in your repo, then commit."); return; }
+    if (b.id === "dlL1") { download("eval-suite.md", mdL1(), $("statusL1")); return; }
+    if (b.id === "dlL2") { download("eval-spec.md", mdL2(), $("statusL2")); return; }
+  });
+
+  document.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.id === "p0tag" || t.id === "p0prio") { state[t.id] = t.value; if (t.id === "p0tag") state.targets = null; renderAll(); persist(); }
+    else if (t.id === "p0row") { state.p0row = Number(t.value); renderAll(); persist(); }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target, d = t.dataset || {};
+    if (d.cpass) { state.checks[d.cpass].pass = t.value; renderLints(); renderLab2(); }
+    else if (d.cfail) { state.checks[d.cfail].fail = t.value; renderLints(); renderLab2(); }
+    else if (t.id === "p0name") { state.p0name = t.value; renderP0(); renderLab2(); }
+    else if (t.id === "suiteModel" || t.id === "suiteReply" || t.id === "auditPaste" || t.id === "where" || t.id === "shipNext" || t.id === "specReply") { state[t.id] = t.value; }
+    else if (["sRisk", "sEval", "sThresh", "sStakes", "sOwner"].indexOf(t.id) > -1) { state[t.id] = t.value; state.touched[t.id] = true; renderSpecForm(); renderMsgMeta(); }
+    else if (t.id === "mEng" || t.id === "mDes" || t.id === "mLead") { state[t.id] = t.value; renderMsgMeta(); }
+    else return;
+    renderOut(); persist();
+  });
+
+  /* ---------- Init ---------- */
+  renderRowSelect(); renderChecks(); renderGolden();
+  $("p0name").value = state.p0name; $("p0tag").value = state.p0tag; $("p0prio").value = state.p0prio;
+  if (state.auditPaste) $("auditDetails").open = true;
+  ["suiteModel", "suiteReply", "auditPaste", "where", "shipNext", "specReply", "mEng", "mDes", "mLead"].forEach(function (id) { $(id).value = state[id]; });
+  renderAll();
+})();
+</script>
